@@ -90,7 +90,7 @@ En sachant que :
 - qui a lui même un enfant linearRing qui renvoie vers la texture correspondante (même id)
 - qui possède une liste de positions (4x3) qui permet à chaque position UV d'être associé à une position réel physique.
 
-En bilan :
+## Bilan
 
   - id du polygon d'une surface (toit ou mur)
   - xlink:href
