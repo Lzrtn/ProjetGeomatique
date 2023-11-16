@@ -76,3 +76,7 @@ documentation ici : https://3dcitydb-docs.readthedocs.io/en/latest/impexp/cli/im
 ./impexp import -T=postgresql -H=localhost -P=5432 -d=CityGML -u=postgres -p=postgres --no-fail-fast /home/formation/Téléchargements/LYON_5EME_2015/LYON_5EME_BATI_2015.gml
 ```
 le no-fail-fast sert à passer les exceptions.
+
+## Démo sur QGIS
+
+![image](https://github.com/Lzrtn/ProjetGeomatique/assets/61098254/9bc964ee-a261-4956-9649-1488de4b81d4)
