@@ -63,6 +63,11 @@ sudo gedit CONNECTION_DETAILS.sh
 ```shell
 sudo ./CREATE_DB.sh
 ```
+- enter a valid SRID : 4171
+- EPSG code of the height system : 0
+- gml:srsName : EPSG::4171
+- Mot de passe pour l'utilisateur postgres : postgres 
+
 - pour les remplir :
 documentation ici : https://3dcitydb-docs.readthedocs.io/en/latest/impexp/cli/import.html
 
