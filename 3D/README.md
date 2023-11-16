@@ -61,6 +61,7 @@ sudo gedit CONNECTION_DETAILS.sh
 ```
 - pour créer les tables dans la database :
 ```shell
+sudo chmod u+x CREATE_DB.sh
 sudo ./CREATE_DB.sh
 ```
     - enter a valid SRID : 4171
