@@ -35,7 +35,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_ZoomPlus">
+        <widget class="QPushButton" name="btn_zoomOut">
          <property name="contextMenuPolicy">
           <enum>Qt::DefaultContextMenu</enum>
          </property>
@@ -49,7 +49,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_ZoomMoins">
+        <widget class="QPushButton" name="btn_zoomIn">
          <property name="text">
           <string/>
          </property>
@@ -60,7 +60,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_ZoomEmprise">
+        <widget class="QPushButton" name="btn_zoomFull">
          <property name="text">
           <string/>
          </property>
@@ -77,7 +77,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_rotationCamera">
+        <widget class="QPushButton" name="btn_cameraRotation">
          <property name="text">
           <string/>
          </property>
@@ -155,7 +155,7 @@
         </widget>
        </item>
        <item row="1" column="4">
-        <widget class="QLineEdit" name="lineEdit_echelle">
+        <widget class="QLineEdit" name="lineEdit_scale">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -174,7 +174,7 @@
         </widget>
        </item>
        <item row="0" column="0" colspan="5">
-        <widget class="QGraphicsView" name="graphicsView_carte2D"/>
+        <widget class="QGraphicsView" name="graphicsView_map2D"/>
        </item>
        <item row="1" column="2">
         <spacer name="horizontalSpacer_2">
@@ -211,7 +211,7 @@
         <enum>QLayout::SetMaximumSize</enum>
        </property>
        <item row="2" column="0">
-        <widget class="QListWidget" name="listeWidget_listeCouche">
+        <widget class="QListWidget" name="listeWidget_layersList">
          <property name="dragEnabled">
           <bool>true</bool>
          </property>
@@ -259,7 +259,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QPushButton" name="btn_informationCouche">
+           <widget class="QPushButton" name="btn_layerInformation">
             <property name="text">
              <string/>
             </property>
@@ -270,7 +270,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_monterCouche">
+           <widget class="QPushButton" name="btn_moveLayerUp">
             <property name="text">
              <string/>
             </property>
@@ -281,7 +281,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_descendreCouche">
+           <widget class="QPushButton" name="btn_moveLayerDown">
             <property name="text">
              <string/>
             </property>
@@ -292,7 +292,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_zoomEmpriseCouche">
+           <widget class="QPushButton" name="btn_zoomOnLayer">
             <property name="text">
              <string/>
             </property>
@@ -316,7 +316,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="btn_poubelleCouche">
+           <widget class="QPushButton" name="btn_deleteLayer">
             <property name="text">
              <string/>
             </property>
@@ -418,58 +418,58 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuEnsGIS">
+   <widget class="QMenu" name="menu_TiSIG">
     <property name="title">
      <string>TiSIG</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuAjouter_une_couche">
+   <widget class="QMenu" name="menu_layers">
     <property name="title">
      <string>Couche</string>
     </property>
-    <widget class="QMenu" name="menuAjouter_une_couche_2">
+    <widget class="QMenu" name="menu_addLayers">
      <property name="title">
       <string>Ajouter une couche</string>
      </property>
-     <addaction name="action_ajouterCoucheVecteur2D"/>
-     <addaction name="action_ajouterCoucheRaster2D"/>
-     <addaction name="action_ajouterFlux2D"/>
+     <addaction name="action_add2DVectorLayer"/>
+     <addaction name="action_add2DRastorLayer"/>
+     <addaction name="action_add2DDataStream"/>
      <addaction name="separator"/>
-     <addaction name="action_ajouterCoucheVecteur3D"/>
-     <addaction name="action_ajouterCoucheRaster3D"/>
-     <addaction name="action_ajouterModel3D"/>
+     <addaction name="action_add3DVectorLayer"/>
+     <addaction name="action_add3DRastorLayer"/>
+     <addaction name="action_add3DModel"/>
     </widget>
-    <addaction name="menuAjouter_une_couche_2"/>
+    <addaction name="menu_addLayers"/>
    </widget>
-   <addaction name="menuEnsGIS"/>
-   <addaction name="menuAjouter_une_couche"/>
+   <addaction name="menu_TiSIG"/>
+   <addaction name="menu_layers"/>
   </widget>
-  <action name="action_ajouterCoucheVecteur2D">
+  <action name="action_add2DVectorLayer">
    <property name="text">
     <string>Ajouter une couche Vecteur</string>
    </property>
   </action>
-  <action name="action_ajouterCoucheRaster2D">
+  <action name="action_add2DRastorLayer">
    <property name="text">
     <string>Ajouter une couche Raster</string>
    </property>
   </action>
-  <action name="action_ajouterFlux2D">
+  <action name="action_add2DDataStream">
    <property name="text">
     <string>Ajouter un flux (WMS, WFS, WMTS)</string>
    </property>
   </action>
-  <action name="action_ajouterCoucheVecteur3D">
+  <action name="action_add3DVectorLayer">
    <property name="text">
     <string>Ajouter une couche Vecteur</string>
    </property>
   </action>
-  <action name="action_ajouterCoucheRaster3D">
+  <action name="action_add3DRastorLayer">
    <property name="text">
     <string>Ajouter une couche Raster</string>
    </property>
   </action>
-  <action name="action_ajouterModel3D">
+  <action name="action_add3DModel">
    <property name="text">
     <string>Ajouter un modèle 3D</string>
    </property>
