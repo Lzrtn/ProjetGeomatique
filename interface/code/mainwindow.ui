@@ -40,28 +40,50 @@
           <enum>Qt::DefaultContextMenu</enum>
          </property>
          <property name="text">
-          <string>+</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../icons/ZoomMore.png</normaloff>../icons/ZoomMore.png</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="btn_ZoomMoins">
          <property name="text">
-          <string>-</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../icons/ZoomLess.png</normaloff>../icons/ZoomLess.png</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="btn_ZoomEmprise">
          <property name="text">
-          <string>Centrer</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../icons/Expand.png</normaloff>../icons/Expand.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="btn_rotationCamera">
          <property name="text">
-          <string>Rotation</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../icons/Rotation.png</normaloff>../icons/Rotation.png</iconset>
          </property>
         </widget>
        </item>
@@ -243,7 +265,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../logo-ENSG-couleur_modifie_rsi.png</normaloff>../../../logo-ENSG-couleur_modifie_rsi.png</iconset>
+              <normaloff>../icons/Information.png</normaloff>../icons/Information.png</iconset>
             </property>
            </widget>
           </item>
@@ -254,7 +276,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../logo-ENSG-couleur_modifie_rsi.png</normaloff>../../../logo-ENSG-couleur_modifie_rsi.png</iconset>
+              <normaloff>../icons/ArrowUp.png</normaloff>../icons/ArrowUp.png</iconset>
             </property>
            </widget>
           </item>
@@ -265,7 +287,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../logo-ENSG-couleur_modifie_rsi.png</normaloff>../../../logo-ENSG-couleur_modifie_rsi.png</iconset>
+              <normaloff>../icons/ArrowDown.png</normaloff>../icons/ArrowDown.png</iconset>
             </property>
            </widget>
           </item>
@@ -276,7 +298,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../logo-ENSG-couleur_modifie_rsi.png</normaloff>../../../logo-ENSG-couleur_modifie_rsi.png</iconset>
+              <normaloff>../icons/Expand.png</normaloff>../icons/Expand.png</iconset>
             </property>
            </widget>
           </item>
@@ -300,7 +322,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../logo-ENSG-couleur_modifie_rsi.png</normaloff>../../../logo-ENSG-couleur_modifie_rsi.png</iconset>
+              <normaloff>../icons/Trash.png</normaloff>../icons/Trash.png</iconset>
             </property>
            </widget>
           </item>
