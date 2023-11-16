@@ -1,5 +1,7 @@
 # EXPLICATION
 
+FAIT PAR HANNICK ET MATHEO
+
 ## Exemple d'un bâtiment
 
 ```xml
