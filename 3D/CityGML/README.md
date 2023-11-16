@@ -79,6 +79,7 @@ FAIT PAR HANNICK ET MATHEO
 
 - la texture utilisée pour le bâtiment en cherchant l'image : "LYON_5EME_BATI_2015_Appearance/{id_bat}.jpg
   avec id_bat = BUILDINGID.value = cityobject.gmlid
+- chaque target a un uri qui réfère a un surfaceMember
 - 4 paires de UVcoordinates qui sont définies par un id appelé "ring" (4x2)
 
 `<lod2Solid>` définit `<CompositeSurface>` qui possède toutes les surfaces définies plus bas, ces deux composants ont des ids crées sur le tas, mais chaque surfaceMember définit ici a un xlink:href qui mène vers sa définition complète.
@@ -89,6 +90,14 @@ En sachant que :
 - qui a lui même un enfant linearRing qui renvoie vers la texture correspondante (même id)
 - qui possède une liste de positions (4x3) qui permet à chaque position UV d'être associé à une position réel physique.
 
+En bilan :
+
+  - id du polygon d'une surface (toit ou mur)
+  - xlink:href
+  - uri d'une target
+
+sont les mêmes, tout comme le ring des coordonnées texture et le LinearRing d'un Polygon
+    
 
 
 
