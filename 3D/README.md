@@ -78,5 +78,10 @@ documentation ici : https://3dcitydb-docs.readthedocs.io/en/latest/impexp/cli/im
 le no-fail-fast sert à passer les exceptions.
 
 ## Démo sur QGIS
-
 ![image](https://github.com/Lzrtn/ProjetGeomatique/assets/61098254/9bc964ee-a261-4956-9649-1488de4b81d4)
+
+## HEXADECIMAL EN COORDONNEES :
+```sql
+SELECT ST_ASGEOJSON((ST_DUMP(solid_geometry)).geom)
+FROM surface_geometry;
+```
