@@ -1,6 +1,6 @@
 # Noms des variables des objets de l'interface
 
-Les noms sont sous format *typeObj_name_Obj*.
+Les noms sont sous format *typeObj_nameObj*.
 
 ## Barre d'outil
 
