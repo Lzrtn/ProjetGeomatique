@@ -41,29 +41,29 @@ void OpenGLcityView::initializeGL()
 void OpenGLcityView::initShaders()
 {
 	// Compile vertex shader
-	if (!program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vshader.glsl"))
+	if (!shader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vshader.glsl"))
 		close();
 
 	// Compile fragment shader
-	if (!program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/fshader.glsl"))
+	if (!shader.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/fshader.glsl"))
 		close();
 
 	// Link shader pipeline
-	if (!program.link())
+	if (!shader.link())
 		close();
 
 	// Bind shader pipeline for use
-	if (!program.bind())
+	if (!shader.bind())
 		close();
 }
 
 void OpenGLcityView::resizeGL(int w, int h)
 {
 	// Calculate aspect ratio
-	qreal aspect_ratio = qreal(w) / qreal(h ? h : 1);
+	//qreal aspect_ratio = qreal(w) / qreal(h ? h : 1);
 
 	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-	const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+	//const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
 
 	// Reset and compute projection
 	//projection.setToIdentity();
@@ -79,7 +79,7 @@ void OpenGLcityView::paintGL()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	program.bind();
+	shader.bind();
 
 	// TODO: use a Camera class to manage motion events and mvp matrix
 	// Calculate model view transformation

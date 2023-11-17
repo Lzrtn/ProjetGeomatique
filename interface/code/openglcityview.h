@@ -33,7 +33,7 @@ protected:
 
 private:
 	//QBasicTimer timer;	// faster than QTimer
-	QOpenGLShaderProgram program;
+	QOpenGLShaderProgram shader;
 	//GeometryEngine *geometries = nullptr; // list of buildings
 
 	/*
