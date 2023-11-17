@@ -10,13 +10,19 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    openglcityview.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    openglcityview.h
 
 FORMS += \
     mainwindow.ui
+
+RESOURCES += \
+    shaders.qrc \
+    textures.qrc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
