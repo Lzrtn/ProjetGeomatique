@@ -8,11 +8,19 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // Initialisation en mode 2D
+    // Initialisation en mode 2D //
     ui->stackedWidget->setCurrentIndex(mode);
     ui->btn_cameraRotation->setVisible(mode);
     ui->label_attributeInformation->setVisible(!mode);
     ui->tableWidget_layerAttributeInformation->setVisible(!mode);
+        // Action 2D
+    ui->action_add2DVectorLayer->setEnabled(!mode);
+    ui->action_add2DRastorLayer->setEnabled(!mode);
+    ui->action_add2DDataStream->setEnabled(!mode);
+        // Actions 3D
+    ui->action_add3DVectorLayer->setEnabled(mode);
+    ui->action_add3DRastorLayer->setEnabled(mode);
+    ui->action_add3DModel->setEnabled(mode);
 
 
     // On connecte le bouton switch 2D/3D
@@ -33,6 +41,14 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
     ui->btn_cameraRotation->setVisible(mode);
     ui->tableWidget_layerAttributeInformation->setVisible(!mode);
     ui->label_attributeInformation->setVisible(!mode);
+
+    ui->action_add2DVectorLayer->setEnabled(!mode);
+    ui->action_add2DRastorLayer->setEnabled(!mode);
+    ui->action_add2DDataStream->setEnabled(!mode);
+
+    ui->action_add3DVectorLayer->setEnabled(mode);
+    ui->action_add3DRastorLayer->setEnabled(mode);
+    ui->action_add3DModel->setEnabled(mode);
 
 
 

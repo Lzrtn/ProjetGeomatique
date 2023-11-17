@@ -24,7 +24,6 @@ private:
 
 private slots:
 
-//  void OnButtonSwitchTo2DClicked();
   void OnButtonSwitchTo2D3DClicked();
 
 };
