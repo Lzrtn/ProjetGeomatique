@@ -80,8 +80,33 @@ le no-fail-fast sert à passer les exceptions.
 ## Démo sur QGIS
 ![image](https://github.com/Lzrtn/ProjetGeomatique/assets/61098254/9bc964ee-a261-4956-9649-1488de4b81d4)
 
-## HEXADECIMAL EN COORDONNEES :
+## DONNEES DANS LES TABLES :
 ```sql
 SELECT ST_ASGEOJSON((ST_DUMP(solid_geometry)).geom)
 FROM surface_geometry;
 ```
+Cette requête explose les géométries de `<CompositeSurface>` en polygones qui sont les mêmes que la colonne geometry des `<surfaceMember>`.
+Ainsi, la requête : 
+```sql
+SELECT ST_ASGEOJSON(geometry)
+FROM surface_geometry;
+```
+renvoie  les mêmes polygones mais celle-ci nous permet d'accéder aux ids de chaque surfaceMember.
+Ces ids sont primordiaux car ils font la jointure avec la table textureparam qui contient les coordonnées uv.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
