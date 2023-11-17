@@ -1,36 +1,31 @@
 #include <iostream>
 #include <pqxx/pqxx>
+#include "dbcontroller.h"
 
 int main() {
     try {
         // PostGreSQL Connection to the first database
-        pqxx::connection conn("dbname=abcabc user=postgres password=postgres host=172.17.0.2 port=5432");
+        DbController database_controller("database");
 
-        if (conn.is_open()) {
+        if (database_controller.IsOpen()) {
             std::cout << "Connexion réussie à PostgreSQL" << std::endl;
 
             // Creation of a second database
-            pqxx::nontransaction txn(conn);
-            pqxx::result r = txn.exec("CREATE DATABASE jppjpp");
-            txn.commit();
+            database_controller.Request("CREATE DATABASE testdb");
 
-            // New connection to the new database
-            pqxx::connection connex("dbname=jppjpp user=postgres password=postgres host=172.17.0.2 port=5432");
+            // Connection to the new database
+            DbController testdb_controller("testdb");
 
-            // New transaction for the new connection
-            pqxx::work txn2(connex);
-            r = txn2.exec("CREATE TABLE test_table (id SERIAL PRIMARY KEY, nom VARCHAR(100), age INT)");
-            txn2.commit();
+            // Creation of a table in the new database
+            testdb_controller.Request("CREATE TABLE test_table (id SERIAL PRIMARY KEY, nom VARCHAR(100), age INT)");
 
-            // New transaction for a SELECT request
-            pqxx::work txn3(connex);
-            r = txn3.exec("SELECT * FROM test_table");
-            txn3.commit();
+            // Testing INSERT
+            testdb_controller.Request("INSERT INTO test_table (id ,nom, age) VALUES ('007','James_Bond','37')");
 
-            // Displaying the result
-            for (auto row : r) {
-                std::cout << "id: " << row["id"].c_str() << ", nom: " << row["nom"].c_str() << ", age: " << row["age"].c_str() << std::endl;
-            }
+            // Testing SELECT
+            testdb_controller.Request("SELECT * FROM test_table");
+            std::string result = testdb_controller.getResult();
+
         } else {
             std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
             return 1;
