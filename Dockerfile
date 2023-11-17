@@ -8,3 +8,8 @@ RUN apt-get update \
 
 # Exposez le port PostgreSQL
 EXPOSE 5432
+
+# Environment variables
+ENV POSTGRES_PASSWORD=postgres
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_DB=database2D
