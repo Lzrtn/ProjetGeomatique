@@ -19,20 +19,20 @@ class MainWindow : public QMainWindow
 
 public:
     /**
-         * @brief Main Window constructor
-         * @param QWidget parent
-         */
+     * @brief Main Window constructor
+     * @param QWidget parent
+     */
     MainWindow(QWidget *parent = nullptr);
 
     /**
-         * @brief Main Window destructor
-         */
+     * @brief Main Window destructor
+     */
     ~MainWindow();
 
     /**
-         * @brief Get the mode
-         * @return bool mode
-         */
+     * @brief Get the mode
+     * @return bool mode
+     */
     bool getMode() const;
 
 private:
