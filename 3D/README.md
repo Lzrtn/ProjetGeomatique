@@ -94,6 +94,11 @@ FROM surface_geometry;
 renvoie  les mêmes polygones mais celle-ci nous permet d'accéder aux ids de chaque surfaceMember.
 Ces ids sont primordiaux car ils font la jointure avec la table textureparam qui contient les coordonnées uv.
 
+```sql
+SELECT id, ST_ASGEOJSON(geometry), ST_ASGEOJSON(textureparam.texture_coordinates) FROM surface_geometry
+JOIN textureparam ON surface_geometry.id = textureparam.surface_geometry_id;
+```
+
 
 
 
