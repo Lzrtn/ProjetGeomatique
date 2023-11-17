@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // Initialisation en mode 2D //
+    // Initialisation in mode 2D //
     ui->stackedWidget->setCurrentIndex(mode);
     ui->btn_cameraRotation->setVisible(mode);
     ui->label_attributeInformation->setVisible(!mode);
@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->action_add3DModel->setEnabled(mode);
 
 
-    // On connecte le bouton switch 2D/3D
+    // Connecting switch 2D/3D button
     connect(ui->btn_switchMode2D3D, &QPushButton::clicked, this, &MainWindow::OnButtonSwitchTo2D3DClicked);
 
 
@@ -34,8 +34,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
+
     mode = !mode;
     ui->stackedWidget->setCurrentIndex(mode);
     ui->btn_cameraRotation->setVisible(mode);
@@ -49,8 +51,6 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
     ui->action_add3DVectorLayer->setEnabled(mode);
     ui->action_add3DRastorLayer->setEnabled(mode);
     ui->action_add3DModel->setEnabled(mode);
-
-
 
     this->update();
     ui->btn_cameraRotation->update();
