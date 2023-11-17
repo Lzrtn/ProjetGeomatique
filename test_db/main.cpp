@@ -1,10 +1,20 @@
 #include <iostream>
 #include <pqxx/pqxx>
 
+#include "executor.h"
+
 int main() {
+
+    Executor executor;
+
+    const char * cmd = "docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' quirky_lumiere";
+
+    std::string ipAdress = executor.exec(cmd);
+    std::cout << "result" << std::endl;
+    std::cout << ipAdress << std::endl;
     try {
         // PostGreSQL Connection to the first database
-        pqxx::connection conn("dbname=abcabc user=postgres password=postgres host=172.17.0.2 port=5432");
+        pqxx::connection conn("dbname=db user=postgres password=postgres host="+ipAdress+ "port=5432");
 
         if (conn.is_open()) {
             std::cout << "Connexion réussie à PostgreSQL" << std::endl;
@@ -39,6 +49,7 @@ int main() {
         std::cerr << e.what() << std::endl;
         return 1;
     }
+
 
     return 0;
 }
