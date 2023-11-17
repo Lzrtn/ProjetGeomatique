@@ -12,9 +12,15 @@ Les noms sont sous format *typeObj_nameObj*.
 
 ## Fenêtre principale
 
-- Fenêtre où se dessine la carte : *graphicsView_map2D*
-- Zone de texte de l'Epsg : *lineEdit_epsg*
-- Zone de texte de l'Échelle : *lineEdit_scale*
+- Fenêtre switch (pour passer d'une vue à l'autre) : *stackedWidget*
+- Vue 2D :  
+  - Fenêtre où se dessine la carte : *graphicsView_window2D*
+  - Zone de texte de l'Epsg : *lineEdit_epsg2D*
+  - Zone de texte de l'Échelle : *lineEdit_scale2D*
+- Vue 3D :
+  - Fenêtre où se dessine la carte : *openGLWidget_window3D*
+  - Zone de texte de l'Epsg : *lineEdit_epsg3D*
+  - Zone de texte de l'Échelle : *lineEdit_scale3D*
 
 ## Gestion des couches
 

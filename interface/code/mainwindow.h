@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPushButton>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -14,8 +15,17 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    bool getMode() const;
 
 private:
     Ui::MainWindow *ui;
+    QPushButton btn_switchMode2D3D;
+    bool mode;
+
+private slots:
+
+//  void OnButtonSwitchTo2DClicked();
+  void OnButtonSwitchTo2D3DClicked();
+
 };
 #endif // MAINWINDOW_H
