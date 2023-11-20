@@ -11,7 +11,8 @@
 #include <QOpenGLTexture>
 
 #include "building3d.h"
-//class Building3D;
+
+#include <map>
 
 class OpenGLcityView : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -19,6 +20,9 @@ class OpenGLcityView : public QOpenGLWidget, protected QOpenGLFunctions
 public:
 	using QOpenGLWidget::QOpenGLWidget;
 	~OpenGLcityView();
+
+	void addBuilding(const int id, const Building3DFactory &buildingFactory);
+	void deleteBuilding(const int id);
 
 protected:
 	//void mousePressEvent(QMouseEvent *e) override;
@@ -36,6 +40,7 @@ private:
 	QOpenGLShaderProgram shader;
 
 	Building3D * building = nullptr;
+	std::map<int, Building3D*> buildings;
 	//GeometryEngine *geometries = nullptr; // list of buildings
 
 	/*

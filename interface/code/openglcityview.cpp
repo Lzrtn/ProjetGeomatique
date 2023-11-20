@@ -1,5 +1,11 @@
 #include "openglcityview.h"
 
+#include <QMouseEvent>
+
+#include <cmath>
+
+#include <iostream>
+
 OpenGLcityView::~OpenGLcityView()
 {
 	// Make sure the context is current when deleting the texture
@@ -9,9 +15,6 @@ OpenGLcityView::~OpenGLcityView()
 	delete this->building;
 	this->doneCurrent();
 }
-#include <QMouseEvent>
-
-#include <cmath>
 
 void OpenGLcityView::initializeGL()
 {
@@ -20,7 +23,9 @@ void OpenGLcityView::initializeGL()
 	this->initShaders();
 
 	// ajout d'un batiment de test
-	this->building = new Building3D();
+	//this->buildings[6] = new Building3D();
+	this->addBuilding(5, Building3DFactory(0));
+	this->addBuilding(156, Building3DFactory(1));
 
 	//timer.start(12, this); // run this->timerEvent every n msec
 }
@@ -42,6 +47,19 @@ void OpenGLcityView::initShaders()
 	// Bind shader pipeline for use
 	if (!this->shader.bind())
 		this->close();
+}
+
+void OpenGLcityView::addBuilding(const int id, const Building3DFactory &buildingFactory)
+{
+	if (this->buildings.find(id) != this->buildings.end())
+		this->deleteBuilding(id);
+
+	this->buildings[id] = buildingFactory.NewBuilding();
+}
+void OpenGLcityView::deleteBuilding(const int id)
+{
+	delete this->buildings[id];
+	this->buildings.erase(id);
 }
 
 void OpenGLcityView::resizeGL(int w, int h)
@@ -79,8 +97,8 @@ void OpenGLcityView::paintGL()
 	this->shader.setUniformValue("mvp_matrix", this->projection * matrix);
 
 	// Draw geometry
-	//geometries->draw(&program);
-
-	if (this->building != nullptr)
-		this->building->draw(&this->shader);
+	for (auto &pair : this->buildings) {
+		std::cout << pair.first << "\n";
+		pair.second->draw(&this->shader);
+	}
 }

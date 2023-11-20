@@ -2,7 +2,7 @@
 
 #include <QVector2D>
 #include <QVector3D>
-//#include <iostream>
+#include <iostream>
 
 struct VertexData
 {
@@ -39,9 +39,8 @@ Building3D::Building3D() :
 	this->initGeometryObj(p, n, t);
 }
 
-Building3D::Building3D(
-		std::vector<QVector3D> position, std::vector<QVector3D> normal,
-		std::vector<QVector2D> textCord, std::string textPath) :
+Building3D::Building3D(std::vector<QVector3D> position, std::vector<QVector3D> normal,
+		std::vector<QVector2D> textCoord, std::string textPath) :
 	indexBuf(QOpenGLBuffer::IndexBuffer)
 {
 	this->initializeOpenGLFunctions();
@@ -52,8 +51,9 @@ Building3D::Building3D(
 
 	// Initializes geometry and texture
 	this->initTexture(textPath);
-	this->initGeometryObj(position, normal, textCord);
+	this->initGeometryObj(position, normal, textCoord);
 }
+
 
 Building3D::~Building3D()
 {
@@ -69,15 +69,14 @@ void Building3D::initTexture(std::string textPath)
 	this->texture->setWrapMode(QOpenGLTexture::Repeat);
 }
 
-void Building3D::initGeometryObj(
-		std::vector<QVector3D> position, std::vector<QVector3D> normal,
-		std::vector<QVector2D> textCord)
+void Building3D::initGeometryObj(std::vector<QVector3D> position, std::vector<QVector3D> normal,
+		std::vector<QVector2D> textCoord)
 {
 	this->sizeArray = position.size();
-	VertexData vertices[sizeArray];
-	GLushort indices[sizeArray];
-	for (int i=0; i<sizeArray; i++) {
-		vertices[i] = {position[i], normal[i], textCord[i]};
+	VertexData vertices[this->sizeArray];
+	GLushort indices[this->sizeArray];
+	for (int i=0; i<this->sizeArray; i++) {
+		vertices[i] = {position[i], normal[i], textCoord[i]};
 		indices[i] = i;
 	}
 
@@ -123,4 +122,54 @@ void Building3D::draw(QOpenGLShaderProgram *program)
 
 	// Draw cube geometry using indices from VBO 1
 	this->glDrawElements(GL_TRIANGLE_STRIP, this->sizeArray, GL_UNSIGNED_SHORT, nullptr);
+}
+
+
+/////////////////////////////  Building 3D Factory  //////////////////////////////////////
+
+Building3DFactory::Building3DFactory(const std::vector<QVector3D> &position,
+									 const std::vector<QVector3D> &normal,
+									 const std::vector<QVector2D> &textCoord,
+									 const std::string &textPath) :
+	position(position), normal(normal), textCoord(textCoord), textPath(textPath)
+{}
+
+Building3DFactory::Building3DFactory(const int version)
+{
+	if (version == 0) {
+		position = {
+			{ 2, 1,-1}, { 4, 1, 1}, { 4,-1,-1},
+			{ 2, 1,-1}, { 4, 1, 1}, { 2,-1, 1},
+			{ 4,-1,-1}, { 4, 1, 1}, { 2,-1, 1},
+			{ 4,-1,-1}, { 2, 1,-1}, { 2,-1, 1}
+		};
+		normal = position; // wrong values, but without light, it has no effects
+		textCoord = {
+			{-1,1}, {1, 1}, {1, -1},
+			{-1,1}, {1, 1}, {1, -1},
+			{-1,1}, {1, 1}, {1, -1},
+			{-1,1}, {1, 1}, {1, -1}
+		};
+		textPath = ":/cube.png";
+	} else {
+		position = {
+			{ -4, 1,-1}, { -2, 1, 1}, { -2,-1,-1},
+			{ -4, 1,-1}, { -2, 1, 1}, { -4,-1, 1},
+			{ -2,-1,-1}, { -2, 1, 1}, { -4,-1, 1},
+			{ -2,-1,-1}, { -4, 1,-1}, { -4,-1, 1}
+		};
+		normal = position; // wrong values, but without light, it has no effects
+		textCoord = {
+			{-1,1}, {1, 1}, {1, -1},
+			{-1,1}, {1, 1}, {1, -1},
+			{-1,1}, {1, 1}, {1, -1},
+			{-1,1}, {1, 1}, {1, -1}
+		};
+		textPath = ":/cube.png";
+	}
+}
+
+Building3D * Building3DFactory::NewBuilding() const
+{
+	return new Building3D(position, normal, textCoord, textPath);
 }

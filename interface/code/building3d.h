@@ -38,7 +38,7 @@ public:
 	 * @param textPath  path of texture image
 	 */
 	Building3D(std::vector<QVector3D> position, std::vector<QVector3D> normal,
-			std::vector<QVector2D> textCord, std::string textPath);
+			std::vector<QVector2D> textCoord, std::string textPath);
 	virtual ~Building3D();
 
 	/**
@@ -58,7 +58,7 @@ private:
 	 * @param position, normal, textCord  geometric data
 	 */
 	void initGeometryObj(std::vector<QVector3D> position, std::vector<QVector3D> normal,
-			std::vector<QVector2D> textCord);
+			std::vector<QVector2D> textCoord);
 
 	/**
 	 * @brief initTexture
@@ -72,6 +72,27 @@ private:
 	QOpenGLBuffer arrayBuf;
 	QOpenGLBuffer indexBuf;
 	QOpenGLTexture *texture = nullptr;
+};
+
+class Building3DFactory
+{
+public:
+	Building3DFactory(
+			const std::vector<QVector3D> &position,
+			const std::vector<QVector3D> &normal,
+			const std::vector<QVector2D> &textCoord,
+			const std::string &textPath);
+
+	Building3DFactory(const int version = 0);
+
+	Building3D * NewBuilding() const;
+
+private:
+	std::vector<QVector3D> position;
+	std::vector<QVector3D> normal;
+	std::vector<QVector2D> textCoord;
+	std::string textPath;
+
 };
 
 #endif // BUILDING3D_H
