@@ -12,12 +12,17 @@ CONFIG += c++11
 INCLUDEPATH += /chemin/vers/les/en-tetes/gdal
 LIBS += -L/chemin/vers/les/bibliotheques/gdal -lgdal
 
+INCLUDEPATH += /usr/include
+LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
+
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    transformation.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    transformation.h
 
 FORMS += \
     mainwindow.ui

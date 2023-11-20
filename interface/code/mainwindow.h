@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QPushButton>
+#include <QGraphicsScene>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -39,6 +40,7 @@ private:
     Ui::MainWindow *ui; ///< Ui::MainWindow ui
     QPushButton btn_switchMode2D3D; ///< QPushButton btn_switchMode2D3D
     bool mode; ///< bool mode
+    QGraphicsScene *scene;
 
 private slots:
 
@@ -48,9 +50,9 @@ private slots:
      *
      */
   void OnButtonSwitchTo2D3DClicked();
-
-
   void OnActionAddShpFileClicked();
+  void OnButtonZoomIn();
+  void OnButtonZoomOut();
 
 };
 #endif // MAINWINDOW_H

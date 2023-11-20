@@ -1,10 +1,11 @@
 #include <iostream>
-
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPolygonItem>
 #include <QApplication>
-
+#include <pqxx/pqxx>
+#include "transformation.h"
+#include <QColor>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -13,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     // Initialisation in mode 2D //
     ui->stackedWidget->setCurrentIndex(mode);
     ui->btn_cameraRotation->setVisible(mode);
@@ -28,69 +28,21 @@ MainWindow::MainWindow(QWidget *parent)
     ui->action_add3DRastorLayer->setEnabled(mode);
     ui->action_add3DModel->setEnabled(mode);
 
-
     /*_______________________________TEST______________________________________*/
 
+    // Connect to the database
 
     // Créer une scène pour QGraphicsView
-    QGraphicsScene *scene = new QGraphicsScene(this);
+    scene = new QGraphicsScene(this);
 
     // Définir la scène pour le QGraphicsView
     ui->graphicsView_window2D->setScene(scene);
 
-
-    QVector<QPointF> franceCoordinates = {
-        QPointF(-5.0, 42.0),
-        QPointF(9.0, 42.0),
-        QPointF(9.0, 51.0),
-        QPointF(3.0, 51.0),
-        QPointF(0.0, 48.0),
-        QPointF(-50.0, 48.0)
-        // Ajoutez d'autres points selon vos besoins
-    };
-
-    // Coordonnées du deuxième polygone à côté du premier
-    QVector<QPointF> secondPolygonCoordinates = {
-        QPointF(10.0, 42.0),
-        QPointF(24.0, 42.0),
-        QPointF(24.0, 51.0),
-        QPointF(18.0, 51.0),
-        QPointF(15.0, 48.0),
-        QPointF(10.0, 48.0)
-        // Ajoutez d'autres points selon vos besoins
-    };
-
-
-    // Créez un polygone à partir des coordonnées
-    QPolygonF francePolygon(franceCoordinates);
-
-    // Créez un polygone à partir des coordonnées du deuxième polygone
-    QPolygonF secondPolygon(secondPolygonCoordinates);
-
-    // Créez un objet QGraphicsPolygonItem
-    QGraphicsPolygonItem *francePolygonItem = new QGraphicsPolygonItem(francePolygon);
-
-    // Créez un objet QGraphicsPolygonItem pour le deuxième polygone
-    QGraphicsPolygonItem *secondPolygonItem = new QGraphicsPolygonItem(secondPolygon);
-
-    // Ajoutez l'élément du deuxième polygone à la scène
-    scene->addItem(secondPolygonItem);
-
-    // Ajoutez l'élément à la scène
-    scene->addItem(francePolygonItem);
-
-
-
-
     /*_____________________________________________________________________________*/
 
-
-
-
-    // Connecting switch 2D/3D button
+    connect(ui->btn_zoomIn, &QPushButton::clicked, this, &MainWindow::OnButtonZoomIn);
+    connect(ui->btn_zoomOut, &QPushButton::clicked, this, &MainWindow::OnButtonZoomOut);
     connect(ui->btn_switchMode2D3D, &QPushButton::clicked, this, &MainWindow::OnButtonSwitchTo2D3DClicked);
-
-    // Connection action "Add Vector File"
     connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionAddShpFileClicked);
 }
 
@@ -98,7 +50,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
 
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
@@ -132,9 +83,76 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 
 void MainWindow::OnActionAddShpFileClicked()
 {
+    QColor colours[10] = {QColor("cyan"), QColor("magenta"), QColor("red"),
+                          QColor("darkRed"), QColor("darkCyan"), QColor("darkMagenta"),
+                          QColor("green"), QColor("darkGreen"), QColor("yellow"),
+                          QColor("blue")};
+
+    pqxx::connection c("user=postgres password=postgres host=localhost port=5432 dbname=essai_dbf target_session_attrs=read-write");
+    pqxx::work k(c);
+    pqxx::result rows = k.exec("SELECT id, ST_AsGeoJSON(geom) FROM arrondissement;");
+    // Parcourir toutes les lignes du résultat
+    for (const auto& row : rows) {
+        // Access columns by index
+        auto id = row[0].as<std::string>();
+        auto geojson = row[1].as<std::string>();
+
+        srand(time(NULL));
+
+        int nbgen=rand()%9+1;
+
+        QColor myColor = colours[nbgen];
+
+        // Utiliser la classe Transformation pour convertir le JSON en QPolygonF
+        Transformation t;
+        QPolygonF polygoneToPlot = t.JSONtoCoords(geojson);
+        // Créer un objet pour le pol shp
+        QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
+        polygoneToPlotItem->setBrush(myColor);
+
+        ui->graphicsView_window2D->scene()->addItem(polygoneToPlotItem);
+    }
+    ui->graphicsView_window2D->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);
 
 
-//    std::cout<<"addVector"<<std::endl;
 }
 
+void MainWindow::OnButtonZoomIn()
+{
+    ui->graphicsView_window2D->scale(1.2,1.2);
+    qreal currentScale = ui->graphicsView_window2D->transform().m11();
 
+        // Parcourir tous les éléments de la scène
+        for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
+            QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+            if (polyItem) {
+                // Ajuster la largeur du trait en fonction du facteur de zoom
+                qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                // Mettre à jour la largeur du trait
+                QPen pen = polyItem->pen();
+                pen.setWidthF(adjustedWidth);
+                polyItem->setPen(pen);
+            }
+        }
+}
+
+void MainWindow::OnButtonZoomOut()
+{
+    ui->graphicsView_window2D->scale(1/1.2,1/1.2);
+    qreal currentScale = ui->graphicsView_window2D->transform().m11();
+
+        // Parcourir tous les éléments de la scène
+        for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
+            QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+            if (polyItem) {
+                // Ajuster la largeur du trait en fonction du facteur de zoom
+                qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                // Mettre à jour la largeur du trait
+                QPen pen = polyItem->pen();
+                pen.setWidthF(adjustedWidth);
+                polyItem->setPen(pen);
+            }
+        }
+}
