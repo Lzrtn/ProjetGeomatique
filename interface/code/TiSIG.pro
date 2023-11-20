@@ -9,14 +9,22 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    building3d.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    openglcityview.cpp
 
 HEADERS += \
-    mainwindow.h
+    building3d.h \
+    mainwindow.h \
+    openglcityview.h
 
 FORMS += \
     mainwindow.ui
+
+RESOURCES += \
+    shaders.qrc \
+    textures.qrc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

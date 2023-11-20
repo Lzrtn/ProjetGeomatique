@@ -15,38 +15,38 @@ QT_END_NAMESPACE
  */
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    /**
-     * @brief Main Window constructor
-     * @param QWidget parent
-     */
-    MainWindow(QWidget *parent = nullptr);
+	/**
+	 * @brief Main Window constructor
+	 * @param QWidget parent
+	 */
+	MainWindow(QWidget *parent = nullptr);
 
-    /**
-     * @brief Main Window destructor
-     */
-    ~MainWindow();
+	/**
+	 * @brief Main Window destructor
+	 */
+	~MainWindow();
 
-    /**
-     * @brief Get the mode
-     * @return bool mode
-     */
-    bool getMode() const;
+	/**
+	 * @brief Get the mode
+	 * @return bool mode
+	 */
+	bool getMode() const;
 
 private:
-    Ui::MainWindow *ui; ///< Ui::MainWindow ui
-    QPushButton btn_switchMode2D3D; ///< QPushButton btn_switchMode2D3D
-    bool mode; ///< bool mode
+	Ui::MainWindow *ui; ///< Ui::MainWindow ui
+	QPushButton btn_switchMode2D3D; ///< QPushButton btn_switchMode2D3D
+	bool mode; ///< bool mode
 
 private slots:
 
-    /**
-     * @brief Function to switch between 2D and 3D mode
-     *
-     *
-     */
+	/**
+	 * @brief Function to switch between 2D and 3D mode
+	 *
+	 *
+	 */
   void OnButtonSwitchTo2D3DClicked();
 
 };
