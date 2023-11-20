@@ -17,12 +17,18 @@ std::string Shapefile::getPath(){
 int Shapefile::import_to_db(const std::string db_name,const std::string db_user,
 const std::string db_password,const std::string db_host,const std::string db_port, const int epsg)
 {
+    this->db_name = db_name;
+    this->db_user = db_user;
+    this->db_password = db_password;
+    this->db_host = db_host;
+    this->db_port = db_port;
+
+    std::string table_name = path.substr(0, path.length() - 4);
+    this->table_name = table_name;
     // Initialize GDAL
     GDALAllRegister();
 
     // Open the shapefile
-    std::string table_name = path.substr(0, path.length() - 4);
-
     const char *shapefile_path = path.c_str();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx(shapefile_path, GDAL_OF_VECTOR, nullptr, nullptr, nullptr));
     if (poDS == nullptr) {
@@ -194,4 +200,47 @@ const std::string db_password,const std::string db_host,const std::string db_por
 
     std::cout<<"IT WORKS!"<<std::endl;
     return 0;
+}
+
+std::vector<float> Shapefile::getBoundingBox()
+{
+    // Connect to the PostgreSQL/PostGIS database
+    std::string conn_infos ="dbname="+db_name+" user="+db_user+" password="+db_password+" host="+db_host +" port="+db_port;
+    const char* conninfo = conn_infos.c_str();
+    PGconn *conn = PQconnectdb(conninfo);
+    if (PQstatus(conn) != CONNECTION_OK) {
+        std::cerr << "Connection to database failed: " << PQerrorMessage(conn) << std::endl;
+    }
+    //const char * tableName = table_name.c_str();
+    std::string requete_SQL= "SELECT ST_Extent(geom) FROM "+table_name+";";
+    const char* requeteSQL = requete_SQL.c_str();
+
+    PGresult *bBoxResult = PQexec(conn, requeteSQL);
+
+    if (PQresultStatus(bBoxResult) != PGRES_TUPLES_OK) {
+        std::cerr << "Failed to get bounding box: " << PQresultErrorMessage(bBoxResult) << std::endl;
+        PQclear(bBoxResult);
+        PQfinish(conn);
+    }
+
+    const char *value = PQgetvalue(bBoxResult, 0, 0);
+    PQclear(bBoxResult);
+
+    std::string resultat_SQL = value;
+    std::string bbx = resultat_SQL.substr(4, resultat_SQL.length() - 2);
+    std::string f_pt = bbx.substr(0, bbx.find(","));
+    std::string s_pt = bbx.substr(bbx.find(",")+1, bbx.length());
+    std::string X_min = f_pt.substr(0,f_pt.find(" "));
+    std::string Y_min = f_pt.substr(f_pt.find(" ")+1,f_pt.length());
+    std::string X_max = s_pt.substr(0,s_pt.find(" "));
+    std::string Y_max = s_pt.substr(s_pt.find(" ")+1,s_pt.length());
+
+    float Xmin = std::stof(X_min);
+    float Ymin = std::stof(Y_min);
+    float Xmax = std::stof(X_max);
+    float Ymax = std::stof(Y_max);
+
+
+    std::vector<float> res = {Xmin,Ymin,Xmax,Ymax};
+    return res;
 }

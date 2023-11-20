@@ -1,6 +1,7 @@
 #ifndef SHAPEFILE_H
 #define SHAPEFILE_H
 #include <iostream>
+#include <vector>
 
 
 class Shapefile
@@ -13,12 +14,14 @@ public:
      */
     Shapefile(std::string path);
 
+
     /**
      * @brief Get the path of the shapefile
      * 
      * @returns std::string
      */
     std::string getPath();
+
 
      /**
      * @brief Copies the shapefile to a database 
@@ -35,11 +38,51 @@ public:
     int import_to_db(const std::string db_name,const std::string db_user,
             const std::string db_password,const std::string db_host,
             const std::string db_port, const int epsg);
+
+
+    /**
+    * @brief Get the bounding box of the Shapefile
+    *
+    * @returns double
+    */
+   std::vector<float> getBoundingBox();
+
 private:
     /**
      * @brief Absolute or relative path of your shapefile
      */
     std::string path;
+
+    /**
+     * @brief Name of the database in which the shapefile is copied
+     */
+    std::string db_name;
+
+    /**
+     * @brief Username of the database in which the shapefile is copied
+     */ 
+    std::string db_user;
+
+    /**
+     * @brief Password of the database in which the shapefile is copied
+     */ 
+    std::string db_password;
+
+    /**
+     * @brief Host of the database in which the shapefile is copied
+     */
+    std::string db_host;
+
+    /**
+     * @brief Port of the database in which the shapefile is copied
+     */
+    std::string db_port;
+
+    /**
+     * @brief Name of the table in which the shapefile is copied
+     */
+    std::string table_name;
+
 };
 
 #endif // SHAPEFILE_H
