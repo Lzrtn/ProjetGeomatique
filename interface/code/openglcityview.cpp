@@ -1,27 +1,21 @@
 #include "openglcityview.h"
 
-#include <QMouseEvent>
-
-#include <cmath>
-
-#include <iostream>
-
 OpenGLcityView::~OpenGLcityView()
 {
-	// Make sure the context is current when deleting the texture
-	// and the buffers.
+	// Make sure the context is current when deleting the texture,
+	// building and buffers.
 
 	this->makeCurrent();
-	this->doneCurrent();
 	for (auto &pair : this->buildings) {
 		this->DeleteBuilding(pair.first);
 	}
+	this->doneCurrent();
 }
 
 void OpenGLcityView::initializeGL()
 {
 	this->initializeOpenGLFunctions();
-	this->glClearColor(0, 0, 0, 1);
+	this->glClearColor(0, 0.05, 0.3, 1);
 	this->InitShaders();
 
 	// ajout d'un batiment de test
@@ -100,7 +94,6 @@ void OpenGLcityView::paintGL()
 
 	// Draw geometry
 	for (auto &pair : this->buildings) {
-		std::cout << pair.first << "\n";
 		pair.second->Draw(&this->shader);
 	}
 }

@@ -2,7 +2,6 @@
 
 #include <QVector2D>
 #include <QVector3D>
-#include <iostream>
 
 struct VertexData
 {
@@ -28,12 +27,16 @@ Building3D::Building3D(std::vector<QVector3D> position, std::vector<QVector3D> n
 
 Building3D::~Building3D()
 {
+	// free memory
 	this->arrayBuffer.destroy();
 	this->indexBuffer.destroy();
+	if (this->texture != nullptr)
+		delete this->texture;
 }
 
 void Building3D::initTexture(std::string textPath)
 {
+	// build the texture and wrap it
 	this->texture = new QOpenGLTexture(QImage(textPath.c_str()).mirrored());
 	this->texture->setMinificationFilter(QOpenGLTexture::Nearest);
 	this->texture->setMagnificationFilter(QOpenGLTexture::Linear);
@@ -43,6 +46,11 @@ void Building3D::initTexture(std::string textPath)
 void Building3D::InitGeometryObj(const std::vector<QVector3D> &position, const std::vector<QVector3D> &normal,
 		const std::vector<QVector2D> &textCoord)
 {
+	// build geometrical coordinates with this format
+	// arrayBuffer = {v1_x v1_y v1_z vn1_x vn1_y vn1_z vt1_x vt1_y // point 1
+	//                v2_x ... vtn_y}
+	// indexBuffer = {1 2 3 ... n} // list of points
+
 	this->sizeArray = position.size();
 	VertexData vertices[this->sizeArray];
 	GLushort indices[this->sizeArray];
@@ -107,7 +115,13 @@ Building3DFactory::Building3DFactory(const std::vector<QVector3D> &position,
 
 Building3DFactory::Building3DFactory(const int version)
 {
-	if (version == 0) {
+	/*
+	 * version 0 and version 1 are same with different origin
+	 * regular tetrahedre
+	 */
+	switch (version)
+	{
+	case 0:
 		position = {
 			{ 2, 1,-1}, { 4, 1, 1}, { 4,-1,-1},
 			{ 2, 1,-1}, { 4, 1, 1}, { 2,-1, 1},
@@ -122,7 +136,9 @@ Building3DFactory::Building3DFactory(const int version)
 			{-1,1}, {1, 1}, {1, -1}
 		};
 		textPath = ":/cube.png";
-	} else {
+		break;
+
+	default:
 		position = {
 			{ -4, 1,-1}, { -2, 1, 1}, { -2,-1,-1},
 			{ -4, 1,-1}, { -2, 1, 1}, { -4,-1, 1},
@@ -137,7 +153,9 @@ Building3DFactory::Building3DFactory(const int version)
 			{-1,1}, {1, 1}, {1, -1}
 		};
 		textPath = ":/cube.png";
+		break;
 	}
+
 }
 
 Building3D * Building3DFactory::NewBuilding() const
