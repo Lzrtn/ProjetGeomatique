@@ -14,14 +14,14 @@ struct VertexData
 Building3D::Building3D() :
 	indexBuf(QOpenGLBuffer::IndexBuffer)
 {
-	initializeOpenGLFunctions();
+	this->initializeOpenGLFunctions();
 
 	// Generate 2 VBOs
-	arrayBuf.create();
-	indexBuf.create();
+	this->arrayBuf.create();
+	this->indexBuf.create();
 
 	// Initializes geometry and texture
-	initTexture(":/cube.png");
+	this->initTexture(":/cube.png");
 
 	std::vector<QVector3D> p = {
 		{ 2, 1,-1}, { 4, 1, 1}, { 4,-1,-1},
@@ -36,7 +36,7 @@ Building3D::Building3D() :
 		{-1,1}, {1, 1}, {1, -1},
 		{-1,1}, {1, 1}, {1, -1}
 	};
-	initGeometryObj(p, n, t);
+	this->initGeometryObj(p, n, t);
 }
 
 Building3D::Building3D(
@@ -44,36 +44,36 @@ Building3D::Building3D(
 		std::vector<QVector2D> textCord, std::string textPath) :
 	indexBuf(QOpenGLBuffer::IndexBuffer)
 {
-	initializeOpenGLFunctions();
+	this->initializeOpenGLFunctions();
 
 	// Generate 2 VBOs
-	arrayBuf.create();
-	indexBuf.create();
+	this->arrayBuf.create();
+	this->indexBuf.create();
 
 	// Initializes geometry and texture
-	initTexture(textPath);
-	initGeometryObj(position, normal, textCord);
+	this->initTexture(textPath);
+	this->initGeometryObj(position, normal, textCord);
 }
 
 Building3D::~Building3D()
 {
-	arrayBuf.destroy();
-	indexBuf.destroy();
+	this->arrayBuf.destroy();
+	this->indexBuf.destroy();
 }
 
 void Building3D::initTexture(std::string textPath)
 {
-	texture = new QOpenGLTexture(QImage(textPath.c_str()).mirrored());
-	texture->setMinificationFilter(QOpenGLTexture::Nearest);
-	texture->setMagnificationFilter(QOpenGLTexture::Linear);
-	texture->setWrapMode(QOpenGLTexture::Repeat);
+	this->texture = new QOpenGLTexture(QImage(textPath.c_str()).mirrored());
+	this->texture->setMinificationFilter(QOpenGLTexture::Nearest);
+	this->texture->setMagnificationFilter(QOpenGLTexture::Linear);
+	this->texture->setWrapMode(QOpenGLTexture::Repeat);
 }
 
 void Building3D::initGeometryObj(
 		std::vector<QVector3D> position, std::vector<QVector3D> normal,
 		std::vector<QVector2D> textCord)
 {
-	sizeArray = position.size();
+	this->sizeArray = position.size();
 	VertexData vertices[sizeArray];
 	GLushort indices[sizeArray];
 	for (int i=0; i<sizeArray; i++) {
@@ -82,20 +82,20 @@ void Building3D::initGeometryObj(
 	}
 
 	// Transfer vertex data to VBO 0
-	arrayBuf.bind();
-	arrayBuf.allocate(vertices, sizeArray * sizeof(VertexData));
+	this->arrayBuf.bind();
+	this->arrayBuf.allocate(vertices, this->sizeArray * sizeof(VertexData));
 
 	// Transfer index data to VBO 1
-	indexBuf.bind();
-	indexBuf.allocate(indices, sizeArray * sizeof(GLushort));
+	this->indexBuf.bind();
+	this->indexBuf.allocate(indices, this->sizeArray * sizeof(GLushort));
 }
 
 void Building3D::draw(QOpenGLShaderProgram *program)
 {
 	// Tell OpenGL which VBOs to use
-	arrayBuf.bind();
-	indexBuf.bind();
-	texture->bind();
+	this->arrayBuf.bind();
+	this->indexBuf.bind();
+	this->texture->bind();
 
 	// Offset for position
 	quintptr offset = 0;
@@ -122,5 +122,5 @@ void Building3D::draw(QOpenGLShaderProgram *program)
 	program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
 	// Draw cube geometry using indices from VBO 1
-	glDrawElements(GL_TRIANGLE_STRIP, sizeArray, GL_UNSIGNED_SHORT, nullptr);
+	this->glDrawElements(GL_TRIANGLE_STRIP, this->sizeArray, GL_UNSIGNED_SHORT, nullptr);
 }

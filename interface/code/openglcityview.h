@@ -10,8 +10,8 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 
-//#include "geometryengine.h"	// 3D buildings geometry
-//class GeometryEngine;
+#include "building3d.h"
+//class Building3D;
 
 class OpenGLcityView : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -34,14 +34,16 @@ protected:
 private:
 	//QBasicTimer timer;	// faster than QTimer
 	QOpenGLShaderProgram shader;
+
+	Building3D * building = nullptr;
 	//GeometryEngine *geometries = nullptr; // list of buildings
 
 	/*
 	 * to class Camera
 	 */
-	/*
 	QMatrix4x4 projection;
 
+	/*
 	QVector2D mousePressPosition;
 	QVector3D rotationAxis;
 	qreal angularSpeed = 0;
