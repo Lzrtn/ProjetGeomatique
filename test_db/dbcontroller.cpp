@@ -7,6 +7,10 @@ DbController::DbController(std::string database){
     std::string conn_txt = "dbname="+database+" user=postgres password=postgres host=172.17.0.2 port=5432";
     pqxx::connection connection(conn_txt);
 }
+DbController::DbController(std::string database, std::string ip){
+    std::string conn_txt = "dbname"+database+" user=postgres password=postgres host"+ip+" port=5432";
+    pqxx::connection connection(conn_txt);
+}
 /**
  * @brief Function to execute a request
  *
