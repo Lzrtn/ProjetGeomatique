@@ -1,4 +1,3 @@
-#include "shapefile.h"
 #include <iostream>
 #include <string>
 #include <gdal/ogrsf_frmts.h>
@@ -6,6 +5,10 @@
 #include <string>
 #include <ogr_api.h>
 #include <ogrsf_frmts.h>
+#include <gdal/gdal.h>
+#include <gdal/ogr_api.h>
+
+#include "shapefile.h"
 
 Shapefile::Shapefile(const std::string path):path(path)
 {}
@@ -29,7 +32,8 @@ const std::string db_password,const std::string db_host,const std::string db_por
     GDALAllRegister();
 
     // Open the shapefile
-    const char *shapefile_path = path.c_str();
+    std::string debut = "/home/formation/Documents/ProjetGeomatique/import_shp/"+path;
+    const char *shapefile_path = debut.c_str();
     GDALDataset *poDS = static_cast<GDALDataset*>(GDALOpenEx(shapefile_path, GDAL_OF_VECTOR, nullptr, nullptr, nullptr));
     if (poDS == nullptr) {
         std::cerr << "Failed to open shapefile." << std::endl;
@@ -37,7 +41,7 @@ const std::string db_password,const std::string db_host,const std::string db_por
     }
 
     // Connect to the PostgreSQL/PostGIS database
-    std::string conn_infos ="dbname="+db_name+" user="+db_user+" password="+db_password+" host="+db_host +" port="+db_port; 
+    std::string conn_infos ="dbname="+db_name+" user="+db_user+" password="+db_password+" host="+db_host +" port="+db_port;
     const char* conninfo = conn_infos.c_str();
     PGconn *conn = PQconnectdb(conninfo);
     if (PQstatus(conn) != CONNECTION_OK) {

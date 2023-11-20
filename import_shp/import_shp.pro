@@ -24,3 +24,7 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+INCLUDEPATH += /chemin/vers/votre/repertoire/GDAL/include
+LIBS += -lgdal
+LIBS += -lpq
