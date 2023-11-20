@@ -2,7 +2,7 @@
 
 Les noms sont sous format *typeObj_nameObj*.
 
-## Barre d'outil
+## Barre d'outils
 
 - Bouton Switch 2D / 3D : *btn_switchMode2D3D*
 - Bouton Zoom + : *btn_zoomIn*
@@ -34,3 +34,15 @@ Les noms sont sous format *typeObj_nameObj*.
 - Fenêtre de gestion des couches : *listeWidget_layersList*
 
 - Fenêtre des informations attributaires : *tableWidget_layerAttributeInformation*
+
+## Barre d'actions (menu Couche)
+
+- 2D :
+  - Ajouter couche Vecteur : *action_add2DVectorLayer*
+  - Ajouter couche Rasteur : *action_add2DRastorLayer*
+  - Ajouter couche Flux : *action_add2DDataStream*
+
+- 3D :
+  - Ajouter couche Vecteur : *action_add3DVectorLayer*
+  - Ajouter couche Rasteur : *action_add3DRastorLayer*
+  - Ajouter couche Flux : *action_add3DModel*
