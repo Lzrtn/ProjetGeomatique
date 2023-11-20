@@ -593,7 +593,7 @@
      </property>
      <addaction name="action_add2DVectorLayer"/>
      <addaction name="action_add2DRastorLayer"/>
-     <addaction name="action_add2DDataStream"/>
+     <addaction name="action_add2DDataFlow"/>
      <addaction name="separator"/>
      <addaction name="action_add3DVectorLayer"/>
      <addaction name="action_add3DRastorLayer"/>
@@ -614,7 +614,7 @@
     <string>Ajouter une couche Raster</string>
    </property>
   </action>
-  <action name="action_add2DDataStream">
+  <action name="action_add2DDataFlow">
    <property name="text">
     <string>Ajouter un flux (WMS, WFS, WMTS)</string>
    </property>

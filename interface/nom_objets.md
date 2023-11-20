@@ -8,7 +8,6 @@ Les noms sont sous format *typeObj_nameObj*.
 - Bouton Zoom + : *btn_zoomIn*
 - Bouton Zoom - : *btn_zoomOut*
 - Bouton Zoom sur l'emprise totale : *btn_zoomFull*
-- Bouton Rotation de la caméra : *btn_cameraRotation*
 
 ## Fenêtre principale
 
@@ -44,9 +43,13 @@ Les noms sont sous format *typeObj_nameObj*.
 - 2D :
   - Ajouter couche Vecteur : *action_add2DVectorLayer*
   - Ajouter couche Rasteur : *action_add2DRastorLayer*
-  - Ajouter couche Flux : *action_add2DDataStream*
+  - Ajouter couche Flux : *action_add2DDataFlow*
 
 - 3D :
   - Ajouter couche Vecteur : *action_add3DVectorLayer*
   - Ajouter couche Rasteur : *action_add3DRastorLayer*
   - Ajouter couche Flux : *action_add3DModel*
+
+## Fenêtre Ajouter couche Flux
+
+ - Liste des flux : *listView_dataFlowWindow*
