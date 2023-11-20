@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "helpwindow.h"
 #include <iostream>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -22,6 +23,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Connecting switch 2D/3D button
     connect(ui->btn_switchMode2D3D, &QPushButton::clicked, this, &MainWindow::OnButtonSwitchTo2D3DClicked);
+
+    // Connecting help action
+    connect(ui->action_help, &QAction::triggered, this, &MainWindow::OnActionHelpClicked);
 }
 
 MainWindow::~MainWindow()
@@ -54,4 +58,9 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
     ui->openGLWidget_window3D->repaint();
 }
 
-
+void MainWindow::OnActionHelpClicked() // Modal approach..mainwindow cannot be moved when secwindow is displayed.
+{
+    HelpWindow helpwindow;
+    helpwindow.setModal(true); //it'll set the secwindow
+    helpwindow.exec(); //shows secwindow when button is pressed
+}
