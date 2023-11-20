@@ -96,7 +96,7 @@ const std::string db_password,const std::string db_host,const std::string db_por
                 data_type = "character varying";
                 break;
             case OFTStringList:
-                data_type = "character varying []";
+                data_type = "character varying[]";
             break;
             case OFTBinary:
                 data_type = "geom";
