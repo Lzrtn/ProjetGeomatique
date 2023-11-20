@@ -1,6 +1,12 @@
+#include <iostream>
+
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QGraphicsPolygonItem>
+#include <QApplication>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -23,8 +29,69 @@ MainWindow::MainWindow(QWidget *parent)
     ui->action_add3DModel->setEnabled(mode);
 
 
+    /*_______________________________TEST______________________________________*/
+
+
+    // Créer une scène pour QGraphicsView
+    QGraphicsScene *scene = new QGraphicsScene(this);
+
+    // Définir la scène pour le QGraphicsView
+    ui->graphicsView_window2D->setScene(scene);
+
+
+    QVector<QPointF> franceCoordinates = {
+        QPointF(-5.0, 42.0),
+        QPointF(9.0, 42.0),
+        QPointF(9.0, 51.0),
+        QPointF(3.0, 51.0),
+        QPointF(0.0, 48.0),
+        QPointF(-50.0, 48.0)
+        // Ajoutez d'autres points selon vos besoins
+    };
+
+    // Coordonnées du deuxième polygone à côté du premier
+    QVector<QPointF> secondPolygonCoordinates = {
+        QPointF(10.0, 42.0),
+        QPointF(24.0, 42.0),
+        QPointF(24.0, 51.0),
+        QPointF(18.0, 51.0),
+        QPointF(15.0, 48.0),
+        QPointF(10.0, 48.0)
+        // Ajoutez d'autres points selon vos besoins
+    };
+
+
+    // Créez un polygone à partir des coordonnées
+    QPolygonF francePolygon(franceCoordinates);
+
+    // Créez un polygone à partir des coordonnées du deuxième polygone
+    QPolygonF secondPolygon(secondPolygonCoordinates);
+
+    // Créez un objet QGraphicsPolygonItem
+    QGraphicsPolygonItem *francePolygonItem = new QGraphicsPolygonItem(francePolygon);
+
+    // Créez un objet QGraphicsPolygonItem pour le deuxième polygone
+    QGraphicsPolygonItem *secondPolygonItem = new QGraphicsPolygonItem(secondPolygon);
+
+    // Ajoutez l'élément du deuxième polygone à la scène
+    scene->addItem(secondPolygonItem);
+
+    // Ajoutez l'élément à la scène
+    scene->addItem(francePolygonItem);
+
+
+
+
+    /*_____________________________________________________________________________*/
+
+
+
+
     // Connecting switch 2D/3D button
     connect(ui->btn_switchMode2D3D, &QPushButton::clicked, this, &MainWindow::OnButtonSwitchTo2D3DClicked);
+
+    // Connection action "Add Vector File"
+    connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionAddShpFileClicked);
 }
 
 MainWindow::~MainWindow()
@@ -60,6 +127,14 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
     ui->stackedWidget->repaint();
     ui->graphicsView_window2D->repaint();
     ui->openGLWidget_window3D->repaint();
+}
+
+
+void MainWindow::OnActionAddShpFileClicked()
+{
+
+
+//    std::cout<<"addVector"<<std::endl;
 }
 
 

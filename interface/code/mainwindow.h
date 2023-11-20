@@ -49,5 +49,8 @@ private slots:
      */
   void OnButtonSwitchTo2D3DClicked();
 
+
+  void OnActionAddShpFileClicked();
+
 };
 #endif // MAINWINDOW_H
