@@ -12,25 +12,27 @@ OpenGLcityView::~OpenGLcityView()
 	// and the buffers.
 
 	this->makeCurrent();
-	delete this->building;
 	this->doneCurrent();
+	for (auto &pair : this->buildings) {
+		this->DeleteBuilding(pair.first);
+	}
 }
 
 void OpenGLcityView::initializeGL()
 {
 	this->initializeOpenGLFunctions();
 	this->glClearColor(0, 0, 0, 1);
-	this->initShaders();
+	this->InitShaders();
 
 	// ajout d'un batiment de test
 	//this->buildings[6] = new Building3D();
-	this->addBuilding(5, Building3DFactory(0));
-	this->addBuilding(156, Building3DFactory(1));
+	this->AddBuilding(5, Building3DFactory(0));
+	this->AddBuilding(156, Building3DFactory(1));
 
 	//timer.start(12, this); // run this->timerEvent every n msec
 }
 
-void OpenGLcityView::initShaders()
+void OpenGLcityView::InitShaders()
 {
 	// Compile vertex shader
 	if (!this->shader.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vshader.glsl"))
@@ -49,14 +51,14 @@ void OpenGLcityView::initShaders()
 		this->close();
 }
 
-void OpenGLcityView::addBuilding(const int id, const Building3DFactory &buildingFactory)
+void OpenGLcityView::AddBuilding(const int id, const Building3DFactory &buildingFactory)
 {
 	if (this->buildings.find(id) != this->buildings.end())
-		this->deleteBuilding(id);
+		this->DeleteBuilding(id);
 
 	this->buildings[id] = buildingFactory.NewBuilding();
 }
-void OpenGLcityView::deleteBuilding(const int id)
+void OpenGLcityView::DeleteBuilding(const int id)
 {
 	delete this->buildings[id];
 	this->buildings.erase(id);
@@ -99,6 +101,6 @@ void OpenGLcityView::paintGL()
 	// Draw geometry
 	for (auto &pair : this->buildings) {
 		std::cout << pair.first << "\n";
-		pair.second->draw(&this->shader);
+		pair.second->Draw(&this->shader);
 	}
 }

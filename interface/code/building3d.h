@@ -1,4 +1,4 @@
-#ifndef BUILDING3D_H
+﻿#ifndef BUILDING3D_H
 #define BUILDING3D_H
 
 #include <QOpenGLFunctions>
@@ -16,13 +16,6 @@
 class Building3D : protected QOpenGLFunctions
 {
 public:
-	/**
-	 * @brief Building3D constructor for building test
-	 * make a cubic building center on (0,0,0) and lenght 1
-	 * Use cube.png as texture
-	 */
-	Building3D();
-
 	/**
 	 * @brief Building3D
 	 * make a building with geometrics properties
@@ -47,7 +40,7 @@ public:
 	 *
 	 * @param shader  shader linked to QOpenGLWidget
 	 */
-	void draw(QOpenGLShaderProgram *shader);
+	void Draw(QOpenGLShaderProgram *shader);
 
 private:
 
@@ -57,8 +50,8 @@ private:
 	 *
 	 * @param position, normal, textCord  geometric data
 	 */
-	void initGeometryObj(std::vector<QVector3D> position, std::vector<QVector3D> normal,
-			std::vector<QVector2D> textCoord);
+	void InitGeometryObj(const std::vector<QVector3D> &position, const std::vector<QVector3D> &normal,
+			const std::vector<QVector2D> &textCoord);
 
 	/**
 	 * @brief initTexture
@@ -69,22 +62,44 @@ private:
 	void initTexture(std::string textPath);
 
 	int sizeArray = 0;
-	QOpenGLBuffer arrayBuf;
-	QOpenGLBuffer indexBuf;
+	QOpenGLBuffer arrayBuffer;
+	QOpenGLBuffer indexBuffer;
 	QOpenGLTexture *texture = nullptr;
 };
 
 class Building3DFactory
 {
 public:
+	/**
+	 * @brief Building3DFactory produce buildings from this geometry
+	 *
+	 * All faces may have 3 points;
+	 *
+	 * @param position: 3D coordinate of points
+	 * @param normal: 3D vector normal to faces. Currently unused, but may
+	 *   be used in a futur version with light effects
+	 * @param textCoord: 2D coordinate of point in texture image
+	 * @param textPath: path of texture image. Only one image can be used
+	 */
 	Building3DFactory(
 			const std::vector<QVector3D> &position,
 			const std::vector<QVector3D> &normal,
 			const std::vector<QVector2D> &textCoord,
 			const std::string &textPath);
 
+	/**
+	 * @brief Building3DFactory produce buildings for test
+	 *
+	 * @param version: version of building (between 0 and 1 included)
+	 */
 	Building3DFactory(const int version = 0);
 
+	/**
+	 * @brief Genere a building
+	 *
+	 * @Warning: risk of memory lost. equivalent to `new Building(...)`
+	 * Remember to delete building after use
+	 */
 	Building3D * NewBuilding() const;
 
 private:

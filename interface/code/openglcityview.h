@@ -21,39 +21,42 @@ public:
 	using QOpenGLWidget::QOpenGLWidget;
 	~OpenGLcityView();
 
-	void addBuilding(const int id, const Building3DFactory &buildingFactory);
-	void deleteBuilding(const int id);
+	/**
+	 * @brief Add a building to display it
+	 * Buildings are stored with their id
+	 *
+	 * @param id
+	 * @param buildingFactory
+	 */
+	void AddBuilding(const int id, const Building3DFactory &buildingFactory);
+
+	/**
+	 * @brief Remove a building and free memory
+	 *
+	 * @param id
+	 */
+	void DeleteBuilding(const int id);
 
 protected:
-	//void mousePressEvent(QMouseEvent *e) override;
-	//void mouseReleaseEvent(QMouseEvent *e) override;
-	//void timerEvent(QTimerEvent *e) override;
 
+	/**
+	 * @brief these overrided methodes are used by QT to init and display the widget
+	 */
 	void initializeGL() override;
 	void resizeGL(int w, int h) override;
 	void paintGL() override;
 
-	void initShaders();
+	/**
+	 * @brief InitShaders load and init shader OpenGL program
+	 */
+	void InitShaders();
 
 private:
-	//QBasicTimer timer;	// faster than QTimer
 	QOpenGLShaderProgram shader;
-
-	Building3D * building = nullptr;
 	std::map<int, Building3D*> buildings;
-	//GeometryEngine *geometries = nullptr; // list of buildings
 
-	/*
-	 * to class Camera
-	 */
+	// TODO: turn this function in a Camera class and add controls
 	QMatrix4x4 projection;
-
-	/*
-	QVector2D mousePressPosition;
-	QVector3D rotationAxis;
-	qreal angularSpeed = 0;
-	QQuaternion rotation;
-	*/
 };
 
 #endif // OPENGLCITYVIEW_H

@@ -11,54 +11,25 @@ struct VertexData
 	QVector2D texCoord;
 };
 
-Building3D::Building3D() :
-	indexBuf(QOpenGLBuffer::IndexBuffer)
-{
-	this->initializeOpenGLFunctions();
-
-	// Generate 2 VBOs
-	this->arrayBuf.create();
-	this->indexBuf.create();
-
-	// Initializes geometry and texture
-	this->initTexture(":/cube.png");
-
-	std::vector<QVector3D> p = {
-		{ 2, 1,-1}, { 4, 1, 1}, { 4,-1,-1},
-		{ 2, 1,-1}, { 4, 1, 1}, { 2,-1, 1},
-		{ 4,-1,-1}, { 4, 1, 1}, { 2,-1, 1},
-		{ 4,-1,-1}, { 2, 1,-1}, { 2,-1, 1}
-	};
-	std::vector<QVector3D> n = p;
-	std::vector<QVector2D> t = {
-		{-1,1}, {1, 1}, {1, -1},
-		{-1,1}, {1, 1}, {1, -1},
-		{-1,1}, {1, 1}, {1, -1},
-		{-1,1}, {1, 1}, {1, -1}
-	};
-	this->initGeometryObj(p, n, t);
-}
-
 Building3D::Building3D(std::vector<QVector3D> position, std::vector<QVector3D> normal,
 		std::vector<QVector2D> textCoord, std::string textPath) :
-	indexBuf(QOpenGLBuffer::IndexBuffer)
+	indexBuffer(QOpenGLBuffer::IndexBuffer)
 {
 	this->initializeOpenGLFunctions();
 
 	// Generate 2 VBOs
-	this->arrayBuf.create();
-	this->indexBuf.create();
+	this->arrayBuffer.create();
+	this->indexBuffer.create();
 
 	// Initializes geometry and texture
 	this->initTexture(textPath);
-	this->initGeometryObj(position, normal, textCoord);
+	this->InitGeometryObj(position, normal, textCoord);
 }
-
 
 Building3D::~Building3D()
 {
-	this->arrayBuf.destroy();
-	this->indexBuf.destroy();
+	this->arrayBuffer.destroy();
+	this->indexBuffer.destroy();
 }
 
 void Building3D::initTexture(std::string textPath)
@@ -69,8 +40,8 @@ void Building3D::initTexture(std::string textPath)
 	this->texture->setWrapMode(QOpenGLTexture::Repeat);
 }
 
-void Building3D::initGeometryObj(std::vector<QVector3D> position, std::vector<QVector3D> normal,
-		std::vector<QVector2D> textCoord)
+void Building3D::InitGeometryObj(const std::vector<QVector3D> &position, const std::vector<QVector3D> &normal,
+		const std::vector<QVector2D> &textCoord)
 {
 	this->sizeArray = position.size();
 	VertexData vertices[this->sizeArray];
@@ -81,19 +52,19 @@ void Building3D::initGeometryObj(std::vector<QVector3D> position, std::vector<QV
 	}
 
 	// Transfer vertex data to VBO 0
-	this->arrayBuf.bind();
-	this->arrayBuf.allocate(vertices, this->sizeArray * sizeof(VertexData));
+	this->arrayBuffer.bind();
+	this->arrayBuffer.allocate(vertices, this->sizeArray * sizeof(VertexData));
 
 	// Transfer index data to VBO 1
-	this->indexBuf.bind();
-	this->indexBuf.allocate(indices, this->sizeArray * sizeof(GLushort));
+	this->indexBuffer.bind();
+	this->indexBuffer.allocate(indices, this->sizeArray * sizeof(GLushort));
 }
 
-void Building3D::draw(QOpenGLShaderProgram *program)
+void Building3D::Draw(QOpenGLShaderProgram *program)
 {
 	// Tell OpenGL which VBOs to use
-	this->arrayBuf.bind();
-	this->indexBuf.bind();
+	this->arrayBuffer.bind();
+	this->indexBuffer.bind();
 	this->texture->bind();
 
 	// Offset for position
