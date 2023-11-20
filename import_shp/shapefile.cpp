@@ -240,6 +240,7 @@ std::vector<float> Shapefile::getBoundingBox()
     float Xmax = std::stof(X_max);
     float Ymax = std::stof(Y_max);
 
+    std::cout<<Xmin<<","<<Ymin<<","<<Xmax<<","<<Ymax<<std::endl;
 
     std::vector<float> res = {Xmin,Ymin,Xmax,Ymax};
     return res;

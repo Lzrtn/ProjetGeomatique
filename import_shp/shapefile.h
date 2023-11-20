@@ -43,7 +43,7 @@ public:
     /**
     * @brief Get the bounding box of the Shapefile
     *
-    * @returns double
+    * @returns std::vector<float> [Xmin,Ymin,Xmax,Ymax]
     */
    std::vector<float> getBoundingBox();
 
