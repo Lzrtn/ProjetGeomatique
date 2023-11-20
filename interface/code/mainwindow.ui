@@ -379,26 +379,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_cameraRotation">
-         <property name="toolTip">
-          <string>Rotation</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>../icons/Rotation.png</normaloff>../icons/Rotation.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -601,6 +581,7 @@
     <property name="title">
      <string>TiSIG</string>
     </property>
+    <addaction name="action_help"/>
    </widget>
    <widget class="QMenu" name="menu_layers">
     <property name="title">
@@ -651,6 +632,11 @@
   <action name="action_add3DModel">
    <property name="text">
     <string>Ajouter un modèle 3D</string>
+   </property>
+  </action>
+  <action name="action_help">
+   <property name="text">
+    <string>Aide</string>
    </property>
   </action>
  </widget>

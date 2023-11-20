@@ -10,9 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Initialisation in mode 2D //
     ui->stackedWidget->setCurrentIndex(mode);
-    ui->btn_cameraRotation->setVisible(mode);
-    ui->label_attributeInformation->setVisible(!mode);
-    ui->tableWidget_layerAttributeInformation->setVisible(!mode);
         // Action 2D
     ui->action_add2DVectorLayer->setEnabled(!mode);
     ui->action_add2DRastorLayer->setEnabled(!mode);
@@ -37,9 +34,6 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
     mode = !mode;
     ui->stackedWidget->setCurrentIndex(mode);
-    ui->btn_cameraRotation->setVisible(mode);
-    ui->tableWidget_layerAttributeInformation->setVisible(!mode);
-    ui->label_attributeInformation->setVisible(!mode);
 
     ui->action_add2DVectorLayer->setEnabled(!mode);
     ui->action_add2DRastorLayer->setEnabled(!mode);
@@ -50,13 +44,11 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
     ui->action_add3DModel->setEnabled(mode);
 
     this->update();
-    ui->btn_cameraRotation->update();
     ui->stackedWidget->update();
     ui->graphicsView_window2D->update();
     ui->openGLWidget_window3D->update();
 
     this->repaint();
-    ui->btn_cameraRotation->repaint();
     ui->stackedWidget->repaint();
     ui->graphicsView_window2D->repaint();
     ui->openGLWidget_window3D->repaint();

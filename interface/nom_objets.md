@@ -35,6 +35,9 @@ Les noms sont sous format *typeObj_nameObj*.
 
 - Fenêtre des informations attributaires : *tableWidget_layerAttributeInformation*
 
+## Barre d'actions (menu TiSIG)
+  - Aide : *action_help*
+
 ## Barre d'actions (menu Couche)
 
 - 2D :
