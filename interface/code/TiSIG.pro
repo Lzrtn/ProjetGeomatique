@@ -17,6 +17,7 @@ INCLUDEPATH += /usr/include
 LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
 
 SOURCES += \
+    layer.cpp \
     main.cpp \
     mainwindow.cpp \
     shapefile.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
     shapefile.cpp
 
 HEADERS += \
+    layer.h \
     mainwindow.h \
     shapefile.h \
     transformation.h

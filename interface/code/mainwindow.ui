@@ -44,22 +44,6 @@
          <property name="defaultDropAction">
           <enum>Qt::MoveAction</enum>
          </property>
-         <item>
-          <property name="text">
-           <string>1ère couche</string>
-          </property>
-          <property name="checkState">
-           <enum>Checked</enum>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>2ème couche</string>
-          </property>
-          <property name="checkState">
-           <enum>Checked</enum>
-          </property>
-         </item>
         </widget>
        </item>
        <item row="0" column="0">
@@ -228,7 +212,7 @@
           <bool>true</bool>
          </property>
          <attribute name="horizontalHeaderVisible">
-          <bool>false</bool>
+          <bool>true</bool>
          </attribute>
          <attribute name="horizontalHeaderCascadingSectionResizes">
           <bool>true</bool>

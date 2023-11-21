@@ -1,13 +1,20 @@
 #include <iostream>
+#include <pqxx/pqxx>
+
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPolygonItem>
 #include <QApplication>
-#include <pqxx/pqxx>
-#include "transformation.h"
+#include <QWidget>
+#include <QPointF>
+#include <QCheckBox>
 #include <QColor>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
+#include "layer.h"
+#include "transformation.h"
 #include "shapefile.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -20,18 +27,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->btn_cameraRotation->setVisible(mode);
     ui->label_attributeInformation->setVisible(!mode);
     ui->tableWidget_layerAttributeInformation->setVisible(!mode);
-        // Action 2D
+    // Action 2D
     ui->action_add2DVectorLayer->setEnabled(!mode);
     ui->action_add2DRastorLayer->setEnabled(!mode);
     ui->action_add2DDataStream->setEnabled(!mode);
-        // Actions 3D
+    // Actions 3D
     ui->action_add3DVectorLayer->setEnabled(mode);
     ui->action_add3DRastorLayer->setEnabled(mode);
     ui->action_add3DModel->setEnabled(mode);
-
-    /*_______________________________TEST______________________________________*/
-
-    // Connect to the database
 
     // Créer une scène pour QGraphicsView
     scene = new QGraphicsScene(this);
@@ -39,22 +42,37 @@ MainWindow::MainWindow(QWidget *parent)
     // Définir la scène pour le QGraphicsView
     ui->graphicsView_window2D->setScene(scene);
 
-    /*_____________________________________________________________________________*/
 
-    connect(ui->btn_zoomIn, &QPushButton::clicked, this, &MainWindow::OnButtonZoomIn);
-    connect(ui->btn_zoomOut, &QPushButton::clicked, this, &MainWindow::OnButtonZoomOut);
+    // Connecting switch 2D/3D button
     connect(ui->btn_switchMode2D3D, &QPushButton::clicked, this, &MainWindow::OnButtonSwitchTo2D3DClicked);
+
+    // Connecting ZoomIn button
+    connect(ui->btn_zoomIn, &QPushButton::clicked, this, &MainWindow::OnButtonZoomIn);
+
+    // Connecting ZoomOut button
+    connect(ui->btn_zoomOut, &QPushButton::clicked, this, &MainWindow::OnButtonZoomOut);
+
+    // Connecting ZoomOut button
+    connect(ui->btn_zoomFull, &QPushButton::clicked, this, &MainWindow::OnButtonZoomFull);
+
+    // Connection action "Add Vector File"
     connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionAddShpFileClicked);
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    for(auto pair: layerList) {
+        delete pair.second;
+        layerList.erase(pair.first);
+    }
 }
 
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
     mode = !mode;
+
     ui->stackedWidget->setCurrentIndex(mode);
     ui->btn_cameraRotation->setVisible(mode);
     ui->tableWidget_layerAttributeInformation->setVisible(!mode);
@@ -86,9 +104,9 @@ void MainWindow::OnActionAddShpFileClicked()
 {
 
     //import d'un shapefile dans la base de données
-    std::string path1 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
+    std::string path1 = "/home/formation/Documents/PROJET_MINISIG/clone-vico/ProjetGeomatique/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
     Shapefile essai1 = Shapefile(path1);
-    std::string db_name = "essai_dbf";
+    std::string db_name = "postgres";
     std::string db_user = "postgres";
     std::string db_password = "postgres";
     std::string db_host = "localhost";
@@ -101,7 +119,11 @@ void MainWindow::OnActionAddShpFileClicked()
     pqxx::result rowbis = k.exec("SELECT ST_AsGeoJSON(geom) FROM "+essai1.getTableName()+";");
     Transformation t;
 
-    for (const auto& rowbi : rowbis) {
+    QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
+    scene->addItem(layerGroup);
+
+    for (const auto& rowbi : rowbis)
+    {
 
         auto geojsongeom = rowbi[0].as<std::string>();
         std::string dataType = t.whatType(geojsongeom);
@@ -114,23 +136,27 @@ void MainWindow::OnActionAddShpFileClicked()
                 for (int j = 0; j< segmentsToPlot[i].size(); j++)
                 {
                     QGraphicsLineItem *lineToPlotItem = new QGraphicsLineItem(segmentsToPlot[i][j]);
-                    ui->graphicsView_window2D->scene()->addItem(lineToPlotItem);
+                    layerGroup->addToGroup(lineToPlotItem);
                 }
             }
 
-        } else if(dataType == "Polygon")
-
+        }
+        else if(dataType == "Polygon")
         {
             QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojsongeom);
             QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
-            ui->graphicsView_window2D->scene()->addItem(polygoneToPlotItem);
+            layerGroup->addToGroup(polygoneToPlotItem);
             QColor myColor = QColor("darkGreen");
             polygoneToPlotItem->setBrush(myColor);
-        } else if(dataType == "Point" || dataType == "MultiPoint")
+        }
+        else if(dataType == "Point" || dataType == "MultiPoint")
         {
             std::cout<<"le cas du point"<<std::endl;
         }
     }
+    layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
+    addLayerToListWidget(index, *layerList[index]);
+    index++;
 }
 
 void MainWindow::OnButtonZoomIn()
@@ -198,4 +224,45 @@ void MainWindow::OnButtonZoomOut()
             }
 
         }
+}
+
+void MainWindow::OnButtonZoomFull()
+{
+    ui->graphicsView_window2D->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);
+}
+
+void MainWindow::addLayerToListWidget(int index, Layer &layer) {
+
+    // Créez un nouvel élément pour la couche
+    QListWidgetItem *layerItem = new QListWidgetItem(ui->listeWidget_layersList);
+
+    // Créez un widget personnalisé pour cet élément (contenant un label et une case à cocher)
+    QWidget *layerWidget = new QWidget();
+    QHBoxLayout *layout = new QHBoxLayout(layerWidget);
+
+    QCheckBox *visibilityCheckbox = new QCheckBox("");
+    visibilityCheckbox->setChecked(layer.isLayerVisible());
+    QLabel *layerLabel = new QLabel(layer.getLayerName());
+
+
+    // Connectez le signal clicked de la case à cocher à une fonction pour gérer la visibilité
+    connect(visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
+        layerList[index]->getLayerGroup()->setVisible(checked);
+        layerList[index]->setLayerVisible(checked);
+    });
+
+
+    layout->addWidget(visibilityCheckbox);
+    layout->addWidget(layerLabel);
+    layout->setAlignment(Qt::AlignLeft);
+
+    layout->setContentsMargins(2, 0, 2, 0); // Taille de la ligne de la couche dans le gestionnaire
+    layout->setSpacing(10); // Écart entre la checkbox et le nom de la couche
+
+
+    layerWidget->setLayout(layout);
+    layerItem->setSizeHint(layerWidget->sizeHint());
+
+    ui->listeWidget_layersList->setItemWidget(layerItem, layerWidget);
+
 }

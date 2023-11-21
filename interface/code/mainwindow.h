@@ -1,9 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <map>
+
 #include <QMainWindow>
 #include <QPushButton>
 #include <QGraphicsScene>
+
+#include "layer.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -36,11 +41,20 @@ public:
      */
     bool getMode() const;
 
+    /**
+     * @brief Function to add Layer to the ListWidget
+     */
+    void addLayerToListWidget(int, Layer &layer);
+
+    int index = 0; // Temporaire
+
 private:
     Ui::MainWindow *ui; ///< Ui::MainWindow ui
     QPushButton btn_switchMode2D3D; ///< QPushButton btn_switchMode2D3D
     bool mode; ///< bool mode
+
     QGraphicsScene *scene;
+    std::map <int, Layer*> layerList;
 
 private slots:
 
@@ -49,10 +63,35 @@ private slots:
      *
      *
      */
-  void OnButtonSwitchTo2D3DClicked();
-  void OnActionAddShpFileClicked();
-  void OnButtonZoomIn();
-  void OnButtonZoomOut();
+    void OnButtonSwitchTo2D3DClicked();
+
+    /**
+    * @brief Function to add SHP file
+    *
+    *
+    */
+    void OnActionAddShpFileClicked();
+
+    /**
+    * @brief Function to zoom in
+    *
+    */
+    void OnButtonZoomIn();
+
+    /**
+    * @brief Function to zoom out
+    *
+    *
+    */
+    void OnButtonZoomOut();
+
+    /**
+    * @brief Function to zoom on full extent
+    *
+    *
+    */
+    void OnButtonZoomFull();
+
 
 };
 #endif // MAINWINDOW_H
