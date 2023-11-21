@@ -1,46 +1,40 @@
 #include <iostream>
 #include <pqxx/pqxx>
-
-#include "executor.h"
+#include "dbmanager.h"
+#include "docker.h"
 
 int main() {
-
-    Executor executor;
-
-    const char * cmd = "docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' quirky_lumiere";
-
-    std::string ipAdress = executor.exec(cmd);
-    std::cout << "result" << std::endl;
-    std::cout << ipAdress << std::endl;
     try {
+        // Creating container
+        std::string pathDockerFile = "../docker-compose.yml";
+        Docker docker(pathDockerFile);
+        // Get the Ip Adress
+        std::string ipAdress = docker.getIpAdress();
+
         // PostGreSQL Connection to the first database
-        pqxx::connection conn("dbname=db user=postgres password=postgres host="+ipAdress+ "port=5432");
+        DbManager test("database2D", ipAdress);
+        pqxx::connection conn(test.getString());
 
         if (conn.is_open()) {
             std::cout << "Connexion réussie à PostgreSQL" << std::endl;
 
             // Creation of a second database
-            pqxx::nontransaction txn(conn);
-            pqxx::result r = txn.exec("CREATE DATABASE jppjpp");
-            txn.commit();
+            test.CreateDb("dbcreate_test");
 
-            // New connection to the new database
-            pqxx::connection connex("dbname=jppjpp user=postgres password=postgres host=172.17.0.2 port=5432");
+            // Connection to the new database
+            DbManager newTest("dbcreate_test", ipAdress);
 
-            // New transaction for the new connection
-            pqxx::work txn2(connex);
-            r = txn2.exec("CREATE TABLE test_table (id SERIAL PRIMARY KEY, nom VARCHAR(100), age INT)");
-            txn2.commit();
+            // Creation of a table in the new database
+            newTest.CreateTable("CREATE TABLE test_table (id SERIAL PRIMARY KEY, nom VARCHAR(100), age INT)");
 
-            // New transaction for a SELECT request
-            pqxx::work txn3(connex);
-            r = txn3.exec("SELECT * FROM test_table");
-            txn3.commit();
+            // Testing INSERT
+            newTest.Request("INSERT INTO test_table (id ,nom, age) VALUES ('007','James Bond','37')");
+            newTest.Request("INSERT INTO test_table (id, nom, age) VALUES ('1654','Serge Botton','99')");
 
-            // Displaying the result
-            for (auto row : r) {
-                std::cout << "id: " << row["id"].c_str() << ", nom: " << row["nom"].c_str() << ", age: " << row["age"].c_str() << std::endl;
-            }
+            // Testing SELECT
+            newTest.Request("SELECT * FROM test_table");
+            std::string result = newTest.ParseResult();
+
         } else {
             std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
             return 1;
@@ -49,7 +43,6 @@ int main() {
         std::cerr << e.what() << std::endl;
         return 1;
     }
-
 
     return 0;
 }
