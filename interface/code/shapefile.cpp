@@ -8,7 +8,9 @@
 #include <gdal/gdal.h>
 #include <gdal/ogr_api.h>
 
+
 #include "shapefile.h"
+#include "transformation.h"
 
 Shapefile::Shapefile(const std::string path):path(path)
 {}
@@ -252,4 +254,54 @@ std::vector<float> Shapefile::getBoundingBox()
 
     std::vector<float> res = {Xmin,Ymin,Xmax,Ymax};
     return res;
+}
+
+
+
+QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene *scene)
+{
+
+
+    Transformation t;
+
+    QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
+    scene->addItem(layerGroup);
+    for (const auto& rowbi : rowbis)
+    {
+
+        auto geojsongeom = rowbi[0].as<std::string>();
+        std::string dataType = t.whatType(geojsongeom);
+
+        if (dataType == "LineString" || dataType == "MultiLineString")
+        {
+            std::vector<QVector <QLineF>> segmentsToPlot = t.JSONtoCoordsLIN(geojsongeom);
+            for(int i = 0; i< segmentsToPlot.size(); i++)
+            {
+                for (int j = 0; j< segmentsToPlot[i].size(); j++)
+                {
+                    QGraphicsLineItem *lineToPlotItem = new QGraphicsLineItem(segmentsToPlot[i][j]);
+                    layerGroup->addToGroup(lineToPlotItem);
+                }
+            }
+
+        }
+        else if(dataType == "Polygon")
+        {
+            QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojsongeom);
+            QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
+            layerGroup->addToGroup(polygoneToPlotItem);
+            QColor myColor = QColor("darkGreen");
+            polygoneToPlotItem->setBrush(myColor);
+        }
+        else if(dataType == "Point" || dataType == "MultiPoint")
+        {
+            std::vector<QPointF> pointsToPlot = t.JSONtoCoordsPTS(geojsongeom);
+            for(int i = 0; i< pointsToPlot.size(); i++)
+            {
+                QGraphicsEllipseItem *pointToPlotItem = new QGraphicsEllipseItem(pointsToPlot[i].x(),pointsToPlot[i].y(),10,10);
+                layerGroup->addToGroup(pointToPlotItem);
+
+            }
+        }
+    }
 }
