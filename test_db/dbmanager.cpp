@@ -1,12 +1,12 @@
-#include "testcontroller.h"
+#include "dbmanager.h"
 
-TestController::TestController(std::string db){
+DbManager::DbManager(std::string db){
     connString = "dbname="+db+" user=postgres password=postgres host=172.17.0.2 port=5432";
 }
-TestController::TestController(std::string db,std::string ip){
+DbManager::DbManager(std::string db,std::string ip){
     connString = "dbname="+db+" user=postgres password=postgres host="+ip+" port=5432";
 }
-void TestController::CreateDb(std::string dbName){
+void DbManager::CreateDb(std::string dbName){
     pqxx::connection newConn(this->getString());
     pqxx::nontransaction txn(newConn);
     txn.exec("DROP DATABASE IF EXISTS "+dbName);
@@ -15,23 +15,23 @@ void TestController::CreateDb(std::string dbName){
     txn2.exec("CREATE DATABASE "+dbName);
     txn2.commit();
 }
-void TestController::CreateTable(std::string request){
+void DbManager::CreateTable(std::string request){
     pqxx::connection newConn(this->getString());
     pqxx::nontransaction txn(newConn);
     txn.exec(request);
     txn.commit();
 }
-void TestController::Request(std::string request){
+void DbManager::Request(std::string request){
     pqxx::connection newConn(this->getString());
     pqxx::work txn(newConn);
     pqxx::result r = txn.exec(request);
     txn.commit();
     result = r;
 }
-std::string TestController::getString(){
+std::string DbManager::getString(){
     return connString;
 }
-std::string TestController::ParseResult(){
+std::string DbManager::ParseResult(){
     std::string parsed;
     for (const auto &row : result){
         for (const auto &field : row){
@@ -46,7 +46,7 @@ std::string TestController::ParseResult(){
     }
     return parsed;
 }
-std::vector<std::vector<std::string>> TestController::ArrayParseResult(){
+std::vector<std::vector<std::string>> DbManager::ArrayParseResult(){
     std::vector<std::vector<std::string>> parsedData;
 
     for (const auto &row : result) {

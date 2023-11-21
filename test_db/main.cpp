@@ -1,11 +1,11 @@
 #include <iostream>
 #include <pqxx/pqxx>
-#include "testcontroller.h"
+#include "dbmanager.h"
 
 int main() {
     try {
         // PostGreSQL Connection to the first database
-        TestController test("database2D");
+        DbManager test("database2D");
         pqxx::connection conn(test.getString());
 
         if (conn.is_open()) {
@@ -15,7 +15,7 @@ int main() {
             test.CreateDb("dbcreate_test");
 
             // Connection to the new database
-            TestController newTest("dbcreate_test");
+            DbManager newTest("dbcreate_test");
 
             // Creation of a table in the new database
             newTest.CreateTable("CREATE TABLE test_table (id SERIAL PRIMARY KEY, nom VARCHAR(100), age INT)");
