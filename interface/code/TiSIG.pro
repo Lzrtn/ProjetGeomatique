@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     building3d.cpp \
+    camera.cpp \
     dataflowwindow.cpp \
     helpwindow.cpp \
     main.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
     openglcityview.cpp
 
 HEADERS += \
+    camera.h \
     dataflowwindow.h \
     helpwindow.h \
     building3d.h \
