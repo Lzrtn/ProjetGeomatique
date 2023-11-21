@@ -92,7 +92,7 @@ void MainWindow::OnActionAddShpFileClicked()
     std::string db_password = "postgres";
     std::string db_host = "localhost";
     std::string db_port = "5432";
-    essai1.import_to_db(db_name,db_user,db_password,db_host,db_port, 4326);
+    essai1.import_to_db(db_name,db_user,db_password,db_host,db_port, 2154);
 
     //affichage du shapefile importé
     QColor colours[10] = {QColor("cyan"), QColor("magenta"), QColor("red"),
