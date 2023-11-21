@@ -11,11 +11,24 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Ajouter un flux</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="5" column="1">
-    <widget class="QLineEdit" name="lineEdit"/>
+    <widget class="QLineEdit" name="lineEdit_dataFlowWindow">
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>true</bool>
+     </property>
+     <property name="inputMask">
+      <string/>
+     </property>
+     <property name="frame">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item row="5" column="0">
     <widget class="QLabel" name="label">
@@ -45,9 +58,12 @@
     </spacer>
    </item>
    <item row="5" column="2">
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="btn_validateDataFlowUrl">
      <property name="text">
       <string>Valider</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -59,9 +75,12 @@
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="btn_validateDataFlowPreSave">
      <property name="text">
       <string>Valider</string>
+     </property>
+     <property name="autoDefault">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -73,7 +92,20 @@
     </widget>
    </item>
    <item row="1" column="0" colspan="2">
-    <widget class="QComboBox" name="comboBox"/>
+    <widget class="QComboBox" name="comboBox_dataFlowWindow">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>true</bool>
+     </property>
+     <property name="currentText">
+      <string/>
+     </property>
+     <property name="currentIndex">
+      <number>-1</number>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

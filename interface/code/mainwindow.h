@@ -39,8 +39,8 @@ public:
 private:
 	Ui::MainWindow *ui; ///< Ui::MainWindow ui
 	QPushButton btn_switchMode2D3D; ///< QPushButton btn_switchMode2D3D
-	QAction action_help;
-	QAction action_add2DDataFlow;
+    QAction action_help; ///< QAction action_help
+    QAction action_add2DDataFlow; ///< QAction action_help
 	bool mode; ///< bool mode
 
 private slots:

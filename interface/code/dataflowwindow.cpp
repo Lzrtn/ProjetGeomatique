@@ -6,6 +6,9 @@ DataFlowWindow::DataFlowWindow(QWidget *parent) :
     ui(new Ui::DataFlowWindow)
 {
     ui->setupUi(this);
+
+    // Initialisation de la ComboBox //
+    ui->comboBox_dataFlowWindow->addItems({"BDTopo - Bâti", "BDTopo - Route", "BDOrtho"});
 }
 
 DataFlowWindow::~DataFlowWindow()

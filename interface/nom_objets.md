@@ -52,4 +52,8 @@ Les noms sont sous format *typeObj_nameObj*.
 
 ## Fenêtre Ajouter couche Flux
 
- - Liste des flux : *listView_dataFlowWindow*
+ - Liste des flux pré-enregistrés : *comboBox_dataFlowWindow*
+ - Url d'un flux : *lineEdit_dataFlowWindow*
+ - Bouton Valider Url : *btn_validateDataFlowUrl*
+ - Bouton Valider Pré-enregistré : btn_validateDataFlowPreSave
+

@@ -2,21 +2,37 @@
 #define DATAFLOWWINDOW_H
 
 #include <QDialog>
+#include <QComboBox>
 
 namespace Ui {
 class DataFlowWindow;
 }
 
+/**
+ * @brief Class representing the data flow window
+ *
+ * This class represents the main window of TiSIG application.
+ */
 class DataFlowWindow : public QDialog
 {
     Q_OBJECT
 
 public:
+    /**
+     * @brief DataFlow Window constructor
+     * @param QWidget parent
+     */
     explicit DataFlowWindow(QWidget *parent = nullptr);
+
+    /**
+     * @brief DataFlow Window destructor
+     */
     ~DataFlowWindow();
 
 private:
-    Ui::DataFlowWindow *ui;
+    Ui::DataFlowWindow *ui; ///< Ui::DataFlowWindow ui
+    QComboBox comboBox_dataFlowWindow; ///< QComboBox comboBox_dataFlowWindow
+
 };
 
 #endif // DATAFLOWWINDOW_H
