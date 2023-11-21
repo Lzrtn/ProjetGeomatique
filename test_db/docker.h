@@ -28,7 +28,13 @@ private:
     void setIpAdress();
 
 
+    /**
+     * @brief executor pointer to an Executor object to run the command
+     */
     Executor * executor;
+    /**
+     * @brief ipAdress std::string containing the ip Adress of the container
+     */
     std::string ipAdress;
 };
 
