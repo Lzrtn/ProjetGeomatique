@@ -1,5 +1,9 @@
 FAIT PAR HANNICK ET MATHEO
 
+# Flex
+![image](https://github.com/Lzrtn/ProjetGeomatique/assets/121936719/f543bd07-00ad-4888-96f9-3e046250d07d)
+![image](https://github.com/Lzrtn/ProjetGeomatique/assets/121936719/b4b69242-a53c-40db-aa32-8ee71e6832a4)
+
 ## Données Maquette 3D disponible ici :
 https://data.grandlyon.com/portail/fr/jeux-de-donnees/maquettes-3d-texturees-2015-communes-metropole-lyon/donnees
 
