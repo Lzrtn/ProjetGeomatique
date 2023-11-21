@@ -10,6 +10,6 @@ RUN apt-get update \
 EXPOSE 5432
 
 # Environment variables
-ENV POSTGRES_PASSWORD=postgres
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_DB=database2D
+ENV POSTGRES_PASSWORD postgres
+ENV POSTGRES_USER postgres
+ENV POSTGRES_DB database2D

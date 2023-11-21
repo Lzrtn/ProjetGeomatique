@@ -1,5 +1,8 @@
 #include "dbmanager.h"
 
+DbManager::DbManager(){
+    connString = "dbname=postgres user=postgres password=postgres host=172.17.0.2 port=5432";
+}
 DbManager::DbManager(std::string db){
     connString = "dbname="+db+" user=postgres password=postgres host=172.17.0.2 port=5432";
 }

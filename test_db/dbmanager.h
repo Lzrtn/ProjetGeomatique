@@ -7,6 +7,10 @@ class DbManager
 {
 public:
     /**
+     * @brief Default constructor
+     */
+    DbManager();
+    /**
      * @brief DbManager constructor
      * @param db Name of the database to connect to
      */

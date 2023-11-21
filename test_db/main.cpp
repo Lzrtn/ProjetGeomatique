@@ -21,7 +21,7 @@ int main() {
             newTest.CreateTable("CREATE TABLE test_table (id SERIAL PRIMARY KEY, nom VARCHAR(100), age INT)");
 
             // Testing INSERT
-            newTest.Request("INSERT INTO test_table (id ,nom, age) VALUES ('007','James_Bond','37')");
+            newTest.Request("INSERT INTO test_table (id ,nom, age) VALUES ('007','James Bond','37')");
             newTest.Request("INSERT INTO test_table (id, nom, age) VALUES ('1654','Serge Botton','99')");
 
             // Testing SELECT
