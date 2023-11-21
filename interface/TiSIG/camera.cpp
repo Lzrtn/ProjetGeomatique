@@ -1,28 +1,36 @@
 #include "camera.h"
 
-Camera::Camera()
-{
+#include <iostream>
+#include <cmath>
 
+Camera::Camera() :
+	angleH(0),
+	angleV(45),
+	zoom(2),
+	position(0,0,20)
+{
+	this->matMVP.setToIdentity();
+	this->ResizeView(1, 1); // square ratio
 }
 
 QMatrix4x4 Camera::ComputeMPV()
 {
-	float w = 1, h = 1;
-	QMatrix4x4 projection;
+	QMatrix4x4 matView;
+	matView.rotate(this->angleH, {0,0,-1});
+	matView.rotate(this->angleV, {-1,0,0});
+	matView.translate(-this->position);
+	matView.scale(this->zoom);
+
+	// matModel = identity
+	this->matMVP = this->matProjection * matView;
+	return this->getMVP();
+}
+
+void Camera::ResizeView(int w, int h)
+{
 	qreal aspect_ratio = qreal(w) / qreal(h ? h : 1);
 
-	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-	const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
-
-	// Reset and compute projection
-	projection.setToIdentity();
-	projection.perspective(fov, aspect_ratio, zNear, zFar);
-
-	QMatrix4x4 matrix;
-	matrix.translate(0.0, 0.0, -5.0);
-	matrix.rotate(1, {0,0,0});
-	matrix.scale(0.5);
-
-	// Set modelview-projection matrix
-	return projection * matrix;
+	const qreal zNear = 3.0, zFar = 1000, fov = 45.0;
+	this->matProjection.setToIdentity();
+	this->matProjection.perspective(fov, aspect_ratio, zNear, zFar);
 }

@@ -22,8 +22,9 @@ void OpenGLcityView::initializeGL()
 	//this->buildings[6] = new Building3D();
 	this->AddBuilding(5, Building3DFactory(0));
 	this->AddBuilding(156, Building3DFactory(1));
+	this->AddBuilding(4561, Building3DFactory(2));
 
-	//timer.start(12, this); // run this->timerEvent every n msec
+	timer.start(15, this); // run this->timerEvent every n msec
 }
 
 void OpenGLcityView::InitShaders()
@@ -45,6 +46,11 @@ void OpenGLcityView::InitShaders()
 		this->close();
 }
 
+void OpenGLcityView::timerEvent(QTimerEvent *e)
+{
+	this->update();
+}
+
 void OpenGLcityView::AddBuilding(const int id, const Building3DFactory &buildingFactory)
 {
 	if (this->buildings.find(id) != this->buildings.end())
@@ -60,15 +66,7 @@ void OpenGLcityView::DeleteBuilding(const int id)
 
 void OpenGLcityView::resizeGL(int w, int h)
 {
-	// Calculate aspect ratio
-	qreal aspect_ratio = qreal(w) / qreal(h ? h : 1);
-
-	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-	const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
-
-	// Reset and compute projection
-	this->projection.setToIdentity();
-	this->projection.perspective(fov, aspect_ratio, zNear, zFar);
+	this->camera.ResizeView(w, h);
 }
 
 void OpenGLcityView::paintGL()
@@ -82,15 +80,10 @@ void OpenGLcityView::paintGL()
 
 	this->shader.bind();
 
-	// TODO: use a Camera class to manage motion events and mvp matrix
-	// Calculate model view transformation
-	QMatrix4x4 matrix;
-	matrix.translate(0.0, 0.0, -5.0);
-	//matrix.rotate(rotation);
-	matrix.scale(0.5);
+	this->camera.ComputeMPV();
 
 	// Set modelview-projection matrix
-	this->shader.setUniformValue("mvp_matrix", this->projection * matrix);
+	this->shader.setUniformValue("mvp_matrix", this->camera.getMVP());
 
 	// Draw geometry
 	for (auto &pair : this->buildings) {

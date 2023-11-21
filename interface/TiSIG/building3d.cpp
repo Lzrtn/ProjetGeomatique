@@ -138,7 +138,7 @@ Building3DFactory::Building3DFactory(const int version)
 		textPath = ":/cube.png";
 		break;
 
-	default:
+	case 1:
 		position = {
 			{ -4, 1,-1}, { -2, 1, 1}, { -2,-1,-1},
 			{ -4, 1,-1}, { -2, 1, 1}, { -4,-1, 1},
@@ -151,6 +151,23 @@ Building3DFactory::Building3DFactory(const int version)
 			{-1,1}, {1, 1}, {1, -1},
 			{-1,1}, {1, 1}, {1, -1},
 			{-1,1}, {1, 1}, {1, -1}
+		};
+		textPath = ":/cube.png";
+		break;
+	case 2:
+	default:
+		position = {
+			{-2, 18, 0},
+			{-2, 22, 0},
+			{2, 22, 0},
+			{2, 22, 0},
+			{2, 18, 0},
+			{-2, 18, 0}
+		};
+		normal = position;
+		textCoord = {
+			{0, 0}, {1, 0}, {1, 1},
+			{0, 0}, {0, 1}, {0, 0}
 		};
 		textPath = ":/cube.png";
 		break;

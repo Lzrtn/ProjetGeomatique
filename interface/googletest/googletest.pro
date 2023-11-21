@@ -3,7 +3,8 @@ CONFIG += testlib
 
 SOURCES += \
         google.cpp \
-        main.cpp
+        main.cpp \
+        test_camera.cpp
 
 
 # install

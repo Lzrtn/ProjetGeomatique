@@ -11,6 +11,7 @@
 #include <QOpenGLTexture>
 
 #include "building3d.h"
+#include "camera.h"
 
 #include <map>
 
@@ -51,12 +52,19 @@ protected:
 	 */
 	void InitShaders();
 
+
+	void timerEvent(QTimerEvent *e) override;
+
+
 private:
 	QOpenGLShaderProgram shader;
 	std::map<int, Building3D*> buildings;
 
 	// TODO: turn this function in a Camera class and add controls
 	QMatrix4x4 projection;
+	Camera camera;
+
+	QBasicTimer timer;
 };
 
 #endif // OPENGLCITYVIEW_H
