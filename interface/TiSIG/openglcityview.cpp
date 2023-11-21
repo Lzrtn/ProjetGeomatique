@@ -23,6 +23,9 @@ void OpenGLcityView::initializeGL()
 	this->AddBuilding(5, Building3DFactory(0));
 	this->AddBuilding(156, Building3DFactory(1));
 	this->AddBuilding(4561, Building3DFactory(2));
+	this->AddBuilding(0, Building3DFactory(3));
+
+	this->camera.setAngleV(0);
 
 	timer.start(15, this); // run this->timerEvent every n msec
 }
