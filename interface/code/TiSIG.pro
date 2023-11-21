@@ -12,16 +12,16 @@ SOURCES += \
     building3d.cpp \
     dataflowwindow.cpp \
     helpwindow.cpp \
-    openglcityview.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    openglcityview.cpp
 
 HEADERS += \
     dataflowwindow.h \
-    building3d.h \
     helpwindow.h \
-    openglcityview.h \
-    mainwindow.h
+    building3d.h \
+    mainwindow.h \
+    openglcityview.h
 
 FORMS += \
     dataflowwindow.ui \

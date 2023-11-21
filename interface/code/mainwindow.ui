@@ -557,7 +557,7 @@
             </spacer>
            </item>
            <item row="0" column="0" colspan="5">
-            <widget class="QOpenGLWidget" name="openGLWidget_window3D"/>
+            <widget class="OpenGLcityView" name="openGLWidget_window3D"/>
            </item>
           </layout>
          </widget>
@@ -640,6 +640,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>OpenGLcityView</class>
+   <extends>QOpenGLWidget</extends>
+   <header>openglcityview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
