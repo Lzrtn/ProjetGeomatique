@@ -32,7 +32,6 @@ const std::string db_password,const std::string db_host,const std::string db_por
 
     std::string table_name = path.substr(path.find_last_of("/")+1, path.find_last_of(".shp")-path.find_last_of("/")-4);
 
-    std::cout<<table_name<<std::endl;
     this->table_name = table_name;
     // Initialize GDAL
     GDALAllRegister();

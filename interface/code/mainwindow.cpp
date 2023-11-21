@@ -94,7 +94,6 @@ void MainWindow::OnActionAddShpFileClicked()
     std::string db_port = "5432";
     essai1.import_to_db(db_name,db_user,db_password,db_host,db_port, 4326);
 
-    std::cout<<essai1.getTableName()<<std::endl;
     //affichage du shapefile importé
     QColor colours[10] = {QColor("cyan"), QColor("magenta"), QColor("red"),
                           QColor("darkRed"), QColor("darkCyan"), QColor("darkMagenta"),
