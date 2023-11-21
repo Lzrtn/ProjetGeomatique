@@ -11,6 +11,7 @@ CONFIG += c++11
 # Ajouter les chemins des en-têtes et des bibliothèques GDAL
 INCLUDEPATH += /chemin/vers/les/en-tetes/gdal
 LIBS += -L/chemin/vers/les/bibliotheques/gdal -lgdal
+LIBS += -lpq
 
 INCLUDEPATH += /usr/include
 LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
@@ -18,11 +19,16 @@ LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    shapefile.cpp \
     transformation.cpp
+    shapefile.cpp
 
 HEADERS += \
     mainwindow.h \
+    shapefile.h \
     transformation.h
+    shapefile.h
+    transformation.cpp
 
 FORMS += \
     mainwindow.ui
@@ -31,3 +37,4 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+

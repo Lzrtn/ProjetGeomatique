@@ -17,6 +17,7 @@ Transformation::~Transformation(){
 
 }
 
+
 std::string Transformation::whatType(std::string data)
 {
     nlohmann::json dataJSON = nlohmann::json::parse(data);
@@ -40,6 +41,7 @@ QPolygonF Transformation::JSONtoCoordsPOL(std::string polygone)
     QPolygonF polygoneToPlot(polygoneCoordinates);
 
     return polygoneToPlot;
+
 }
 
 std::vector<QVector <QLineF>> Transformation::JSONtoCoordsLIN(std::string line)
@@ -83,4 +85,3 @@ std::vector <QPointF> Transformation::JSONtoCoordsPTS(std::string point)
     }
     return liste_de_points;
 }
-
