@@ -51,5 +51,10 @@ Les noms sont sous format *typeObj_nameObj*.
   - Ajouter couche Flux : *action_add3DModel*
 
 ## Fenêtre Ajouter couche Flux
+ - Fenêtre flux pré-enregistré : *tab_dataFlowPreSaved*
+ - Fenêtre flux Url : *tab_dataFlowUrl*
+ - Liste des flux pré-enregistrés : *comboBox_dataFlowWindow*
+ - Url d'un flux : *lineEdit_dataFlowWindow*
+ - Bouton Valider Url : *btn_validateDataFlowUrl*
+ - Bouton Valider Pré-enregistré : *btn_validateDataFlowPreSaved*
 
- - Liste des flux : *listView_dataFlowWindow*

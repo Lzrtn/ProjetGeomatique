@@ -62,16 +62,16 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
     ui->openGLWidget_window3D->repaint();
 }
 
-void MainWindow::OnActionHelpClicked() // Modal approach..mainwindow cannot be moved when secwindow is displayed.
+void MainWindow::OnActionHelpClicked()
 {
     HelpWindow helpwindow;
-    helpwindow.setModal(true); //it'll set the secwindow
-    helpwindow.exec(); //shows secwindow when button is pressed
+    helpwindow.setModal(true);
+    helpwindow.exec();
 }
 
-void MainWindow::OnAction2DDataFlowClicked() // Modal approach..mainwindow cannot be moved when secwindow is displayed.
+void MainWindow::OnAction2DDataFlowClicked()
 {
     DataFlowWindow dataflowwindow;
-    dataflowwindow.setModal(true); //it'll set the secwindow
-    dataflowwindow.exec(); //shows secwindow when button is pressed
+    dataflowwindow.setModal(true);
+    dataflowwindow.exec();
 }
