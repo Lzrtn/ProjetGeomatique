@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QPushButton>
+#include <QAction>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -38,6 +39,8 @@ public:
 private:
 	Ui::MainWindow *ui; ///< Ui::MainWindow ui
 	QPushButton btn_switchMode2D3D; ///< QPushButton btn_switchMode2D3D
+	QAction action_help;
+	QAction action_add2DDataFlow;
 	bool mode; ///< bool mode
 
 private slots:
@@ -48,6 +51,20 @@ private slots:
 	 *
 	 */
   void OnButtonSwitchTo2D3DClicked();
+
+  /**
+   * @brief Function to show help window
+   *
+   *
+   */
+  void OnActionHelpClicked();
+
+  /**
+   * @brief Function to show add2DDataflow window
+   *
+   *
+   */
+  void OnAction2DDataFlowClicked();
 
 };
 #endif // MAINWINDOW_H

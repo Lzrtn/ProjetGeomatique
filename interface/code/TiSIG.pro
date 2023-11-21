@@ -10,16 +10,22 @@ CONFIG += c++11
 
 SOURCES += \
     building3d.cpp \
+    dataflowwindow.cpp \
+    helpwindow.cpp \
     main.cpp \
     mainwindow.cpp \
     openglcityview.cpp
 
 HEADERS += \
+    dataflowwindow.h \
+    helpwindow.h \
     building3d.h \
     mainwindow.h \
     openglcityview.h
 
 FORMS += \
+    dataflowwindow.ui \
+    helpwindow.ui \
     mainwindow.ui
 
 RESOURCES += \
