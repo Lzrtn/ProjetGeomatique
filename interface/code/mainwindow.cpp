@@ -90,6 +90,7 @@ void MainWindow::OnActionAddShpFileClicked()
 
     pqxx::connection c("user=postgres password=postgres host=localhost port=5432 dbname=essai_dbf target_session_attrs=read-write");
     pqxx::work k(c);
+    /*
     pqxx::result rows = k.exec("SELECT id, ST_AsGeoJSON(geom) FROM arrondissement;");
     // Parcourir toutes les lignes du résultat
     for (const auto& row : rows) {
@@ -105,17 +106,33 @@ void MainWindow::OnActionAddShpFileClicked()
 
         // Utiliser la classe Transformation pour convertir le JSON en QPolygonF
         Transformation t;
-        QPolygonF polygoneToPlot = t.JSONtoCoords(geojson);
+        QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojson);
         // Créer un objet pour le pol shp
         QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
         polygoneToPlotItem->setBrush(myColor);
 
         ui->graphicsView_window2D->scene()->addItem(polygoneToPlotItem);
     }
-    ui->graphicsView_window2D->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);
+    ui->graphicsView_window2D->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);*/
 
+    pqxx::result rowbis = k.exec("SELECT ST_AsGeoJSON(geom) FROM itineraire_autre;");
+    for (const auto& rowbi : rowbis) {
+        auto geojsonline = rowbi[0].as<std::string>();
+        Transformation t;
+        std::vector<QVector <QLineF>> segmentsToPlot = t.JSONtoCoordsLIN(geojsonline);
 
+        for(int i = 0; i< segmentsToPlot.size(); i++)
+        {
+            for (int j = 0; j< segmentsToPlot[i].size(); j++)
+            {
+                QGraphicsLineItem *lineToPlotItem = new QGraphicsLineItem(segmentsToPlot[i][j]);
+                ui->graphicsView_window2D->scene()->addItem(lineToPlotItem);
+            }
+
+        }
+    }
 }
+
 
 void MainWindow::OnButtonZoomIn()
 {
@@ -125,6 +142,7 @@ void MainWindow::OnButtonZoomIn()
         // Parcourir tous les éléments de la scène
         for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
             QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+            QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
             if (polyItem) {
                 // Ajuster la largeur du trait en fonction du facteur de zoom
                 qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
@@ -133,6 +151,15 @@ void MainWindow::OnButtonZoomIn()
                 QPen pen = polyItem->pen();
                 pen.setWidthF(adjustedWidth);
                 polyItem->setPen(pen);
+            }
+            if (lineItem) {
+                // Ajuster la largeur du trait en fonction du facteur de zoom
+                qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                // Mettre à jour la largeur du trait
+                QPen pen = lineItem->pen();
+                pen.setWidthF(adjustedWidth);
+                lineItem->setPen(pen);
             }
         }
 }
@@ -145,6 +172,7 @@ void MainWindow::OnButtonZoomOut()
         // Parcourir tous les éléments de la scène
         for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
             QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+            QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
             if (polyItem) {
                 // Ajuster la largeur du trait en fonction du facteur de zoom
                 qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
@@ -153,6 +181,15 @@ void MainWindow::OnButtonZoomOut()
                 QPen pen = polyItem->pen();
                 pen.setWidthF(adjustedWidth);
                 polyItem->setPen(pen);
+            }
+            if (lineItem) {
+                // Ajuster la largeur du trait en fonction du facteur de zoom
+                qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                // Mettre à jour la largeur du trait
+                QPen pen = lineItem->pen();
+                pen.setWidthF(adjustedWidth);
+                lineItem->setPen(pen);
             }
         }
 }

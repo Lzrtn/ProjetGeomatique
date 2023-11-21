@@ -12,7 +12,8 @@ class Transformation
 public:
     Transformation();
     ~Transformation();
-    QPolygonF JSONtoCoords(std::string polygone);
+    QPolygonF JSONtoCoordsPOL(std::string polygone);
+    std::vector<QVector <QLineF>> JSONtoCoordsLIN(std::string line);
 };
 
 #endif // TRANSFORMATION_H
