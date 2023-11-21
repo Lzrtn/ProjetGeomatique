@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include <QComboBox>
+#include <QLineEdit>
+#include <QPushButton>
 
 namespace Ui {
 class DataFlowWindow;
@@ -32,7 +34,18 @@ public:
 private:
     Ui::DataFlowWindow *ui; ///< Ui::DataFlowWindow ui
     QComboBox comboBox_dataFlowWindow; ///< QComboBox comboBox_dataFlowWindow
+    QLineEdit lineEdit_dataFlowWindow; ///< QLineEdit lineEdit_dataFlowWindow
+    QPushButton btn_validateDataFlowUrl; ///< QPushButton btn_validateDataFlowUrl
+    QPushButton btn_validateDataFlowPreSaved;
 
+private slots:
+
+    /**
+     * @brief Function to return data flow url entered in lineEdit
+     *
+     *
+     */
+  const char* OnButtonValidateDataFlowUrlClicked();
 };
 
 #endif // DATAFLOWWINDOW_H
