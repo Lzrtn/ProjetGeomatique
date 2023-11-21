@@ -84,6 +84,7 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 
 void MainWindow::OnActionAddShpFileClicked()
 {
+
     //import d'un shapefile dans la base de données
     std::string path1 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
     Shapefile essai1 = Shapefile(path1);
@@ -95,38 +96,41 @@ void MainWindow::OnActionAddShpFileClicked()
     essai1.import_to_db(db_name,db_user,db_password,db_host,db_port, 2154);
 
     //affichage du shapefile importé
-    QColor colours[10] = {QColor("cyan"), QColor("magenta"), QColor("red"),
-                          QColor("darkRed"), QColor("darkCyan"), QColor("darkMagenta"),
-                          QColor("green"), QColor("darkGreen"), QColor("yellow"),
-                          QColor("blue")};
-
     pqxx::connection c("user="+db_user+" password="+db_password+" host="+db_host+" port="+db_port+" dbname="+db_name+" target_session_attrs=read-write");
     pqxx::work k(c);
-    pqxx::result rows = k.exec("SELECT id, ST_AsGeoJSON(geom) FROM "+essai1.getTableName()+";");
-    // Parcourir toutes les lignes du résultat
-    for (const auto& row : rows) {
-        // Access columns by index
-        auto id = row[0].as<std::string>();
-        auto geojson = row[1].as<std::string>();
+    pqxx::result rowbis = k.exec("SELECT ST_AsGeoJSON(geom) FROM "+essai1.getTableName()+";");
+    Transformation t;
 
-        srand(time(NULL));
+    for (const auto& rowbi : rowbis) {
 
-        int nbgen=rand()%9+1;
+        auto geojsongeom = rowbi[0].as<std::string>();
+        std::string dataType = t.whatType(geojsongeom);
 
-        QColor myColor = colours[nbgen];
+        if (dataType == "LineString" || dataType == "MultiLineString")
+        {
+            std::vector<QVector <QLineF>> segmentsToPlot = t.JSONtoCoordsLIN(geojsongeom);
+            for(int i = 0; i< segmentsToPlot.size(); i++)
+            {
+                for (int j = 0; j< segmentsToPlot[i].size(); j++)
+                {
+                    QGraphicsLineItem *lineToPlotItem = new QGraphicsLineItem(segmentsToPlot[i][j]);
+                    ui->graphicsView_window2D->scene()->addItem(lineToPlotItem);
+                }
+            }
 
-        // Utiliser la classe Transformation pour convertir le JSON en QPolygonF
-        Transformation t;
-        QPolygonF polygoneToPlot = t.JSONtoCoords(geojson);
-        // Créer un objet pour le pol shp
-        QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
-        polygoneToPlotItem->setBrush(myColor);
+        } else if(dataType == "Polygon")
 
-        ui->graphicsView_window2D->scene()->addItem(polygoneToPlotItem);
+        {
+            QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojsongeom);
+            QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
+            ui->graphicsView_window2D->scene()->addItem(polygoneToPlotItem);
+            QColor myColor = QColor("darkGreen");
+            polygoneToPlotItem->setBrush(myColor);
+        } else if(dataType == "Point" || dataType == "MultiPoint")
+        {
+            std::cout<<"le cas du point"<<std::endl;
+        }
     }
-    ui->graphicsView_window2D->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);
-
-
 }
 
 void MainWindow::OnButtonZoomIn()
@@ -137,6 +141,9 @@ void MainWindow::OnButtonZoomIn()
         // Parcourir tous les éléments de la scène
         for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
             QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+
+            QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+
             if (polyItem) {
                 // Ajuster la largeur du trait en fonction du facteur de zoom
                 qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
@@ -145,6 +152,17 @@ void MainWindow::OnButtonZoomIn()
                 QPen pen = polyItem->pen();
                 pen.setWidthF(adjustedWidth);
                 polyItem->setPen(pen);
+            }
+
+
+            if (lineItem) {
+                // Ajuster la largeur du trait en fonction du facteur de zoom
+                qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                // Mettre à jour la largeur du trait
+                QPen pen = lineItem->pen();
+                pen.setWidthF(adjustedWidth);
+                lineItem->setPen(pen);
             }
         }
 }
@@ -157,6 +175,8 @@ void MainWindow::OnButtonZoomOut()
         // Parcourir tous les éléments de la scène
         for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
             QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+            QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+
             if (polyItem) {
                 // Ajuster la largeur du trait en fonction du facteur de zoom
                 qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
@@ -166,5 +186,16 @@ void MainWindow::OnButtonZoomOut()
                 pen.setWidthF(adjustedWidth);
                 polyItem->setPen(pen);
             }
+
+            if (lineItem) {
+                // Ajuster la largeur du trait en fonction du facteur de zoom
+                qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                // Mettre à jour la largeur du trait
+                QPen pen = lineItem->pen();
+                pen.setWidthF(adjustedWidth);
+                lineItem->setPen(pen);
+            }
+
         }
 }
