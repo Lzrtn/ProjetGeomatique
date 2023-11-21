@@ -36,16 +36,23 @@ private:
     QComboBox comboBox_dataFlowWindow; ///< QComboBox comboBox_dataFlowWindow
     QLineEdit lineEdit_dataFlowWindow; ///< QLineEdit lineEdit_dataFlowWindow
     QPushButton btn_validateDataFlowUrl; ///< QPushButton btn_validateDataFlowUrl
-    QPushButton btn_validateDataFlowPreSaved;
+    QPushButton btn_validateDataFlowPreSaved; ///< QPushButton btn_validateDataFlowPreSaved
 
 private slots:
 
     /**
      * @brief Function to return data flow url entered in lineEdit
      *
-     *
+     * @return Url
      */
   const char* OnButtonValidateDataFlowUrlClicked();
+
+    /**
+     * @brief Function to return pre-saved data flow choosed in comboBox
+     *
+     * @return which dataflow was choosed
+     */
+  const char* OnButtonValidateDataFlowPreSavedlClicked();
 };
 
 #endif // DATAFLOWWINDOW_H

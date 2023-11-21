@@ -14,6 +14,7 @@ DataFlowWindow::DataFlowWindow(QWidget *parent) :
     ui->comboBox_dataFlowWindow->addItems({"BDTopo - Bâti", "BDTopo - Route", "BDOrtho"});
 
     connect(ui->btn_validateDataFlowUrl, &QPushButton::clicked, this, &DataFlowWindow::OnButtonValidateDataFlowUrlClicked);
+    connect(ui->btn_validateDataFlowPreSaved, &QPushButton::clicked, this, &DataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked);
 }
 
 DataFlowWindow::~DataFlowWindow()
@@ -25,5 +26,21 @@ const char* DataFlowWindow::OnButtonValidateDataFlowUrlClicked()
 {
     QString url = ui->lineEdit_dataFlowWindow->text();
     return url.toLocal8Bit().constData();
+}
+
+const char* DataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
+{
+    QString flow = ui->comboBox_dataFlowWindow->currentText();
+    const char* lien = "0";
+    if(flow == "BDTopo - Bâti"){
+        lien = "URL vers BDTopo Bati";
+    }
+    if(flow == "BDTopo - Route"){
+        lien = "URL vers BDTopo Route";
+    }
+    if(flow == "BDOrtho"){
+        lien = "URL vers BDOrtho";
+    }
+    return lien;
 }
 
