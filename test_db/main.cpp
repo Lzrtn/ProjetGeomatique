@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+#include <algorithm>
 #include <pqxx/pqxx>
 #include "dbmanager.h"
 #include "docker.h"
@@ -29,6 +31,7 @@ int main() {
 
             // Testing INSERT
             newTest.Request("INSERT INTO test_table (id ,nom, age) VALUES ('007','James Bond','37')");
+            
             newTest.Request("INSERT INTO test_table (id, nom, age) VALUES ('1654','Serge Botton','99')");
 
             // Testing SELECT
