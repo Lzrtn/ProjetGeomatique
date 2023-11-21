@@ -13,7 +13,10 @@ DataFlowWindow::DataFlowWindow(QWidget *parent) :
     // Initialisation de la ComboBox //
     ui->comboBox_dataFlowWindow->addItems({"BDTopo - Bâti", "BDTopo - Route", "BDOrtho"});
 
+    // Connecting Validate DataFlowUrl button
     connect(ui->btn_validateDataFlowUrl, &QPushButton::clicked, this, &DataFlowWindow::OnButtonValidateDataFlowUrlClicked);
+
+    // Connecting Validate DataFlowPreSaved button
     connect(ui->btn_validateDataFlowPreSaved, &QPushButton::clicked, this, &DataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked);
 }
 
