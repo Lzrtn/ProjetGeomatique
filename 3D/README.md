@@ -104,8 +104,7 @@ SELECT id, ST_ASGEOJSON(geometry), ST_ASGEOJSON(textureparam.texture_coordinates
 JOIN textureparam ON surface_geometry.id = textureparam.surface_geometry_id;
 ```
 
-
-
+(A CHANGE DEPUIS)
 
 
 
