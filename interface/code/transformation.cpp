@@ -21,6 +21,7 @@ std::string Transformation::whatType(std::string data)
 {
     nlohmann::json dataJSON = nlohmann::json::parse(data);
     std::string type = dataJSON["type"];
+    std::cout<<type<<std::endl;
     return type;
 }
 

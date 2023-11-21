@@ -106,19 +106,19 @@ void MainWindow::OnActionAddShpFileClicked()
             }
 
         } else if(dataType == "Polygon")
+
         {
             QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojsongeom);
             QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
             ui->graphicsView_window2D->scene()->addItem(polygoneToPlotItem);
             QColor myColor = QColor("darkGreen");
             polygoneToPlotItem->setBrush(myColor);
-        } else if(dataType == "Point")
+        } else if(dataType == "Point" || dataType == "MultiPoint")
         {
             std::cout<<"le cas du point"<<std::endl;
         }
     }
 }
-
 
 void MainWindow::OnButtonZoomIn()
 {
