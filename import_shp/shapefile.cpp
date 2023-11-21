@@ -26,8 +26,7 @@ const std::string db_password,const std::string db_host,const std::string db_por
     this->db_host = db_host;
     this->db_port = db_port;
 
-    std::string table_name = path.substr(0, path.length() - 4);
-    this->table_name = table_name;
+    std::string table_name = path.substr(path.find_last_of("/")+1, path.length() - 4);    this->table_name = table_name;
     // Initialize GDAL
     GDALAllRegister();
 
