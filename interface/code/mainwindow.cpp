@@ -83,52 +83,38 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 
 void MainWindow::OnActionAddShpFileClicked()
 {
-    QColor colours[10] = {QColor("cyan"), QColor("magenta"), QColor("red"),
-                          QColor("darkRed"), QColor("darkCyan"), QColor("darkMagenta"),
-                          QColor("green"), QColor("darkGreen"), QColor("yellow"),
-                          QColor("blue")};
-
     pqxx::connection c("user=postgres password=postgres host=localhost port=5432 dbname=essai_dbf target_session_attrs=read-write");
     pqxx::work k(c);
-    /*
-    pqxx::result rows = k.exec("SELECT id, ST_AsGeoJSON(geom) FROM arrondissement;");
-    // Parcourir toutes les lignes du résultat
-    for (const auto& row : rows) {
-        // Access columns by index
-        auto id = row[0].as<std::string>();
-        auto geojson = row[1].as<std::string>();
-
-        srand(time(NULL));
-
-        int nbgen=rand()%9+1;
-
-        QColor myColor = colours[nbgen];
-
-        // Utiliser la classe Transformation pour convertir le JSON en QPolygonF
-        Transformation t;
-        QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojson);
-        // Créer un objet pour le pol shp
-        QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
-        polygoneToPlotItem->setBrush(myColor);
-
-        ui->graphicsView_window2D->scene()->addItem(polygoneToPlotItem);
-    }
-    ui->graphicsView_window2D->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);*/
-
     pqxx::result rowbis = k.exec("SELECT ST_AsGeoJSON(geom) FROM itineraire_autre;");
-    for (const auto& rowbi : rowbis) {
-        auto geojsonline = rowbi[0].as<std::string>();
-        Transformation t;
-        std::vector<QVector <QLineF>> segmentsToPlot = t.JSONtoCoordsLIN(geojsonline);
+    Transformation t;
 
-        for(int i = 0; i< segmentsToPlot.size(); i++)
+    for (const auto& rowbi : rowbis) {
+
+        auto geojsongeom = rowbi[0].as<std::string>();
+        std::string dataType = t.whatType(geojsongeom);
+
+        if (dataType == "LineString" || dataType == "MultiLineString")
         {
-            for (int j = 0; j< segmentsToPlot[i].size(); j++)
+            std::vector<QVector <QLineF>> segmentsToPlot = t.JSONtoCoordsLIN(geojsongeom);
+            for(int i = 0; i< segmentsToPlot.size(); i++)
             {
-                QGraphicsLineItem *lineToPlotItem = new QGraphicsLineItem(segmentsToPlot[i][j]);
-                ui->graphicsView_window2D->scene()->addItem(lineToPlotItem);
+                for (int j = 0; j< segmentsToPlot[i].size(); j++)
+                {
+                    QGraphicsLineItem *lineToPlotItem = new QGraphicsLineItem(segmentsToPlot[i][j]);
+                    ui->graphicsView_window2D->scene()->addItem(lineToPlotItem);
+                }
             }
 
+        } else if(dataType == "Polygon")
+        {
+            QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojsongeom);
+            QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
+            ui->graphicsView_window2D->scene()->addItem(polygoneToPlotItem);
+            QColor myColor = QColor("darkGreen");
+            polygoneToPlotItem->setBrush(myColor);
+        } else if(dataType == "Point")
+        {
+            std::cout<<"le cas du point"<<std::endl;
         }
     }
 }

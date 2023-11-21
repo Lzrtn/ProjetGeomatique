@@ -17,17 +17,18 @@ Transformation::~Transformation(){
 
 }
 
+std::string Transformation::whatType(std::string data)
+{
+    nlohmann::json dataJSON = nlohmann::json::parse(data);
+    std::string type = dataJSON["type"];
+    return type;
+}
+
 QPolygonF Transformation::JSONtoCoordsPOL(std::string polygone)
 {
     // Utilisez json::parse pour convertir la chaîne JSON en un objet JSON explicite
     nlohmann::json polygoneJSON = nlohmann::json::parse(polygone);
-
-    // Accédez aux valeurs du JSON comme d'habitude
     std::string type = polygoneJSON["type"];
-    //std::cout<<"type "<<type<<std::endl;
-    //On sélectionne [] car nous avons un polygone, et pas un multi_polygone
-    //std::cout<<"coordinates[i][j]"<<polygoneJSON["coordinates"][0]<<std::endl;
-
     QVector <QPointF> polygoneCoordinates;
     for (int i=0; i < polygoneJSON["coordinates"][0].size();i++)
     {
@@ -59,7 +60,7 @@ std::vector<QVector <QLineF>> Transformation::JSONtoCoordsLIN(std::string line)
                 double y = lineJSON["coordinates"][i][j][1];
                 double xprec = lineJSON["coordinates"][i][j-1][0];
                 double yprec = lineJSON["coordinates"][i][j-1][1];
-                QLineF segmentToPlot(QPointF(xprec, yprec),QPointF(x, y));
+                QLineF segmentToPlot(QPointF(xprec, -yprec),QPointF(x, -y));
                 lineCoordinates.push_back(segmentToPlot);
             }
             liste_de_polyligne.push_back(lineCoordinates);
@@ -67,3 +68,18 @@ std::vector<QVector <QLineF>> Transformation::JSONtoCoordsLIN(std::string line)
     }
     return liste_de_polyligne;
 }
+
+
+std::vector <QPointF> Transformation::JSONtoCoordsPTS(std::string point)
+{
+    std::vector<QPointF> liste_de_points;
+    nlohmann::json pointJSON = nlohmann::json::parse(point);
+    for (int i = 0; i< pointJSON["coordinates"].size(); i++)
+    {
+        double x = pointJSON["coordinates"][i][0];
+        double y = pointJSON["coordinates"][i][1];
+        liste_de_points.push_back(QPointF(x,y));
+    }
+    return liste_de_points;
+}
+
