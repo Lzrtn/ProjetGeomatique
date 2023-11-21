@@ -22,7 +22,6 @@ std::string Transformation::whatType(std::string data)
 {
     nlohmann::json dataJSON = nlohmann::json::parse(data);
     std::string type = dataJSON["type"];
-    std::cout<<type<<std::endl;
     return type;
 }
 
@@ -76,12 +75,10 @@ std::vector<QVector <QLineF>> Transformation::JSONtoCoordsLIN(std::string line)
 std::vector <QPointF> Transformation::JSONtoCoordsPTS(std::string point)
 {
     std::vector<QPointF> liste_de_points;
+
     nlohmann::json pointJSON = nlohmann::json::parse(point);
-    for (int i = 0; i< pointJSON["coordinates"].size(); i++)
-    {
-        double x = pointJSON["coordinates"][i][0];
-        double y = pointJSON["coordinates"][i][1];
-        liste_de_points.push_back(QPointF(x,y));
-    }
+    double x = pointJSON["coordinates"][0];
+    double y = pointJSON["coordinates"][1];
+    liste_de_points.push_back(QPointF(x,-y));
     return liste_de_points;
 }

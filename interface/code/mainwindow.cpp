@@ -104,19 +104,23 @@ void MainWindow::OnActionAddShpFileClicked()
 {
 
     //import d'un shapefile dans la base de données
-    std::string path1 = "/home/formation/Documents/PROJET_MINISIG/clone-vico/ProjetGeomatique/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
+    std::string path1 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/pointhasard/pointsLyon.shp";
     Shapefile essai1 = Shapefile(path1);
-    std::string db_name = "postgres";
+    std::string path2 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
+    Shapefile essai2 = Shapefile(path2);
+    std::string db_name = "essai_dbf";
     std::string db_user = "postgres";
     std::string db_password = "postgres";
     std::string db_host = "localhost";
     std::string db_port = "5432";
     essai1.import_to_db(db_name,db_user,db_password,db_host,db_port, 2154);
+    essai2.import_to_db(db_name,db_user,db_password,db_host,db_port, 2154);
 
     //affichage du shapefile importé
     pqxx::connection c("user="+db_user+" password="+db_password+" host="+db_host+" port="+db_port+" dbname="+db_name+" target_session_attrs=read-write");
     pqxx::work k(c);
     pqxx::result rowbis = k.exec("SELECT ST_AsGeoJSON(geom) FROM "+essai1.getTableName()+";");
+    pqxx::result rowter = k.exec("SELECT ST_AsGeoJSON(geom) FROM "+essai2.getTableName()+";");
     Transformation t;
 
     QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
@@ -151,7 +155,13 @@ void MainWindow::OnActionAddShpFileClicked()
         }
         else if(dataType == "Point" || dataType == "MultiPoint")
         {
-            std::cout<<"le cas du point"<<std::endl;
+            std::vector<QPointF> pointsToPlot = t.JSONtoCoordsPTS(geojsongeom);
+            for(int i = 0; i< pointsToPlot.size(); i++)
+            {
+                QGraphicsEllipseItem *pointToPlotItem = new QGraphicsEllipseItem(pointsToPlot[i].x(),pointsToPlot[i].y(),10,10);
+                layerGroup->addToGroup(pointToPlotItem);
+
+            }
         }
     }
     layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
@@ -167,8 +177,8 @@ void MainWindow::OnButtonZoomIn()
         // Parcourir tous les éléments de la scène
         for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
             QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
-
             QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+            QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
 
             if (polyItem) {
                 // Ajuster la largeur du trait en fonction du facteur de zoom
@@ -189,6 +199,16 @@ void MainWindow::OnButtonZoomIn()
                 QPen pen = lineItem->pen();
                 pen.setWidthF(adjustedWidth);
                 lineItem->setPen(pen);
+            }
+
+            if (pointItem) {
+                // Ajuster la largeur du trait en fonction du facteur de zoom
+                qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                // Mettre à jour la largeur du trait
+                QPen pen = pointItem->pen();
+                pen.setWidthF(adjustedWidth);
+                pointItem->setPen(pen);
             }
         }
 }
@@ -202,6 +222,7 @@ void MainWindow::OnButtonZoomOut()
         for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
             QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
             QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+            QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
 
             if (polyItem) {
                 // Ajuster la largeur du trait en fonction du facteur de zoom
@@ -221,6 +242,16 @@ void MainWindow::OnButtonZoomOut()
                 QPen pen = lineItem->pen();
                 pen.setWidthF(adjustedWidth);
                 lineItem->setPen(pen);
+            }
+
+            if (pointItem) {
+                // Ajuster la largeur du trait en fonction du facteur de zoom
+                qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                // Mettre à jour la largeur du trait
+                QPen pen = pointItem->pen();
+                pen.setWidthF(adjustedWidth);
+                pointItem->setPen(pen);
             }
 
         }
