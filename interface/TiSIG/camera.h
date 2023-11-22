@@ -42,6 +42,10 @@ public:
 	void move(const QVector3D & v) {
 		this->position += v;
 	}
+	void turn(const float angleH, const float angleV) {
+		this->setAngleH(this->angleH + angleH);
+		this->setAngleV(this->angleV + angleV);
+	}
 
 
 private:

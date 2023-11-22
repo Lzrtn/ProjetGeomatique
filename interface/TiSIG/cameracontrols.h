@@ -24,7 +24,9 @@ private:
 
 	std::map<std::string, bool> keysPressed;
 
-	float speedNav2D = 0.008;
+	float speedNav2D	= 0.008;
+	float speedNavZ		= 0.010;
+	float speedRot		= 0.001;
 
 private slots:
 	void mousePressEvent(QMouseEvent *e);	// same function as in qopenglwidget. Use same name (camelCase)

@@ -13,14 +13,21 @@ bool CameraControls::update(const float dt)
 {
 	if (this->camera == nullptr) return false;
 
-	float c = this->speedNav2D * cos(this->camera->getAngleH() * M_PI/180);
-	float s = this->speedNav2D * sin(this->camera->getAngleH() * M_PI/180);
-	if (this->keysPressed["left"])	this->camera->move({-dt*c,-dt*s, 0});
-	if (this->keysPressed["right"])	this->camera->move({ dt*c, dt*s, 0});
-	if (this->keysPressed["up"])	this->camera->move({-dt*s, dt*c, 0});
-	if (this->keysPressed["down"])	this->camera->move({ dt*s,-dt*c, 0});
-	if (this->keysPressed["shift"])	this->camera->move({ 0, 0, dt * this->speedNav2D});
-	if (this->keysPressed["space"])	this->camera->move({ 0, 0,-dt * this->speedNav2D});
+	if (this->keysPressed["ctrl"]) {
+		if (this->keysPressed["left"])	this->camera->turn(-1,0);
+		if (this->keysPressed["right"])	this->camera->turn(1,0);
+		if (this->keysPressed["up"])	this->camera->turn(0,1);
+		if (this->keysPressed["down"])	this->camera->turn(0,-1);
+	} else {
+		float c = this->speedNav2D * cos(this->camera->getAngleH() * M_PI/180);
+		float s = this->speedNav2D * sin(this->camera->getAngleH() * M_PI/180);
+		if (this->keysPressed["left"])	this->camera->move({-dt*c,-dt*s, 0});
+		if (this->keysPressed["right"])	this->camera->move({ dt*c, dt*s, 0});
+		if (this->keysPressed["up"])	this->camera->move({-dt*s, dt*c, 0});
+		if (this->keysPressed["down"])	this->camera->move({ dt*s,-dt*c, 0});
+	}
+	if (this->keysPressed["shift"])	this->camera->move({ 0, 0, dt * this->speedNavZ});
+	if (this->keysPressed["space"])	this->camera->move({ 0, 0,-dt * this->speedNavZ});
 
 	return true;
 }
@@ -45,6 +52,9 @@ void CameraControls::keyPressEvent(QKeyEvent *event, bool pressed)
 		break;
 	case Qt::Key_Shift:
 		this->keysPressed["shift"] = pressed;
+		break;
+	case Qt::Key_Control:
+		this->keysPressed["ctrl"] = pressed;
 		break;
 	default:
 		break;
