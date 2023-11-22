@@ -30,7 +30,8 @@ FORMS += \
 
 RESOURCES += \
     shaders.qrc \
-    textures.qrc
+    textures.qrc \
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
