@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QAction>
+#include <QFileDialog>
+
+#include <iostream>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -41,6 +44,11 @@ private:
 	QPushButton btn_switchMode2D3D; ///< QPushButton btn_switchMode2D3D
     QAction action_help; ///< QAction action_help
     QAction action_add2DDataFlow; ///< QAction action_help
+    QAction action_add2DVectorLayer; ///< QAction action_add2DVectorLayer
+    QAction action_add2DRastorLayer; ///< QAction action_add2DRastorLayer
+    QAction action_add3DVectorLayer; ///< QAction action_add3DVectorLayer
+    QAction action_add3DRastorLayer; ///< QAction action_add3DRastorLayer
+    QAction action_add3DModel; ///< QAction action_add3DModel
 	bool mode; ///< bool mode
 
 private slots:
@@ -65,6 +73,27 @@ private slots:
    *
    */
   void OnAction2DDataFlowClicked();
+
+  /**
+   * @brief Function to show add2DVectorLayer window
+   *
+   *
+   */
+  std::string OnActionVectorLayerClicked();
+
+  /**
+   * @brief Function to show add2DRastorLayer window
+   *
+   *
+   */
+  std::string OnActionRastorLayerClicked();
+
+  /**
+   * @brief Function to show add3DModel window
+   *
+   *
+   */
+  std::string OnAction3DModelClicked();
 
 };
 #endif // MAINWINDOW_H
