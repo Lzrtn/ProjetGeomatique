@@ -109,9 +109,9 @@ void MainWindow::OnActionAddShpFileClicked()
 {
 
     //import d'un shapefile dans la base de données
-    std::string path1 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/TronconRoute/TronconRoute_Lyon5eme.shp";
+    std::string path1 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
     Shapefile essai1 = Shapefile(path1);
-    std::string path2 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
+    std::string path2 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/TronconRoute/TronconRoute_Lyon5eme.shp";
     Shapefile essai2 = Shapefile(path2);
     std::string db_name = "essai_dbf";
     std::string db_user = "postgres";
@@ -131,8 +131,8 @@ void MainWindow::OnActionAddShpFileClicked()
     index++;
 
     pqxx::result rowter = k.exec("SELECT ST_AsGeoJSON(geom) FROM "+essai2.getTableName()+";");
-    QGraphicsItemGroup *layerGroup2 =essai1.plotShapefile(rowter,scene);
-    layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup2);
+    layerGroup =essai1.plotShapefile(rowter,scene);
+    layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
     addLayerToListWidget(index, *layerList[index]);
     index++;
 }

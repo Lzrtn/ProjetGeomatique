@@ -168,7 +168,10 @@ const std::string db_password,const std::string db_host,const std::string db_por
             std::string value = fieldValue;
             if (!value.empty() && i !=featureDefn->GetFieldCount()-1){
                 fields += field_name + ",";
-                values += "'"+value + "',";
+                if (value.find("'") != std::string::npos){
+                    std::replace(value.begin(), value.end(), '\'', ' ');
+                }
+                values += "'"+ value + "',";
             }
         }
 
@@ -184,7 +187,7 @@ const std::string db_password,const std::string db_host,const std::string db_por
             const char* fillTableSQL = instruction_fill.c_str();
             PGresult *fillTableResult = PQexec(conn, fillTableSQL);
             if (PQresultStatus(fillTableResult) != PGRES_COMMAND_OK) {
-                std::cerr << "Failed to create table: " << PQresultErrorMessage(fillTableResult) << std::endl;
+                std::cerr << "Failed to fill line: " << PQresultErrorMessage(fillTableResult) << std::endl;
                 PQclear(fillTableResult);
                 PQfinish(conn);
                 GDALClose(poDS);
@@ -304,4 +307,5 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
             }
         }
     }
+    return(layerGroup);
 }
