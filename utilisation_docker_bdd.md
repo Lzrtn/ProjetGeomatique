@@ -9,6 +9,12 @@ Pour éviter d'installer une base de données sur chaque ordinateur, l'utilisati
 Le conteneur est construit à partir d'un docker-compose, et contient (pour le moment) uniquement une base de données postGIS.
 
 Avant de se connecter à la base de données, il faut lancer / créer le conteneur.
+
+Pour installer pqxx, une librairie permettant de faire des requêtes SQL, utilisez : 
+```
+sudo apt-get install libpqxx-dev
+```
+
 Il faut d'abord inclure les bons fichiers :
 ```cpp
 #include <pqxx/pqxx> // Classe pour gérer PostgreSQL
@@ -31,11 +37,11 @@ Ensuite, le conteneur sera créé (des logs sont affichés dans la console), mê
 Pour créer une connection à la base de données, vous devez récupérer l'adresse ip du conteneur, et créer une instance de la classe `DbManager` :
 
 ```cpp
-// Get the Ip Adress
-std::string ipAdress = docker.getIpAdress();
+// Get the Ip Address
+std::string ipAddress = docker.getIpAddress();
 
 // Connection to the database "database2D"
-DbManager dbManager("database2D", ipAdress);
+DbManager dbManager("database2D", ipAddress);
 ```
 La connexion est gérée directement par la classe `DbManager`
 
@@ -60,7 +66,7 @@ Vous devez créer une instance de la classe `DbManager` pour chaque base de donn
 
 ```cpp
 // Connection to the new database 
-DbManager newDbManager("database3D", ipAdres);
+DbManager newDbManager("database3D", ipAddress);
 ```
 
 Utilisez la méthode `CreateTable` pour créer une nouvelle table :
@@ -91,7 +97,7 @@ Pour visualiser le résultat, il faut utiliser la méthode `ParseResult` :
 std::string results = newTest.ParseResult();
 ```
 
-Pour récupérer le résultat sous forme de `std::vector<std::vector<std::string>> ` le résultat, il faut utiliser la méthode `ArrayParseResult` :
+Pour récupérer le résultat sous forme de `std::vector<std::vector<std::string>> ` , il faut utiliser la méthode `ArrayParseResult` :
 
 ```cpp
 // Get results
