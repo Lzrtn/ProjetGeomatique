@@ -22,8 +22,10 @@ QMatrix4x4 Camera::ComputeMPV()
 	matView.rotate(this->angleH, {0,0,-1});
 	matView.translate(-this->position);
 
+	/*
 	std::cout << "camera:\tpos(" << this->position.x() << " " << this->position.y() << " " << this->position.z() << ")"
 			  << "\tzoom " << this->zoom << "\tangleH " << this->angleH << "\tangleV " << this->angleV << std::endl;
+	*/
 
 	// matModel = identity
 	this->matMVP = this->matProjection * matView;
@@ -32,6 +34,9 @@ QMatrix4x4 Camera::ComputeMPV()
 
 void Camera::ResizeView(int w, int h)
 {
+
+	//std::cout << w << " " << h << std::endl;
+	this->pxRatio = (w < h ? w : h);
 	qreal aspect_ratio = qreal(w) / qreal(h ? h : 1);
 
 	const qreal zNear = 3.0, zFar = 1000, fov = 45.0;

@@ -47,6 +47,10 @@ public:
 		this->setAngleV(this->angleV + angleV);
 	}
 
+	float getPxRatio() const {
+		return this->pxRatio;
+	}
+
 
 private:
 	/**
@@ -58,6 +62,7 @@ private:
 	float angleV;
 	float zoom;
 	const float angleVMax = 45.;
+	float pxRatio;
 	QVector3D position;
 	QMatrix4x4 matProjection;
 	QMatrix4x4 matMVP;

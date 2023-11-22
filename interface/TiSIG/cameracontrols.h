@@ -31,6 +31,9 @@ private:
 	float speedNavZ		= 0.010;
 	float speedRot		= 0.001;
 	float speedZoom		= 0.25;
+	float speedMouseMove= 15;
+	float speedMouseRot	= 50;
+	float speedMouseZ	= 5; // metres par cran de mollete
 	QPoint lastPosClick;
 };
 
