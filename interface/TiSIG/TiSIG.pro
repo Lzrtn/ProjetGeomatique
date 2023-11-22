@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     building3d.cpp \
     camera.cpp \
+    cameracontrols.cpp \
     dataflowwindow.cpp \
     helpwindow.cpp \
     main.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
 
 HEADERS += \
     camera.h \
+    cameracontrols.h \
     dataflowwindow.h \
     helpwindow.h \
     building3d.h \

@@ -12,6 +12,7 @@
 
 #include "building3d.h"
 #include "camera.h"
+#include "cameracontrols.h"
 
 #include <map>
 
@@ -46,6 +47,7 @@ protected:
 	void initializeGL() override;
 	void resizeGL(int w, int h) override;
 	void paintGL() override;
+	void setVisible(bool visible) override;
 
 	/**
 	 * @brief InitShaders load and init shader OpenGL program
@@ -63,8 +65,11 @@ private:
 	// TODO: turn this function in a Camera class and add controls
 	QMatrix4x4 projection;
 	Camera camera;
+	CameraControls controls;
 
 	QBasicTimer timer;
+	float lastTimeUpdate;
+	std::chrono::steady_clock::time_point timeStart;
 };
 
 #endif // OPENGLCITYVIEW_H

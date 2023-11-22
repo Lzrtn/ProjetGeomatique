@@ -26,8 +26,6 @@ void OpenGLcityView::initializeGL()
 	this->AddBuilding(0, Building3DFactory(3));
 
 	this->camera.setAngleV(0);
-
-	timer.start(15, this); // run this->timerEvent every n msec
 }
 
 void OpenGLcityView::InitShaders()
@@ -51,7 +49,11 @@ void OpenGLcityView::InitShaders()
 
 void OpenGLcityView::timerEvent(QTimerEvent *e)
 {
+	float currentTime = (std::chrono::steady_clock::now() - this->timeStart).count();
+	float dt = currentTime - lastTimeUpdate;
+	lastTimeUpdate = currentTime;
 	this->update();
+	this->controls.update(dt);
 }
 
 void OpenGLcityView::AddBuilding(const int id, const Building3DFactory &buildingFactory)
@@ -91,5 +93,19 @@ void OpenGLcityView::paintGL()
 	// Draw geometry
 	for (auto &pair : this->buildings) {
 		pair.second->Draw(&this->shader);
+	}
+}
+
+void OpenGLcityView::setVisible(bool visible)
+{
+	if (visible)
+	{
+		this->timeStart = std::chrono::steady_clock::now();
+		this->lastTimeUpdate = 0;
+		timer.start(15, this); // run this->timerEvent every n msec
+	}
+	else
+	{
+		timer.stop();
 	}
 }
