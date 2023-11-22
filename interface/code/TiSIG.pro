@@ -9,8 +9,8 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Ajouter les chemins des en-têtes et des bibliothèques GDAL
-INCLUDEPATH += /chemin/vers/les/en-tetes/gdal
-LIBS += -L/chemin/vers/les/bibliotheques/gdal -lgdal
+INCLUDEPATH += /usr/include/gdal
+LIBS += -lgdal
 LIBS += -lpq
 
 INCLUDEPATH += /usr/include
@@ -22,15 +22,13 @@ SOURCES += \
     mainwindow.cpp \
     shapefile.cpp \
     transformation.cpp
-    shapefile.cpp
+
 
 HEADERS += \
     layer.h \
     mainwindow.h \
     shapefile.h \
     transformation.h
-    shapefile.h
-    transformation.cpp
 
 FORMS += \
     mainwindow.ui
