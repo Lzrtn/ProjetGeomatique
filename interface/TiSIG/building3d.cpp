@@ -169,8 +169,8 @@ Building3DFactory::Building3DFactory(const int version)
 	case 3:
 	default:
 		position = {
-			{-2, -2, 0}, {-2,  2, 0}, { 2,  2, 0},
-			{-2, -2, 0}, { 2, -2, 0}, { 2,  2, 0},
+			{-2, -2, 5}, {-2,  2, 5}, { 2,  2, 5},
+			{-2, -2, 5}, { 2, -2, 5}, { 2,  2, 5},
 		};
 		normal = position;
 		textCoord = {
