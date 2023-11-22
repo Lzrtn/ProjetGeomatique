@@ -1,5 +1,6 @@
 #include <iostream>
 #include <pqxx/pqxx>
+#include <stdlib.h>
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -16,6 +17,17 @@
 #include "layer.h"
 #include "transformation.h"
 #include "shapefile.h"
+#include "../../test_db/dbmanager.h"
+#include "../../test_db/docker.h"
+
+//Initialisation du Docker
+// Creating container
+std::string pathDockerFile = "../../Docker/docker-compose.yml";
+Docker docker(pathDockerFile);
+// Get the Ip Adress
+const std::string ipAdress_d = docker.getIpAdress();
+
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -57,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Connection action "Add Vector File"
     connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionAddShpFileClicked);
-
+    ipAdress = ipAdress_d;
 }
 
 MainWindow::~MainWindow()
@@ -107,30 +119,37 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 
 void MainWindow::OnActionAddShpFileClicked()
 {
+    // PostGreSQL Connection to the first database
 
-    //import d'un shapefile dans la base de données
-    std::string path1 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
+    DbManager test("database2D", ipAdress);
+    std::cout << test.getString()<< std::endl;
+    pqxx::connection conn(test.getString());
+
+    if (conn.is_open()) {
+        std::cout << "Connexion réussie à PostgreSQL" << std::endl;
+
+    } else {
+        std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
+        exit(1);
+    }
+    //import de deux shapefiles dans la base de données
+    std::string path1 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/pointhasard/pointsLyon.shp";
     Shapefile essai1 = Shapefile(path1);
     std::string path2 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/TronconRoute/TronconRoute_Lyon5eme.shp";
     Shapefile essai2 = Shapefile(path2);
-    std::string db_name = "essai_dbf";
-    std::string db_user = "postgres";
-    std::string db_password = "postgres";
-    std::string db_host = "localhost";
-    std::string db_port = "5432";
-    essai1.import_to_db(db_name,db_user,db_password,db_host,db_port, 2154);
-    essai2.import_to_db(db_name,db_user,db_password,db_host,db_port, 2154);
+    essai1.import_to_db(test, 2154);
+    essai2.import_to_db(test, 2154);
 
-    //affichage du shapefile importé
-    pqxx::connection c("user="+db_user+" password="+db_password+" host="+db_host+" port="+db_port+" dbname="+db_name+" target_session_attrs=read-write");
-    pqxx::work k(c);
-    pqxx::result rowbis = k.exec("SELECT ST_AsGeoJSON(geom) FROM "+essai1.getTableName()+";");
+    //affichage des shapefiles importé
+    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1.getTableName()+";");
+    pqxx::result rowbis =test.getResult();
     QGraphicsItemGroup *layerGroup = essai1.plotShapefile(rowbis,scene);
     layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
     addLayerToListWidget(index, *layerList[index]);
     index++;
 
-    pqxx::result rowter = k.exec("SELECT ST_AsGeoJSON(geom) FROM "+essai2.getTableName()+";");
+    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai2.getTableName()+";");
+    pqxx::result rowter =test.getResult();
     layerGroup =essai1.plotShapefile(rowter,scene);
     layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
     addLayerToListWidget(index, *layerList[index]);

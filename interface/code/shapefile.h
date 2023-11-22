@@ -12,6 +12,8 @@
 #include <QColor>
 #include <pqxx/pqxx>
 
+#include "../../test_db/dbmanager.h"
+
 class Shapefile
 {
 public:
@@ -49,17 +51,17 @@ public:
      *
      * @returns integer : 0 if no error 1 if thereis an error
      */
-    int import_to_db(const std::string db_name,const std::string db_user,
+    /*int import_to_db(const std::string db_name,const std::string db_user,
             const std::string db_password,const std::string db_host,
-            const std::string db_port, const int epsg);
-
+            const std::string db_port, const int epsg);*/
+    int import_to_db(DbManager db_manager,  const int epsg);
 
     /**
     * @brief Get the bounding box of the Shapefile
     *
     * @returns std::vector<float> [Xmin,Ymin,Xmax,Ymax]
     */
-   std::vector<float> getBoundingBox();
+   std::vector<float> getBoundingBox(DbManager db_manager);
 
    QGraphicsItemGroup * plotShapefile(pqxx::result rowbis, QGraphicsScene *scene);
 

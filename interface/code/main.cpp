@@ -8,6 +8,10 @@
 #include <QGraphicsScene>
 #include <QGraphicsPolygonItem>
 #include <QApplication>
+#include <string>
+#include <algorithm>
+#include "../../test_db/dbmanager.h"
+#include "../../test_db/docker.h"
 
 int main(int argc, char *argv[])
 

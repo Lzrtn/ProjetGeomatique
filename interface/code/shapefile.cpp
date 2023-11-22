@@ -11,6 +11,7 @@
 
 #include "shapefile.h"
 #include "transformation.h"
+#include "../../test_db/dbmanager.h"
 
 Shapefile::Shapefile(const std::string path):path(path)
 {}
@@ -23,14 +24,8 @@ std::string Shapefile::getTableName(){
     return (table_name);
 }
 
-int Shapefile::import_to_db(const std::string db_name,const std::string db_user,
-const std::string db_password,const std::string db_host,const std::string db_port, const int epsg)
-{
-    this->db_name = db_name;
-    this->db_user = db_user;
-    this->db_password = db_password;
-    this->db_host = db_host;
-    this->db_port = db_port;
+int Shapefile::import_to_db(DbManager db_manager, const int epsg)
+    {
 
     std::string table_name = path.substr(path.find_last_of("/")+1, path.find_last_of(".shp")-path.find_last_of("/")-4);
 
@@ -46,46 +41,26 @@ const std::string db_password,const std::string db_host,const std::string db_por
         return 1;
     }
 
-    // Connect to the PostgreSQL/PostGIS database
-    std::string conn_infos ="dbname="+db_name+" user="+db_user+" password="+db_password+" host="+db_host +" port="+db_port;
-    const char* conninfo = conn_infos.c_str();
-    PGconn *conn = PQconnectdb(conninfo);
-    if (PQstatus(conn) != CONNECTION_OK) {
-        std::cerr << "Connection to database failed: " << PQerrorMessage(conn) << std::endl;
-        GDALClose(poDS);
-        return 1;
-    }
-
 
     // Create the table in the database
-        const char* tableName =table_name.c_str();
-        const char* createTableSQL = "CREATE TABLE IF NOT EXISTS %s ();";
-        char createTableStatement[200];
-        snprintf(createTableStatement, sizeof(createTableStatement), createTableSQL, tableName);
-
-        PGresult *createTableResult = PQexec(conn, createTableStatement);
-
-        if (PQresultStatus(createTableResult) != PGRES_COMMAND_OK) {
-            std::cerr << "Failed to create table: " << PQresultErrorMessage(createTableResult) << std::endl;
-            PQclear(createTableResult);
-            PQfinish(conn);
-            GDALClose(poDS);
-            return 1;
-        }
-        PQclear(createTableResult);
+        std::string request = "DROP TABLE IF EXISTS "+table_name+";";
+        db_manager.CreateTable(request);
+        std::string request_create = "CREATE TABLE "+table_name+" ();";
+        db_manager.CreateTable(request_create);
+        std::cout << "Table created\n";
 
 
     // Get the layer from the shapefile
     OGRLayer *poLayer = poDS->GetLayerByName(table_name.c_str());
     if (poLayer == nullptr) {
         std::cerr << "Failed to get layer from shapefile." << std::endl;
-        PQfinish(conn);
+        //PQfinish(conn);
         GDALClose(poDS);
         return 1;
     }
 
     // Add features columns
-    std::string instruction_add = "ALTER TABLE IF EXISTS public."+table_name;
+    std::string instruction_add = "ALTER TABLE public."+table_name;
     OGRFeatureDefn* featureDefn = poLayer->GetLayerDefn();
     for (int i=0; i<featureDefn->GetFieldCount(); i++){
         OGRFieldDefn* fieldDefn = featureDefn->GetFieldDefn(i);
@@ -137,21 +112,13 @@ const std::string db_password,const std::string db_host,const std::string db_por
                 data_type = "character varying";
         }
         instruction_add += " ADD COLUMN "+field_name+" "+data_type+",";
-
     }
+
     // Build the SQL ADD COLUMN statement
     instruction_add += " ADD COLUMN geom geometry;";
-    const char* addTableSQL = instruction_add.c_str();
-    PGresult *addTableResult = PQexec(conn, addTableSQL);
-    if (PQresultStatus(addTableResult) != PGRES_COMMAND_OK) {
-        std::cerr << "Failed to create table: " << PQresultErrorMessage(addTableResult) << std::endl;
-        PQclear(addTableResult);
-        PQfinish(conn);
-        GDALClose(poDS);
-        return 1;
+    db_manager.CreateTable(instruction_add);
 
-    PQclear(addTableResult);
-    }
+    std::cout << "Columns added\n";
 
     // Loop through features and insert them into the database
     OGRFeature *poFeature;
@@ -184,19 +151,8 @@ const std::string db_password,const std::string db_host,const std::string db_por
 
             // Build the SQL INSERT statement
             std::string instruction_fill = instruction + fields+"geom) VALUES("+values+"ST_GeomFromText('" + std::string(wkt) + "', "+std::to_string(epsg)+"));";
-            const char* fillTableSQL = instruction_fill.c_str();
-            PGresult *fillTableResult = PQexec(conn, fillTableSQL);
-            if (PQresultStatus(fillTableResult) != PGRES_COMMAND_OK) {
-                std::cerr << "Failed to fill line: " << PQresultErrorMessage(fillTableResult) << std::endl;
-                PQclear(fillTableResult);
-                PQfinish(conn);
-                GDALClose(poDS);
-                return 1;
-            }
-            PQclear(fillTableResult);
-
-
-            CPLFree(wkt);
+            std::cout<<instruction_fill<<"\n";
+            db_manager.Request(instruction_fill);
         }
 
 
@@ -206,7 +162,7 @@ const std::string db_password,const std::string db_host,const std::string db_por
 
 
     // Close the database connection
-    PQfinish(conn);
+    //PQfinish(conn);
 
     // Close the shapefile
     GDALClose(poDS);
@@ -215,32 +171,13 @@ const std::string db_password,const std::string db_host,const std::string db_por
     return 0;
 }
 
-std::vector<float> Shapefile::getBoundingBox()
+std::vector<float> Shapefile::getBoundingBox(DbManager db_manager)
 {
-    // Connect to the PostgreSQL/PostGIS database
-    std::string conn_infos ="dbname="+db_name+" user="+db_user+" password="+db_password+" host="+db_host +" port="+db_port;
-    const char* conninfo = conn_infos.c_str();
-    PGconn *conn = PQconnectdb(conninfo);
-    if (PQstatus(conn) != CONNECTION_OK) {
-        std::cerr << "Connection to database failed: " << PQerrorMessage(conn) << std::endl;
-    }
-    //const char * tableName = table_name.c_str();
     std::string requete_SQL= "SELECT ST_Extent(geom) FROM "+table_name+";";
-    const char* requeteSQL = requete_SQL.c_str();
+    db_manager.Request(requete_SQL);
+    std::string resultat_SQL =db_manager.ParseResult();
 
-    PGresult *bBoxResult = PQexec(conn, requeteSQL);
-
-    if (PQresultStatus(bBoxResult) != PGRES_TUPLES_OK) {
-        std::cerr << "Failed to get bounding box: " << PQresultErrorMessage(bBoxResult) << std::endl;
-        PQclear(bBoxResult);
-        PQfinish(conn);
-    }
-
-    const char *value = PQgetvalue(bBoxResult, 0, 0);
-    PQclear(bBoxResult);
-
-    std::string resultat_SQL = value;
-    std::string bbx = resultat_SQL.substr(4, resultat_SQL.length() - 2);
+    std::string bbx = resultat_SQL.substr(16, resultat_SQL.length() - 20);
     std::string f_pt = bbx.substr(0, bbx.find(","));
     std::string s_pt = bbx.substr(bbx.find(",")+1, bbx.length());
     std::string X_min = f_pt.substr(0,f_pt.find(" "));
