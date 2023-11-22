@@ -69,6 +69,11 @@ MainWindow::~MainWindow()
     }
 }
 
+Ui::MainWindow * MainWindow::getUi() const
+{
+    return ui;
+}
+
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
     mode = !mode;
@@ -104,9 +109,9 @@ void MainWindow::OnActionAddShpFileClicked()
 {
 
     //import d'un shapefile dans la base de données
-    std::string path1 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/pointhasard/pointsLyon.shp";
+    std::string path1 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
     Shapefile essai1 = Shapefile(path1);
-    std::string path2 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
+    std::string path2 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/TronconRoute/TronconRoute_Lyon5eme.shp";
     Shapefile essai2 = Shapefile(path2);
     std::string db_name = "essai_dbf";
     std::string db_user = "postgres";
@@ -120,50 +125,13 @@ void MainWindow::OnActionAddShpFileClicked()
     pqxx::connection c("user="+db_user+" password="+db_password+" host="+db_host+" port="+db_port+" dbname="+db_name+" target_session_attrs=read-write");
     pqxx::work k(c);
     pqxx::result rowbis = k.exec("SELECT ST_AsGeoJSON(geom) FROM "+essai1.getTableName()+";");
+    QGraphicsItemGroup *layerGroup = essai1.plotShapefile(rowbis,scene);
+    layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
+    addLayerToListWidget(index, *layerList[index]);
+    index++;
+
     pqxx::result rowter = k.exec("SELECT ST_AsGeoJSON(geom) FROM "+essai2.getTableName()+";");
-    Transformation t;
-
-    QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
-    scene->addItem(layerGroup);
-
-    for (const auto& rowbi : rowbis)
-    {
-
-        auto geojsongeom = rowbi[0].as<std::string>();
-        std::string dataType = t.whatType(geojsongeom);
-
-        if (dataType == "LineString" || dataType == "MultiLineString")
-        {
-            std::vector<QVector <QLineF>> segmentsToPlot = t.JSONtoCoordsLIN(geojsongeom);
-            for(int i = 0; i< segmentsToPlot.size(); i++)
-            {
-                for (int j = 0; j< segmentsToPlot[i].size(); j++)
-                {
-                    QGraphicsLineItem *lineToPlotItem = new QGraphicsLineItem(segmentsToPlot[i][j]);
-                    layerGroup->addToGroup(lineToPlotItem);
-                }
-            }
-
-        }
-        else if(dataType == "Polygon")
-        {
-            QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojsongeom);
-            QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
-            layerGroup->addToGroup(polygoneToPlotItem);
-            QColor myColor = QColor("darkGreen");
-            polygoneToPlotItem->setBrush(myColor);
-        }
-        else if(dataType == "Point" || dataType == "MultiPoint")
-        {
-            std::vector<QPointF> pointsToPlot = t.JSONtoCoordsPTS(geojsongeom);
-            for(int i = 0; i< pointsToPlot.size(); i++)
-            {
-                QGraphicsEllipseItem *pointToPlotItem = new QGraphicsEllipseItem(pointsToPlot[i].x(),pointsToPlot[i].y(),10,10);
-                layerGroup->addToGroup(pointToPlotItem);
-
-            }
-        }
-    }
+    layerGroup =essai1.plotShapefile(rowter,scene);
     layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
     addLayerToListWidget(index, *layerList[index]);
     index++;
