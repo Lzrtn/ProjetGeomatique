@@ -15,6 +15,9 @@ public:
 	bool update(const float dt);
 
 	void keyPressEvent(QKeyEvent *e, bool pressed);
+	void mousePressEvent(QMouseEvent *event, bool pressed);
+	void mouseMoveEvent(QMouseEvent *event);
+	void wheelEvent(QWheelEvent *event);
 
 	void reset();
 
@@ -27,10 +30,8 @@ private:
 	float speedNav2D	= 0.008;
 	float speedNavZ		= 0.010;
 	float speedRot		= 0.001;
-
-private slots:
-	void mousePressEvent(QMouseEvent *e);	// same function as in qopenglwidget. Use same name (camelCase)
-	void mouseReleaseEvent(QMouseEvent *e); // idem
+	float speedZoom		= 0.25;
+	QPoint lastPosClick;
 };
 
 #endif // CAMERACONTROLS_H

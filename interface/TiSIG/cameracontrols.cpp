@@ -2,11 +2,21 @@
 #include <iostream>
 
 #include <QKeyEvent>
+#include <QMouseEvent>
+#include <QWheelEvent>
+
 #include <cmath>
 
 CameraControls::CameraControls()
 {
 	this->reset();
+}
+
+
+void CameraControls::reset()
+{
+	for (auto &pair: this->keysPressed)
+		pair.second = false;
 }
 
 bool CameraControls::update(const float dt)
@@ -20,7 +30,7 @@ bool CameraControls::update(const float dt)
 		if (this->keysPressed["down"])	this->camera->turn(0,-1);
 	} else {
 		float c = this->speedNav2D * cos(this->camera->getAngleH() * M_PI/180);
-		float s = this->speedNav2D * sin(this->camera->getAngleH() * M_PI/180);
+		float s = this->speedNav2D * this->camera->getZoom() * sin(this->camera->getAngleH() * M_PI/180);
 		if (this->keysPressed["left"])	this->camera->move({-dt*c,-dt*s, 0});
 		if (this->keysPressed["right"])	this->camera->move({ dt*c, dt*s, 0});
 		if (this->keysPressed["up"])	this->camera->move({-dt*s, dt*c, 0});
@@ -59,11 +69,27 @@ void CameraControls::keyPressEvent(QKeyEvent *event, bool pressed)
 	default:
 		break;
 	}
-
+	event->accept();
 }
 
-void CameraControls::reset()
+void CameraControls::mousePressEvent(QMouseEvent * event, bool /*pressed*/)
 {
-	for (auto &pair: this->keysPressed)
-		pair.second = false;
+	this->lastPosClick = event->pos();//{event->x(), event->y()};
+}
+
+void CameraControls::mouseMoveEvent(QMouseEvent *event)
+{
+	QPoint delta = this->lastPosClick - event->pos();
+
+	std::cout << "move x:" << event->pos().x() << " y:" << event->pos().y()
+			  << " dx:" << delta.x() << " dy:" << delta.y() << std::endl;
+
+	this->lastPosClick = event->pos();
+	event->accept();
+}
+
+void CameraControls::wheelEvent(QWheelEvent *event)
+{
+	this->camera->setZoom(this->camera->getZoom() * pow(2, event->angleDelta().y()/120 * this->speedZoom));
+	event->accept();
 }

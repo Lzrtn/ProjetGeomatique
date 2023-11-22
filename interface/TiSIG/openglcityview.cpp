@@ -121,13 +121,29 @@ void OpenGLcityView::setVisible(bool visible)
 		timer.stop();
 }
 
+
+///////////////////////////  bind events  /////////////////////////////////////////////
 void OpenGLcityView::keyPressEvent(QKeyEvent *event)
 {
 	this->controls.keyPressEvent(event, true);
 }
-
 void OpenGLcityView::keyReleaseEvent(QKeyEvent *event)
 {
 	this->controls.keyPressEvent(event, false);
 }
-
+void OpenGLcityView::mousePressEvent(QMouseEvent *event)
+{
+	this->controls.mousePressEvent(event, true);
+}
+void OpenGLcityView::mouseReleaseEvent(QMouseEvent *event)
+{
+	this->controls.mousePressEvent(event, false);
+}
+void OpenGLcityView::mouseMoveEvent(QMouseEvent *event)
+{
+	this->controls.mouseMoveEvent(event);
+}
+void OpenGLcityView::wheelEvent(QWheelEvent *event)
+{
+	this->controls.wheelEvent(event);
+}
