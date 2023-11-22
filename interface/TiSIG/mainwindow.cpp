@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include "helpwindow.h"
 #include "dataflowwindow.h"
-#include <iostream>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,8 +28,20 @@ MainWindow::MainWindow(QWidget *parent)
     // Connecting help action
     connect(ui->action_help, &QAction::triggered, this, &MainWindow::OnActionHelpClicked);
 
-    // Connecting addd2ddataflow action
+    // Connecting add2ddataflow action
     connect(ui->action_add2DDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DDataFlowClicked);
+
+    // Connecting add2dvectorlayer action and add3dvectorlayer action
+    connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVectorLayerClicked);
+    connect(ui->action_add3DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVectorLayerClicked);
+
+    // Connecting add2drastorlayer action and add3drastorlayer action
+    connect(ui->action_add2DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastorLayerClicked);
+    connect(ui->action_add3DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastorLayerClicked);
+
+    // Connecting add3dmodel action
+    connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::OnAction3DModelClicked);
+
 }
 
 MainWindow::~MainWindow()
@@ -75,3 +87,25 @@ void MainWindow::OnAction2DDataFlowClicked()
     dataflowwindow.setModal(true);
     dataflowwindow.exec();
 }
+
+std::string MainWindow::OnActionVectorLayerClicked()
+{
+    QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "/home", tr("ShapeFile (*.shp)"));
+    std::cout<<fileNameVectorLayer.toStdString()<<std::endl;
+    return fileNameVectorLayer.toStdString();
+}
+
+std::string MainWindow::OnActionRastorLayerClicked()
+{
+    QString fileNameRastorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données raster"), "/home", tr("GeoTIFF (*.tif)"));
+    std::cout<<fileNameRastorLayer.toStdString()<<std::endl;
+    return fileNameRastorLayer.toStdString();
+}
+
+std::string MainWindow::OnAction3DModelClicked()
+{
+    QString fileName3Dmodel = QFileDialog::getOpenFileName(this, tr("Ouvrir un modèle 3D"), "/home", tr("Modèle 3D (*.gml *.asc)"));
+    std::cout<<fileName3Dmodel.toStdString()<<std::endl;
+    return fileName3Dmodel.toStdString();
+}
+
