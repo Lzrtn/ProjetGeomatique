@@ -2,7 +2,15 @@
 #define SHAPEFILE_H
 #include <iostream>
 #include <vector>
-
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QGraphicsPolygonItem>
+#include <QApplication>
+#include <QWidget>
+#include <QPointF>
+#include <QCheckBox>
+#include <QColor>
+#include <pqxx/pqxx>
 
 class Shapefile
 {
@@ -52,6 +60,8 @@ public:
     * @returns std::vector<float> [Xmin,Ymin,Xmax,Ymax]
     */
    std::vector<float> getBoundingBox();
+
+   QGraphicsItemGroup * plotShapefile(pqxx::result rowbis, QGraphicsScene *scene);
 
 private:
     /**

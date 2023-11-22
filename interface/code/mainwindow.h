@@ -42,6 +42,13 @@ public:
     bool getMode() const;
 
     /**
+     * @brief Get the ui
+     * @return Ui::MainWindow *
+     */
+    Ui::MainWindow * getUi() const;
+
+
+    /**
      * @brief Function to add Layer to the ListWidget
      */
     void addLayerToListWidget(int, Layer &layer);

@@ -49,24 +49,42 @@ std::vector<QVector <QLineF>> Transformation::JSONtoCoordsLIN(std::string line)
     // Utilisez json::parse pour convertir la chaîne JSON en un objet JSON explicite
     nlohmann::json lineJSON = nlohmann::json::parse(line);
     std::string type = lineJSON["type"];
-    for (int i=0; i < lineJSON["coordinates"].size();i++)
-    {
+    if (type=="MultiLineString"){
+        for (int i=0; i < lineJSON["coordinates"].size();i++)
+        {
 
-        if(lineJSON["coordinates"][i].size()>3){
-            QVector <QLineF> lineCoordinates;
-            //std::cout<<"premiere boucle, la polyligne est : "<<lineJSON["coordinates"][i]<<std::endl;
-            for (int j =1; j<lineJSON["coordinates"][i].size(); j++)
-            {
-                //std::cout<<"deuxième boucle, le node est : "<<lineJSON["coordinates"][i][j]<<std::endl;
-                double x = lineJSON["coordinates"][i][j][0];
-                double y = lineJSON["coordinates"][i][j][1];
-                double xprec = lineJSON["coordinates"][i][j-1][0];
-                double yprec = lineJSON["coordinates"][i][j-1][1];
-                QLineF segmentToPlot(QPointF(xprec, -yprec),QPointF(x, -y));
-                lineCoordinates.push_back(segmentToPlot);
+            if(lineJSON["coordinates"][i].size()>3){
+                QVector <QLineF> lineCoordinates;
+                //std::cout<<"premiere boucle, la polyligne est : "<<lineJSON["coordinates"][i]<<std::endl;
+                for (int j =1; j<lineJSON["coordinates"][i].size(); j++)
+                {
+                    //std::cout<<"deuxième boucle, le node est : "<<lineJSON["coordinates"][i][j]<<std::endl;
+                    double x = lineJSON["coordinates"][i][j][0];
+                    double y = lineJSON["coordinates"][i][j][1];
+                    double xprec = lineJSON["coordinates"][i][j-1][0];
+                    double yprec = lineJSON["coordinates"][i][j-1][1];
+                    QLineF segmentToPlot(QPointF(xprec, -yprec),QPointF(x, -y));
+                    lineCoordinates.push_back(segmentToPlot);
+                }
+                liste_de_polyligne.push_back(lineCoordinates);
             }
-            liste_de_polyligne.push_back(lineCoordinates);
         }
+    }
+    else if (type == "LineString"){
+        QVector <QLineF> lineCoordinates;
+        //std::cout<<"premiere boucle, la polyligne est : "<<lineJSON["coordinates"][i]<<std::endl;
+        for (int j =1; j<lineJSON["coordinates"].size(); j++)
+        {
+            //std::cout<<"deuxième boucle, le node est : "<<lineJSON["coordinates"][i][j]<<std::endl;
+            double x = lineJSON["coordinates"][j][0];
+            double y = lineJSON["coordinates"][j][1];
+            double xprec = lineJSON["coordinates"][j-1][0];
+            double yprec = lineJSON["coordinates"][j-1][1];
+            QLineF segmentToPlot(QPointF(xprec, -yprec),QPointF(x, -y));
+            lineCoordinates.push_back(segmentToPlot);
+        }
+        liste_de_polyligne.push_back(lineCoordinates);
+
     }
     return liste_de_polyligne;
 }
