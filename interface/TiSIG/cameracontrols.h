@@ -3,20 +3,32 @@
 
 #include "camera.h"
 
+#include <QOpenGLWidget>
+
 class CameraControls
 {
 public:
 	CameraControls();
 
-	void setCamera( Camera * camera ) { this->camera = camera; };
-	void setQWidget(QWidget * widget) { this->widget = widget; };
+	void setCamera(Camera *camera) { this->camera = camera; };
 
-	void update(const float dt);
+	bool update(const float dt);
+
+	void keyPressEvent(QKeyEvent *e, bool pressed);
+
+	void reset();
 
 private:
 
 	Camera * camera;
-	QWidget * widget;
+
+	std::map<std::string, bool> keysPressed;
+
+	float speedNav2D = 0.008;
+
+private slots:
+	void mousePressEvent(QMouseEvent *e);	// same function as in qopenglwidget. Use same name (camelCase)
+	void mouseReleaseEvent(QMouseEvent *e); // idem
 };
 
 #endif // CAMERACONTROLS_H

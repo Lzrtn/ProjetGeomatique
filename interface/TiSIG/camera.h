@@ -39,6 +39,10 @@ public:
 		if (recomputeMVP) this->ComputeMPV();
 	}
 
+	void move(const QVector3D & v) {
+		this->position += v;
+	}
+
 
 private:
 	/**

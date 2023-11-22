@@ -1,5 +1,8 @@
 #include "openglcityview.h"
 
+#include <iostream>
+#include <QKeyEvent>
+
 OpenGLcityView::~OpenGLcityView()
 {
 	// Make sure the context is current when deleting the texture,
@@ -26,6 +29,8 @@ void OpenGLcityView::initializeGL()
 	this->AddBuilding(0, Building3DFactory(3));
 
 	this->camera.setAngleV(0);
+
+	this->controls.setCamera(&this->camera);
 }
 
 void OpenGLcityView::InitShaders()
@@ -47,13 +52,16 @@ void OpenGLcityView::InitShaders()
 		this->close();
 }
 
-void OpenGLcityView::timerEvent(QTimerEvent *e)
+void OpenGLcityView::timerEvent(QTimerEvent* /*e*/)
 {
-	float currentTime = (std::chrono::steady_clock::now() - this->timeStart).count();
+	float currentTime = (std::chrono::steady_clock::now() - this->timeStart).count() / 1e6;
 	float dt = currentTime - lastTimeUpdate;
 	lastTimeUpdate = currentTime;
-	this->update();
-	this->controls.update(dt);
+	// if dt is too hire than timerDuration (stop and restart)
+	if (dt > this->timerDuration * 2)
+		dt = 0 * this->timerDuration * 2;
+	if (this->controls.update(dt) && this->isValid())
+		this->update();
 }
 
 void OpenGLcityView::AddBuilding(const int id, const Building3DFactory &buildingFactory)
@@ -96,16 +104,30 @@ void OpenGLcityView::paintGL()
 	}
 }
 
+
 void OpenGLcityView::setVisible(bool visible)
 {
+	this->QOpenGLWidget::setVisible(visible);
 	if (visible)
 	{
 		this->timeStart = std::chrono::steady_clock::now();
 		this->lastTimeUpdate = 0;
-		timer.start(15, this); // run this->timerEvent every n msec
+		timer.start(this->timerDuration, this); // run this->timerEvent every n msec
+		this->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+		this->setFocus();
+		this->controls.reset();
 	}
 	else
-	{
 		timer.stop();
-	}
 }
+
+void OpenGLcityView::keyPressEvent(QKeyEvent *event)
+{
+	this->controls.keyPressEvent(event, true);
+}
+
+void OpenGLcityView::keyReleaseEvent(QKeyEvent *event)
+{
+	this->controls.keyPressEvent(event, false);
+}
+
