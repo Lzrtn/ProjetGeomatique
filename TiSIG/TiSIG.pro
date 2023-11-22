@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
 
-SUBDIRS += TiSIG \
+SUBDIRS += src \
            qttest \
            googletest
