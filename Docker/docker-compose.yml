@@ -1,5 +1,0 @@
-services:
-  dbtisig:
-    build: .
-    container_name: database-tisig
-
