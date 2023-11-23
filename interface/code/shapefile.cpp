@@ -1,10 +1,12 @@
 #include <iostream>
 #include <string>
+
 #include <gdal/ogrsf_frmts.h>
 #include <postgresql/libpq-fe.h>
-#include <string>
+
 #include <ogr_api.h>
 #include <ogrsf_frmts.h>
+
 #include <gdal/gdal.h>
 #include <gdal/ogr_api.h>
 

@@ -7,6 +7,12 @@ Layer::Layer(const QString& name, bool isVisible, QGraphicsItemGroup* layerGroup
 
 }
 
+
+Layer::~Layer() {
+    delete layerItem;
+    delete layerWidget;
+}
+
 QString Layer::getLayerName() const {
     return name;
 }
@@ -23,3 +29,4 @@ void Layer::setLayerVisible(bool m_visible) {
 QGraphicsItemGroup* Layer::getLayerGroup() const {
     return layerGroup;
 }
+

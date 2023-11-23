@@ -70,16 +70,27 @@ MainWindow::MainWindow(QWidget *parent)
     // Connection action "Add Vector File"
     connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionAddShpFileClicked);
     ipAdress = ipAdress_d;
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    for(auto pair: layerList) {
+    delete scene;
+
+    for(auto pair: layerList)
+    {
         delete pair.second;
         layerList.erase(pair.first);
     }
+
+    for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
+    {
+        delete item;
+    }
+
 }
+
 
 Ui::MainWindow * MainWindow::getUi() const
 {
@@ -119,6 +130,7 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 
 void MainWindow::OnActionAddShpFileClicked()
 {
+
     // PostGreSQL Connection to the first database
 
     DbManager test("database2D", ipAdress);
@@ -133,10 +145,16 @@ void MainWindow::OnActionAddShpFileClicked()
         exit(1);
     }
     //import de deux shapefiles dans la base de données
-    std::string path1 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/pointhasard/pointsLyon.shp";
+
+    std::string path_fredo = "/home/fredo/Documents/projet_miniSIG/ProjetGeomatique/DONNEES_BDTOPO";
+    std::string path_vicouille = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO";
+
+    //import d'un shapefile dans la base de données
+    std::string path1 = path_fredo + "/Bati/Bati_Lyon5eme.shp";
     Shapefile essai1 = Shapefile(path1);
-    std::string path2 = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO/TronconRoute/TronconRoute_Lyon5eme.shp";
+    std::string path2 = path_fredo + "/TronconRoute/TronconRoute_Lyon5eme.shp";
     Shapefile essai2 = Shapefile(path2);
+
     essai1.import_to_db(test, 2154);
     essai2.import_to_db(test, 2154);
 
@@ -154,6 +172,8 @@ void MainWindow::OnActionAddShpFileClicked()
     layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
     addLayerToListWidget(index, *layerList[index]);
     index++;
+
+
 }
 
 void MainWindow::OnButtonZoomIn()
@@ -246,17 +266,67 @@ void MainWindow::OnButtonZoomOut()
 
 void MainWindow::OnButtonZoomFull()
 {
-    ui->graphicsView_window2D->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);
+
+    // Zoom sur l'ensemble des couches visibles
+    QRectF visibleItemsRect;
+    foreach (QGraphicsItem *item, scene->items()) {
+        if (item->isVisible())
+            visibleItemsRect = visibleItemsRect.united(item->sceneBoundingRect());
+    }
+
+    ui->graphicsView_window2D->fitInView(visibleItemsRect,Qt::KeepAspectRatio);
+
+
+
+    qreal currentScale = ui->graphicsView_window2D->transform().m11();
+
+        // Parcourir tous les éléments de la scène
+        for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
+            QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+            QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+            QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
+
+            if (polyItem) {
+                // Ajuster la largeur du trait en fonction du facteur de zoom
+                qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                // Mettre à jour la largeur du trait
+                QPen pen = polyItem->pen();
+                pen.setWidthF(adjustedWidth);
+                polyItem->setPen(pen);
+            }
+
+
+            if (lineItem) {
+                // Ajuster la largeur du trait en fonction du facteur de zoom
+                qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                // Mettre à jour la largeur du trait
+                QPen pen = lineItem->pen();
+                pen.setWidthF(adjustedWidth);
+                lineItem->setPen(pen);
+            }
+
+            if (pointItem) {
+                // Ajuster la largeur du trait en fonction du facteur de zoom
+                qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                // Mettre à jour la largeur du trait
+                QPen pen = pointItem->pen();
+                pen.setWidthF(adjustedWidth);
+                pointItem->setPen(pen);
+            }
+        }
 }
 
 void MainWindow::addLayerToListWidget(int index, Layer &layer) {
 
     // Créez un nouvel élément pour la couche
-    QListWidgetItem *layerItem = new QListWidgetItem(ui->listeWidget_layersList);
+    layer.layerItem = new QListWidgetItem(ui->listeWidget_layersList);
 
     // Créez un widget personnalisé pour cet élément (contenant un label et une case à cocher)
-    QWidget *layerWidget = new QWidget();
-    QHBoxLayout *layout = new QHBoxLayout(layerWidget);
+    layer.layerWidget = new QWidget();
+    QHBoxLayout *layout = new QHBoxLayout(layer.layerWidget);
 
     QCheckBox *visibilityCheckbox = new QCheckBox("");
     visibilityCheckbox->setChecked(layer.isLayerVisible());
@@ -278,9 +348,9 @@ void MainWindow::addLayerToListWidget(int index, Layer &layer) {
     layout->setSpacing(10); // Écart entre la checkbox et le nom de la couche
 
 
-    layerWidget->setLayout(layout);
-    layerItem->setSizeHint(layerWidget->sizeHint());
+    layer.layerWidget->setLayout(layout);
+    layer.layerItem->setSizeHint(layer.layerWidget->sizeHint());
 
-    ui->listeWidget_layersList->setItemWidget(layerItem, layerWidget);
+    ui->listeWidget_layersList->setItemWidget(layer.layerItem, layer.layerWidget);
 
 }
