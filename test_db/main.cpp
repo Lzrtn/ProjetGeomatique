@@ -8,7 +8,7 @@
 int main() {
     try {
         // Creating container
-        std::string pathDockerFile = "../docker-compose.yml";
+        std::string pathDockerFile = "../Docker/docker-compose.yml";
         Docker docker(pathDockerFile);
         // Get the Ip Adress
         std::string ipAdress = docker.getIpAdress();
