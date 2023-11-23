@@ -2,8 +2,14 @@ QT +=testlib
 CONFIG += testlib
 
 SOURCES += \
+        bddgoogle.cpp \
+        executorGoogle.cpp \
         google.cpp \
-        main.cpp
+        main.cpp \
+        $$PWD/../src/outils/dbmanager.cpp \
+        $$PWD/../src/outils/docker.cpp \
+        $$PWD/../src/outils/executor.cpp \
+
 
 
 # install
