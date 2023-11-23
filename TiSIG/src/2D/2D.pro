@@ -8,20 +8,36 @@ CONFIG += c++11
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+# Ajouter les chemins des en-têtes et des bibliothèques GDAL
+INCLUDEPATH += /usr/include/gdal
+LIBS += -lgdal
+LIBS += -lpq
+
+INCLUDEPATH += /usr/include
+LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
+
+include(../outils/outils.pri)
+
 SOURCES += \
     building3d.cpp \
     dataflowwindow.cpp \
     helpwindow.cpp \
     main.cpp \
     mainwindow.cpp \
-    openglcityview.cpp
+    openglcityview.cpp \
+    layer.cpp \
+    shapefile.cpp \
+    transformation.cpp
 
 HEADERS += \
     dataflowwindow.h \
     helpwindow.h \
     building3d.h \
     mainwindow.h \
-    openglcityview.h
+    openglcityview.h \
+    layer.h \
+    shapefile.h \
+    transformation.h
 
 FORMS += \
     dataflowwindow.ui \
@@ -32,6 +48,8 @@ RESOURCES += \
     shaders.qrc \
     textures.qrc \
 
+# Ajoutez les flags de compilation nécessaires pour C++
+QMAKE_CXXFLAGS += -std=c++17
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

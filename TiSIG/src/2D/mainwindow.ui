@@ -363,6 +363,26 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="btn_cameraRotation">
+         <property name="toolTip">
+          <string>Rotation</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../icons/Rotation.png</normaloff>../icons/Rotation.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -399,7 +419,7 @@
        <item row="0" column="1" colspan="2">
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page_2D">
           <layout class="QGridLayout" name="gridLayout_4">
@@ -541,7 +561,7 @@
             </spacer>
            </item>
            <item row="0" column="0" colspan="5">
-            <widget class="OpenGLcityView" name="openGLWidget_window3D"/>
+            <widget class="QOpenGLWidget" name="openGLWidget_window3D"/>
            </item>
           </layout>
          </widget>
@@ -565,7 +585,6 @@
     <property name="title">
      <string>TiSIG</string>
     </property>
-    <addaction name="action_help"/>
    </widget>
    <widget class="QMenu" name="menu_layers">
     <property name="title">
@@ -577,7 +596,7 @@
      </property>
      <addaction name="action_add2DVectorLayer"/>
      <addaction name="action_add2DRastorLayer"/>
-     <addaction name="action_add2DDataFlow"/>
+     <addaction name="action_add2DDataStream"/>
      <addaction name="separator"/>
      <addaction name="action_add3DVectorLayer"/>
      <addaction name="action_add3DRastorLayer"/>
@@ -598,7 +617,7 @@
     <string>Ajouter une couche Raster</string>
    </property>
   </action>
-  <action name="action_add2DDataFlow">
+  <action name="action_add2DDataStream">
    <property name="text">
     <string>Ajouter un flux (WMS, WFS, WMTS)</string>
    </property>
@@ -618,53 +637,7 @@
     <string>Ajouter un modèle 3D</string>
    </property>
   </action>
-  <action name="action_help">
-   <property name="text">
-    <string>Aide</string>
-   </property>
-  </action>
-  <action name="action_Mode_2D">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>--- Mode 2D ---</string>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::NoRole</enum>
-   </property>
-  </action>
-  <action name="action_Mode_3D">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>--- Mode 3D ---</string>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::NoRole</enum>
-   </property>
-  </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>OpenGLcityView</class>
-   <extends>QOpenGLWidget</extends>
-   <header>openglcityview.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

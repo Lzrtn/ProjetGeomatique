@@ -57,7 +57,6 @@ public:
      */
     pqxx::result getResult();
 
-private:
     /**
      * @brief connString std::string object containing the data to connect to a database
      */

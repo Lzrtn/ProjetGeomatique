@@ -38,7 +38,6 @@ std::string DbManager::getString(){
 pqxx::result DbManager::getResult(){
     return result;
 }
-
 std::string DbManager::ParseResult(){
     std::string parsed;
     for (const auto &row : result){
