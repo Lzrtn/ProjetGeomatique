@@ -30,7 +30,9 @@ SUBDIRS += 2D \
 #    error("Le dossier de destination n'existe pas: $$MKDIR_DESTINATION")
 #}
 
+#copy data and icons
 copydata.commands = $(COPY_DIR) $$PWD/icons $$OUT_PWD
+copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
 first.depends = $(first) copydata
 export(first.depends)
 export(copydata.commands)
