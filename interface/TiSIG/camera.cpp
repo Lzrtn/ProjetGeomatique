@@ -1,6 +1,5 @@
 #include "camera.h"
 
-#include <iostream>
 #include <cmath>
 
 Camera::Camera() :
@@ -22,22 +21,15 @@ QMatrix4x4 Camera::ComputeMPV()
 	matView.rotate(this->angleH, {0,0,-1});
 	matView.translate(-this->position);
 
-	/*
-	std::cout << "camera:\tpos(" << this->position.x() << " " << this->position.y() << " " << this->position.z() << ")"
-			  << "\tzoom " << this->zoom << "\tangleH " << this->angleH << "\tangleV " << this->angleV << std::endl;
-	*/
-
 	// matModel = identity
 	this->matMVP = this->matProjection * matView;
 	return this->getMVP();
 }
 
-void Camera::ResizeView(int w, int h)
+void Camera::ResizeView(int width, int height)
 {
-
-	//std::cout << w << " " << h << std::endl;
-	this->pxRatio = (w < h ? w : h);
-	qreal aspect_ratio = qreal(w) / qreal(h ? h : 1);
+	this->pxRatio = (width < height ? width : height);
+	qreal aspect_ratio = qreal(width) / qreal(height ? height : 1);
 
 	const qreal zNear = 3.0, zFar = 1000, fov = 45.0;
 	this->matProjection.setToIdentity();

@@ -1,5 +1,4 @@
 #include "cameracontrols.h"
-#include <iostream>
 
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -74,15 +73,12 @@ void CameraControls::keyPressEvent(QKeyEvent *event, bool pressed)
 
 void CameraControls::mousePressEvent(QMouseEvent * event, bool /*pressed*/)
 {
-	this->lastPosClick = event->pos();//{event->x(), event->y()};
+	this->lastPosClick = event->pos();
 }
 
 void CameraControls::mouseMoveEvent(QMouseEvent *event)
 {
 	QPoint delta = this->lastPosClick - event->pos();
-
-	//std::cout << "move" //<< "\tx:" << event->pos().x() << "\ty:" << event->pos().y()
-		//	  << "\tdx:" << delta.x() << "\tdy:" << delta.y() << std::endl;
 
 	if (this->keysPressed["ctrl"])
 		this->camera->turn(
@@ -104,6 +100,6 @@ void CameraControls::wheelEvent(QWheelEvent *event)
 	if (this->keysPressed["ctrl"])
 		this->camera->setZoom(this->camera->getZoom() * pow(2, event->angleDelta().y()/120 * this->speedZoom));
 	else
-		this->camera->move({0, 0, this->speedMouseZ * event->angleDelta().y() / 120});
+		this->camera->move({0, 0, -this->speedMouseZ * event->angleDelta().y() / 120});
 	event->accept();
 }

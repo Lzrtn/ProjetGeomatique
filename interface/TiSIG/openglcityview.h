@@ -16,6 +16,9 @@
 
 #include <map>
 
+/**
+ * @brief The OpenGLcityView class is a widget that can display buildings in 3D
+ */
 class OpenGLcityView : public QOpenGLWidget, protected QOpenGLFunctions
 {
 	Q_OBJECT
