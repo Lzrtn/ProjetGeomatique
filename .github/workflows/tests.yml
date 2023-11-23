@@ -16,7 +16,7 @@ jobs:
       - name: qmake
         run: qmake TiSIG/src/src.pro
       - name: make
-        run: make
+        run: make src
 
 
   # qtests:
