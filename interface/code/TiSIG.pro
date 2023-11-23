@@ -21,17 +21,26 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     shapefile.cpp \
-    transformation.cpp
+    transformation.cpp\
+    ../../test_db/dbmanager.cpp\
+    ../../test_db/executor.cpp\
+    ../../test_db/docker.cpp
 
 
 HEADERS += \
     layer.h \
     mainwindow.h \
     shapefile.h \
-    transformation.h
+    transformation.h\
+    ../../test_db/dbmanager.h\
+    ../../test_db/executor.h\
+    ../../test_db/docker.h
 
 FORMS += \
     mainwindow.ui
+
+# Ajoutez les flags de compilation nécessaires pour C++
+QMAKE_CXXFLAGS += -std=c++17
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

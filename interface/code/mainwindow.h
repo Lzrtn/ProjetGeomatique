@@ -62,6 +62,7 @@ private:
 
     QGraphicsScene *scene;
     std::map <int, Layer*> layerList;
+    std::string ipAdress;
 
 private slots:
 
