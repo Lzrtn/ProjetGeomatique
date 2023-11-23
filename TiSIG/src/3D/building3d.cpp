@@ -388,7 +388,7 @@ Building3DFactory::Building3DFactory(const int version)
 		break;
 	case 4:
 	default:
-		objPath = "/home/formation/Bureau/miniPrjSIG/TSI23_minisig/interface/TiSIG/cube.obj";
+		objPath = "/home/formation/Bureau/miniPrjSIG/TSI23_minisig/TiSIG/src/3D/cube.obj";
 		textPath = ":/cube.png";
 		modeObj = true;
 	}
