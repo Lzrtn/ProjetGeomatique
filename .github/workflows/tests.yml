@@ -67,7 +67,7 @@ jobs:
         run: sudo usermod -a -G docker $USER      
 
       - name: qmake googletest
-        run: qmake interface/googletest/googletest.pro
+        run: qmake TiSIG/googletest/googletest.pro
       - name: make googletest
         run: make googletest
 
