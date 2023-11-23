@@ -662,7 +662,7 @@
   <customwidget>
    <class>OpenGLcityView</class>
    <extends>QOpenGLWidget</extends>
-   <header>openglcityview.h</header>
+   <header>../3D/openglcityview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

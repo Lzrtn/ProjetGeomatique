@@ -9,29 +9,16 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    building3d.cpp \
-    dataflowwindow.cpp \
-    helpwindow.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    openglcityview.cpp
+    3D/building3d.cpp \
+    3D/openglcityview.cpp
 
 HEADERS += \
-    dataflowwindow.h \
-    helpwindow.h \
-    building3d.h \
-    mainwindow.h \
-    openglcityview.h
-
-FORMS += \
-    dataflowwindow.ui \
-    helpwindow.ui \
-    mainwindow.ui
+    3D/building3d.h \
+    3D/openglcityview.h
 
 RESOURCES += \
-    shaders.qrc \
-    textures.qrc \
-
+    3D/shaders.qrc \
+    3D/textures.qrc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
