@@ -16,15 +16,15 @@
 #include "helpwindow.h"
 #include "dataflowwindow.h"
 
-#include "layer.h"
-#include "transformation.h"
-#include "shapefile.h"
+#include "2D/layer.h"
+#include "2D/transformation.h"
+#include "2D/shapefile.h"
 #include "../outils/dbmanager.h"
 #include "../outils/docker.h"
 
 //Initialisation du Docker
 // Creating container
-std::string pathDockerFile = "../data/Docker/docker-compose.yml";
+std::string pathDockerFile = "../src/data/Docker/docker-compose.yml";
 Docker docker(pathDockerFile);
 // Get the Ip Adress
 const std::string ipAdress_d = docker.getIpAdress();
@@ -38,14 +38,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Initialisation in mode 2D //
     ui->stackedWidget->setCurrentIndex(mode);
-    ui->btn_cameraRotation->setVisible(mode);
     ui->label_attributeInformation->setVisible(!mode);
     ui->tableWidget_layerAttributeInformation->setVisible(!mode);
         // Action 2D
     ui->action_add2DVectorLayer->setEnabled(!mode);
     ui->action_add2DRastorLayer->setEnabled(!mode);
     ui->action_add2DDataFlow->setEnabled(!mode);
-    //ui->action_add2DDataStream->setEnabled(!mode);
         // Actions 3D
     ui->action_add3DVectorLayer->setEnabled(mode);
     ui->action_add3DRastorLayer->setEnabled(mode);
@@ -89,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btn_zoomFull, &QPushButton::clicked, this, &MainWindow::OnButtonZoomFull);
 
     // Connection action "Add Vector File"
-    connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionAddShpFileClicked);
+    //connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionAddShpFileClicked);
     ipAdress = ipAdress_d;
 
 }
@@ -121,21 +119,15 @@ Ui::MainWindow * MainWindow::getUi() const
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
     mode = !mode;
-    /*mode = !mode;
     ui->stackedWidget->setCurrentIndex(mode);
 
-    ui->action_add2DVectorLayer->setEnabled(!mode);
-    ui->action_add2DRastorLayer->setEnabled(!mode);
-    ui->action_add2DDataFlow->setEnabled(!mode);*/
-
     ui->stackedWidget->setCurrentIndex(mode);
-    ui->btn_cameraRotation->setVisible(mode);
     ui->tableWidget_layerAttributeInformation->setVisible(!mode);
     ui->label_attributeInformation->setVisible(!mode);
 
     ui->action_add2DVectorLayer->setEnabled(!mode);
     ui->action_add2DRastorLayer->setEnabled(!mode);
-    ui->action_add2DDataStream->setEnabled(!mode);
+    ui->action_add2DDataFlow->setEnabled(!mode);
 
     ui->action_add3DVectorLayer->setEnabled(mode);
     ui->action_add3DRastorLayer->setEnabled(mode);
@@ -143,14 +135,12 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 
     this->update();
 
-    ui->btn_cameraRotation->update();
     ui->stackedWidget->update();
     ui->graphicsView_window2D->update();
     ui->openGLWidget_window3D->update();
 
     this->repaint();
 
-    ui->btn_cameraRotation->repaint();
     ui->stackedWidget->repaint();
     ui->graphicsView_window2D->repaint();
     ui->openGLWidget_window3D->repaint();
@@ -173,8 +163,9 @@ void MainWindow::OnAction2DDataFlowClicked()
 std::string MainWindow::OnActionVectorLayerClicked()
 {
     QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("ShapeFile (*.shp)"));
-    std::cout<<fileNameVectorLayer.toStdString()<<std::endl;
-    return fileNameVectorLayer.toStdString();
+    std::string path = fileNameVectorLayer.toStdString();
+    this->AddShpFileClicked(path);
+    return path;
 }
 
 std::string MainWindow::OnActionRastorLayerClicked()
@@ -192,13 +183,10 @@ std::string MainWindow::OnAction3DModelClicked()
 }
 
 
-void MainWindow::OnActionAddShpFileClicked()
+void MainWindow::AddShpFileClicked(std::string path)
 {
-
     // PostGreSQL Connection to the first database
-
     DbManager test("database2D", ipAdress);
-    std::cout << test.getString()<< std::endl;
     pqxx::connection conn(test.getString());
 
     if (conn.is_open()) {
@@ -208,29 +196,16 @@ void MainWindow::OnActionAddShpFileClicked()
         std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
         exit(1);
     }
-    //import de deux shapefiles dans la base de données
+    //import du shapefile dans la base de données
+    Shapefile essai1 = Shapefile(path);
 
-    std::string path_base = "/home/formation/Documents/ProjetGeomatique/TiSIG/src/data/DONNEES_BDTOPO";
-    //import d'un shapefile dans la base de données
-    std::string path1 = path_base + "/Bati/Bati_Lyon5eme.shp";
-    Shapefile essai1 = Shapefile(path1);
-    std::string path2 = path_base + "/TronconRoute/TronconRoute_Lyon5eme.shp";
-    Shapefile essai2 = Shapefile(path2);
 
     essai1.import_to_db(test, 2154);
-    essai2.import_to_db(test, 2154);
 
     //affichage des shapefiles importé
     test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1.getTableName()+";");
     pqxx::result rowbis =test.getResult();
     QGraphicsItemGroup *layerGroup = essai1.plotShapefile(rowbis,scene);
-    layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
-    addLayerToListWidget(index, *layerList[index]);
-    index++;
-
-    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai2.getTableName()+";");
-    pqxx::result rowter =test.getResult();
-    layerGroup =essai1.plotShapefile(rowter,scene);
     layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
     addLayerToListWidget(index, *layerList[index]);
     index++;

@@ -7,10 +7,10 @@
 #include <QPushButton>
 #include <QAction>
 #include <QFileDialog>
+#include <QGraphicsScene>
 
 #include <iostream>
-
-#include "layer.h"
+#include "2D/layer.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -108,7 +108,7 @@ private slots:
     *
     *
     */
-    void OnActionAddShpFileClicked();
+    void AddShpFileClicked(std::string path);
 
   /**
    * @brief Function to show help window
