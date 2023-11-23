@@ -34,6 +34,11 @@ void DbManager::Request(std::string request){
 std::string DbManager::getString(){
     return connString;
 }
+
+pqxx::result DbManager::getResult(){
+    return result;
+}
+
 std::string DbManager::ParseResult(){
     std::string parsed;
     for (const auto &row : result){

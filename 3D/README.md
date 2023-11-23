@@ -42,7 +42,10 @@ CREATE EXTENSION postgis_sfcgal;
 
 ### Erreurs rencontrées
 - ERROR:  n'a pas pu accéder au fichier « $libdir/postgis-3 » : Aucun fichier ou dossier de ce type
-- ERROR:  n'a pas pu ouvrir le fichier de contrôle d'extension « /usr/share/postgresql/14/extension/postgis.control » : Aucun fichier ou dossier de ce type 
+- ERROR:  n'a pas pu ouvrir le fichier de contrôle d'extension « /usr/share/postgresql/14/extension/postgis.control » : Aucun fichier ou dossier de ce type
+
+sudo -u user_name psql db_name
+ALTER USER user_name WITH PASSWORD 'new_password';
 
 ## 3DCityDB
 - installation : 

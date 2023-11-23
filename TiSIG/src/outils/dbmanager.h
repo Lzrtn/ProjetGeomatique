@@ -37,20 +37,26 @@ public:
      */
     void Request(std::string request);
     /**
-     * @brief getString
-     * @return
+     * @brief Return connexion string to connect the database
+     * @return connection string to connect
      */
     std::string getString();
     /**
      * @brief Parses the result of the last query and returns it in std::string format
-     * @return
+     * @return results in a single string
      */
     std::string ParseResult();
     /**
      * @brief Parses the result ofthe last query and returns it in an array format.
-     * @return
+     * @return vector of vector of string containing the result
      */
     std::vector<std::vector<std::string>> ArrayParseResult();
+    /**
+     * @brief Get the result of the request
+     * @return Result of the request
+     */
+    pqxx::result getResult();
+
 private:
     /**
      * @brief connString std::string object containing the data to connect to a database
