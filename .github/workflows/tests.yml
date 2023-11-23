@@ -1,0 +1,88 @@
+name: Build and Test with qmake
+
+on:
+  push:
+    branches: [ "dev" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: jurplel/install-qt-action@v3
+
+      - name: qmake
+        run: qmake TiSIG/src/src.pro
+      - name: make
+        run: make src
+
+
+  # qtests:
+  #   # needs: build
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: jurplel/install-qt-action@v3
+  #     - name: Install xvfb
+  #       run: sudo apt-get install xvfb
+        
+  #     - name: qmake
+  #       run: qmake interface/qttest/qttest.pro
+  #     - name: make
+  #       run: make
+
+  #     - name: Run tests with xvfb-run
+  #       run: |
+  #         xvfb-run -a ./qttest
+  #         if [ $? -ne 0 ]; then
+  #           echo "Tests failed"
+  #           exit 1  # Définit le statut de sortie sur 1 pour indiquer un échec
+  #         fi
+          
+  googletests:
+    # needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: jurplel/install-qt-action@v3
+     
+      - name: install libgtest-dev
+        run: sudo apt-get install libgtest-dev
+      - name: Install xvfb
+        run: sudo apt-get install xvfb
+      - name: Install libpqxx-dev
+        run: sudo apt-get install libpqxx-dev
+
+      - name: copie yml pour build
+        run: mkdir /home/runner/work/ProjetGeomatique/Docker
+
+      - name: copie yml pour build
+        run: cp TiSIG/src/data/Docker/* /home/runner/work/ProjetGeomatique/Docker
+        
+      - name: Setup Docker
+        run: sudo usermod -a -G docker $USER      
+
+      - name: qmake googletest
+        run: qmake TiSIG/googletest/googletest.pro
+      - name: make googletest
+        run: make googletest
+
+      - name: Run tests with xvfb-run
+        run: xvfb-run -a ./googletest || true
+
+      - name: Run tests with xvfb-run
+        run: xvfb-run -a ./googletest
+
+      - name: Check test results
+        run: |
+          if xvfb-run -a ./googletest | grep -q "\[  PASSED  \] [0-9]* tests."; then
+            echo "Tests passed"
+          else
+            echo "Tests failed"
+            exit 1
+          fi    
+ 
