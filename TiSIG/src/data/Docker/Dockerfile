@@ -1,5 +1,5 @@
 # Utilisez une image de base avec PostgreSQL
-FROM postgres:15
+FROM postgis/postgis:16-3.4
 
 # Installez PostGIS
 RUN apt-get update \
