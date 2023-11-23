@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "../TiSIG/camera.cpp"
+#include "../src/3D/camera.cpp"
 
 TEST(camera_3D_motion, test_fail) {
 	//arrange
