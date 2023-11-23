@@ -1,11 +1,10 @@
-TEMPLATE = subdirs
+QT +=testlib
+CONFIG += testlib
 
-SUBDIRS += 2D \
-           3D \
-           interface \
+INCLUDEPATH += /usr/include
 
-
-
+include(outils/outils.pri)
+include(2D/2D.pri)
 ## Spécifiez le chemin relatif vers le dossier icons
 #DOSSIER_SOURCE = $$PWD/icons
 
@@ -22,7 +21,6 @@ SUBDIRS += 2D \
 
 #message("Chemin absolu du dossier source: $$PWD")
 #message("Chemin absolu du dossier de destination: $$OUT_PWD")
-
 #exists($$MKDIR_DESTINATION) {
 #    message("Le dossier de destination existe: $$MKDIR_DESTINATION")
 #} else {
@@ -36,3 +34,6 @@ first.depends = $(first) copydata
 export(first.depends)
 export(copydata.commands)
 QMAKE_EXTRA_TARGETS += first copydata
+
+# Ajoutez les flags de compilation nécessaires pour C++
+QMAKE_CXXFLAGS += -std=c++17

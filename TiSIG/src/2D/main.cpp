@@ -1,7 +1,7 @@
-#include "mainwindow.h"
+#include "2D/mainwindow.h"
 #include <QApplication>
 #include <string>
-#include "transformation.h"
+#include "2D/transformation.h"
 #include <pqxx/pqxx>
 #include <iostream>
 #include <QGraphicsView>
@@ -10,8 +10,8 @@
 #include <QApplication>
 #include <string>
 #include <algorithm>
-#include "../outils/dbmanager.h"
-#include "../outils/docker.h"
+#include "outils/dbmanager.h"
+#include "outils/docker.h"
 
 int main(int argc, char *argv[])
 

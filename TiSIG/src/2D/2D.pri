@@ -1,3 +1,6 @@
+INCLUDEPATH ''= $$system(pwd)/include
+DEPENDSPATH''= $$system(pwd)
+
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -16,37 +19,35 @@ LIBS += -lpq
 INCLUDEPATH += /usr/include
 LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
 
-include(../outils/outils.pri)
-
 SOURCES += \
-    building3d.cpp \
-    dataflowwindow.cpp \
-    helpwindow.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    openglcityview.cpp \
-    layer.cpp \
-    shapefile.cpp \
-    transformation.cpp
+    2D/building3d.cpp \
+    2D/dataflowwindow.cpp \
+    2D/helpwindow.cpp \
+    2D/main.cpp \
+    2D/mainwindow.cpp \
+    2D/openglcityview.cpp \
+    2D/layer.cpp \
+    2D/shapefile.cpp \
+    2D/transformation.cpp
 
 HEADERS += \
-    dataflowwindow.h \
-    helpwindow.h \
-    building3d.h \
-    mainwindow.h \
-    openglcityview.h \
-    layer.h \
-    shapefile.h \
-    transformation.h
+    2D/dataflowwindow.h \
+    2D/helpwindow.h \
+    2D/building3d.h \
+    2D/mainwindow.h \
+    2D/openglcityview.h \
+    2D/layer.h \
+    2D/shapefile.h \
+    2D/transformation.h
 
 FORMS += \
-    dataflowwindow.ui \
-    helpwindow.ui \
-    mainwindow.ui
+    2D/dataflowwindow.ui \
+    2D/helpwindow.ui \
+    2D/mainwindow.ui
 
 RESOURCES += \
-    shaders.qrc \
-    textures.qrc \
+    2D/shaders.qrc \
+    2D/textures.qrc \
 
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17
