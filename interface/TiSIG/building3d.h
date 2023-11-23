@@ -32,6 +32,22 @@ public:
 	 */
 	Building3D(std::vector<QVector3D> position, std::vector<QVector3D> normal,
 			std::vector<QVector2D> textCoord, std::string textPath);
+
+	/**
+	 * @brief
+	 * make a building with geometrics properties
+	 *
+	 * @warning currentry, param normal is not used in shader.
+	 * In future version, it will be used
+	 *
+	 * @throw exception if vertices have different sizes
+	 *
+	 * @param objPath:	vertices 3D of points of faces
+	 * @param normal:	vertices 3D of normals
+	 * @param textCord:	vertices 2D of points in texture
+	 * @param textPath:	path of texture image
+	 */
+	Building3D(const std::string &objPath, const std::string &textPath);
 	virtual ~Building3D();
 
 	/**
@@ -45,13 +61,21 @@ public:
 private:
 
 	/**
-	 * @brief initGeometryObj
+	 * @brief InitGeometryVectors
 	 * construct attribute arrayBuf with all coordinates data
 	 *
 	 * @param position, normal, textCord  geometric data
 	 */
-	void InitGeometryObj(const std::vector<QVector3D> &position, const std::vector<QVector3D> &normal,
+	bool InitGeometryVectors(const std::vector<QVector3D> &position, const std::vector<QVector3D> &normal,
 			const std::vector<QVector2D> &textCoord);
+
+	/**
+	 * @brief initGeometryObj
+	 * construct attribute arrayBuf with all coordinates data
+	 *
+	 * @param objPath
+	 */
+	bool InitGeometryObj(const std::string &objPath);
 
 	/**
 	 * @brief initTexture
@@ -88,6 +112,18 @@ public:
 			const std::string &textPath);
 
 	/**
+	 * @brief Building3DFactory produce buildings from this geometry
+	 *
+	 * All faces may have 3 points;
+	 *
+	 * @param objPath: path to .obj file
+	 * @param textPath: path of texture image. Only one image can be used
+	 */
+	Building3DFactory(
+			const std::string &objPath,
+			const std::string &textPath);
+
+	/**
 	 * @brief Building3DFactory produce buildings for test
 	 *
 	 * @param version: version of building (between 0 and 1 included)
@@ -107,7 +143,8 @@ private:
 	std::vector<QVector3D> normal;
 	std::vector<QVector2D> textCoord;
 	std::string textPath;
-
+	std::string objPath;
+	bool modeObj;
 };
 
 #endif // BUILDING3D_H

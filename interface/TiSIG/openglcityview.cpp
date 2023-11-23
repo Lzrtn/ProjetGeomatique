@@ -22,11 +22,11 @@ void OpenGLcityView::initializeGL()
 	this->InitShaders();
 
 	// ajout d'un batiment de test
-	//this->buildings[6] = new Building3D();
-	this->AddBuilding(5, Building3DFactory(0));
-	this->AddBuilding(156, Building3DFactory(1));
-	this->AddBuilding(4561, Building3DFactory(2));
-	this->AddBuilding(0, Building3DFactory(3));
+	//this->AddBuilding(5, Building3DFactory(0));
+	//this->AddBuilding(156, Building3DFactory(1));
+	//this->AddBuilding(4561, Building3DFactory(2));
+	//this->AddBuilding(0, Building3DFactory(3));
+	this->AddBuilding(1, Building3DFactory(4));
 
 	this->camera.setAngleV(0);
 
