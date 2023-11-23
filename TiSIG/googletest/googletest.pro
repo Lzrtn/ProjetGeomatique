@@ -3,7 +3,14 @@ CONFIG += testlib
 
 SOURCES += \
         google.cpp \
+        bddgoogle.cpp \
+        executorGoogle.cpp \
+        $$PWD/../src/outils/dbmanager.cpp \
+        $$PWD/../src/outils/docker.cpp \
+        $$PWD/../src/outils/executor.cpp \
         main.cpp
+#        bddgoogle.cpp \
+#        executorGoogle.cpp \
 
 
 # install
@@ -14,6 +21,7 @@ INSTALLS += target
 # Utilisez le chemin correct pour les bibliothèques et les en-têtes installés par Google Test
 INCLUDEPATH += /usr/include/gtest
 LIBS += -lgtest -lgtest_main
+LIBS += -lpqxx
 
 
 testlib.commands = ./googletest
