@@ -16,6 +16,9 @@
    - En [PascalCase](https://fr.wikipedia.org/wiki/Camel_case)
    - Doivent aussi avoir un sens
    - Les getters & setters sont quand même en camelCase (setValue, getValue...)
+ - Tous les objets de l'interface:
+   - En snake_camelCase (typeObj_nomObj)
+   - [Voir tous les objets](./interface/nom_objets.md)
 
 ## Formatage Doxygen pour fonctions : 
 ```cpp
