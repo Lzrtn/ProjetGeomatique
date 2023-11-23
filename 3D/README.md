@@ -1,5 +1,10 @@
 FAIT PAR HANNICK ET MATHEO
 
+# Flex
+![image](https://github.com/Lzrtn/ProjetGeomatique/assets/121936719/30d5537a-0336-4274-ae42-bbab7856bf0c)
+![image](https://github.com/Lzrtn/ProjetGeomatique/assets/121936719/d52f8d60-aa6c-4533-991b-dec7c7849015)
+
+
 ## Données Maquette 3D disponible ici :
 https://data.grandlyon.com/portail/fr/jeux-de-donnees/maquettes-3d-texturees-2015-communes-metropole-lyon/donnees
 
@@ -99,8 +104,7 @@ SELECT id, ST_ASGEOJSON(geometry), ST_ASGEOJSON(textureparam.texture_coordinates
 JOIN textureparam ON surface_geometry.id = textureparam.surface_geometry_id;
 ```
 
-
-
+(A CHANGE DEPUIS)
 
 
 
