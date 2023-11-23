@@ -124,6 +124,7 @@ int Shapefile::import_to_db(DbManager db_manager, const int epsg)
 
     // Loop through features and insert them into the database
     OGRFeature *poFeature;
+    std::string instruction_fill = "";
     while ((poFeature = poLayer->GetNextFeature()) != nullptr) {
         std::string instruction = "INSERT INTO "+table_name +"(" ;
         std::string fields;
@@ -152,19 +153,14 @@ int Shapefile::import_to_db(DbManager db_manager, const int epsg)
             poGeometry->exportToWkt(&wkt);
 
             // Build the SQL INSERT statement
-            std::string instruction_fill = instruction + fields+"geom) VALUES("+values+"ST_GeomFromText('" + std::string(wkt) + "', "+std::to_string(epsg)+"));";
-            std::cout<<instruction_fill<<"\n";
-            db_manager.Request(instruction_fill);
-        }
+            instruction_fill += instruction + fields+"geom) VALUES("+values+"ST_GeomFromText('" + std::string(wkt) + "', "+std::to_string(epsg)+"));";
 
+        }
 
         // Cleanup
         OGRFeature::DestroyFeature(poFeature);
     }
-
-
-    // Close the database connection
-    //PQfinish(conn);
+    db_manager.Request(instruction_fill);
 
     // Close the shapefile
     GDALClose(poDS);

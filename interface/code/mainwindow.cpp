@@ -150,9 +150,9 @@ void MainWindow::OnActionAddShpFileClicked()
     std::string path_vicouille = "/home/formation/Documents/ProjetGeomatique/DONNEES_BDTOPO";
 
     //import d'un shapefile dans la base de données
-    std::string path1 = path_fredo + "/Bati/Bati_Lyon5eme.shp";
+    std::string path1 = path_vicouille + "/Bati/Bati_Lyon5eme.shp";
     Shapefile essai1 = Shapefile(path1);
-    std::string path2 = path_fredo + "/TronconRoute/TronconRoute_Lyon5eme.shp";
+    std::string path2 = path_vicouille + "/TronconRoute/TronconRoute_Lyon5eme.shp";
     Shapefile essai2 = Shapefile(path2);
 
     essai1.import_to_db(test, 2154);
