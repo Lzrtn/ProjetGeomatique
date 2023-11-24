@@ -30,7 +30,7 @@ nlohmann/json, et pqxx
 ```
 git clone https://github.com/nlohmann/json.git
 ```
-Dans le fichier json-develop : 
+Dans le dossier json-develop : 
 ```
 mkdir build
 cd build
