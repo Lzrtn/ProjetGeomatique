@@ -22,12 +22,13 @@ void OpenGLcityView::initializeGL()
 	this->InitShaders();
 
 	// ajout d'un batiment de test
-	//this->buildings[6] = new Building3D();
 	this->AddBuilding(5, Building3DFactory(0));
 	this->AddBuilding(156, Building3DFactory(1));
 	this->AddBuilding(4561, Building3DFactory(2));
 	this->AddBuilding(0, Building3DFactory(3));
+	this->AddBuilding(1, Building3DFactory(5));
 
+	this->compass = CompassFactory().getCompass();
 	this->camera.setAngleV(0);
 
 	this->controls.setCamera(&this->camera);
@@ -95,8 +96,12 @@ void OpenGLcityView::paintGL()
 
 	this->camera.ComputeMPV();
 
+	this->shader.setUniformValue("mvp_matrix", this->camera.getMVPCompass());
+	this->compass->Draw(&this->shader);
+
 	// Set modelview-projection matrix
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVP());
+
 
 	// Draw geometry
 	for (auto &pair : this->buildings) {

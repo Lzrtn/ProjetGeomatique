@@ -19,7 +19,8 @@ Les noms sont sous format *typeObj_nameObj*.
 - Vue 3D :
   - Fenêtre où se dessine la carte : *openGLWidget_window3D*
   - Zone de texte de l'Epsg : *lineEdit_epsg3D*
-  - Zone de texte de l'Échelle : *lineEdit_scale3D*
+  - Zone de texte du Zoom : *lineEdit_zoom3D*
+  - Zone de texte des coordonnées de la caméra : *lineEdit_coords3D*
 
 ## Gestion des couches
 
