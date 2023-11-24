@@ -13,6 +13,22 @@ jobs:
       - uses: actions/checkout@v3
       - uses: jurplel/install-qt-action@v3
 
+      - name: add repository
+        run: sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+
+      - name: update
+        run: sudo apt update 
+        
+      - name: upgrade
+        run: sudo apt upgrade
+        
+      - name: install gdal
+        run: sudo apt-get install libgdal-dev libgdal1i
+
+      # - name: install gdal
+      #   run: pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL
+      
+
       - name: qmake
         run: qmake TiSIG/src/src.pro
       - name: make
@@ -57,10 +73,13 @@ jobs:
       - name: Install libpqxx-dev
         run: sudo apt-get install libpqxx-dev
 
-      - name: copie yml pour build
+      - name: create data folder
+        run: mkdir /home/runner/work/ProjetGeomatique/data
+
+      - name: create Docker folder
         run: mkdir /home/runner/work/ProjetGeomatique/data/Docker
 
-      - name: copie yml pour build
+      - name: copie Docker for build
         run: cp TiSIG/src/data/Docker/* /home/runner/work/ProjetGeomatique/data/Docker
         
       - name: Setup Docker
