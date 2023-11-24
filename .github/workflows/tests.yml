@@ -89,10 +89,39 @@ jobs:
         run: sudo apt-get install libgtest-dev
       - name: Install xvfb
         run: sudo apt-get install xvfb
-      - name: Install libpqxx-dev
-        run: sudo apt-get install libpqxx-dev
+      - name: add repository
+        run: sudo add-apt-repository ppa:ubuntugis/ppa
+
+      - name: update
+        run: sudo apt update 
+        
       - name: install gdal
         run: sudo apt-get install gdal-bin libgdal-dev libpq-dev
+        
+      - name: Install libpqxx-dev
+        run: sudo apt-get install libpqxx-dev
+
+             
+      - name: git clone https://github.com/nlohmann/json.git
+        run: git clone https://github.com/nlohmann/json.git 
+
+      - name: ls
+        run: ls json/
+
+      - name: mkdir json
+        run: mkdir /home/runner/work/ProjetGeomatique/json
+
+      - name: cp git
+        run: cp -r json/* /home/runner/work/ProjetGeomatique/json
+        
+      - name: cmake /home/runner/work/ProjetGeomatique/json
+        run: cmake /home/runner/work/ProjetGeomatique/json
+        
+      - name: make
+        run: make /home/runner/work/ProjetGeomatique/json
+        
+      - name: sudo make install
+        run: sudo make install /home/runner/work/ProjetGeomatique/json
 
       - name: create src folder
         run: mkdir /home/runner/work/ProjetGeomatique/src
@@ -100,8 +129,6 @@ jobs:
       - name: create data folder
         run: mkdir /home/runner/work/ProjetGeomatique/src/data
 
-      # - name: create Docker folder
-      #   run: mkdir /home/runner/work/ProjetGeomatique/src/data/Docker
 
       - name: copie Docker for build
         run: cp -r TiSIG/src/data/* /home/runner/work/ProjetGeomatique/src/data/
