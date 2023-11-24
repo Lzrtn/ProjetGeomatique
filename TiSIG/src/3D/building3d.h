@@ -1,21 +1,16 @@
 ﻿#ifndef BUILDING3D_H
 #define BUILDING3D_H
 
-#include <QOpenGLFunctions>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLBuffer>
-#include <QOpenGLTexture>
-
-#include <vector>
-#include <string>
+#include "object3d.h"
 
 /**
  * @brief The Building3D class
  * Object that contains building geometry data (vertex, texture, ...)
  */
-class Building3D : protected QOpenGLFunctions
+class Building3D : public Object3D
 {
 public:
+
 	/**
 	 * @brief
 	 * make a building with geometrics properties
@@ -31,40 +26,11 @@ public:
 	 * @param textPath  path of texture image
 	 */
 	Building3D(std::vector<QVector3D> position, std::vector<QVector3D> normal,
-			std::vector<QVector2D> textCoord, std::string textPath);
-	virtual ~Building3D();
-
-	/**
-	 * @brief draw
-	 * display building in OpenGLcityView
-	 *
-	 * @param shader  shader linked to QOpenGLWidget
-	 */
-	void Draw(QOpenGLShaderProgram *shader);
+			std::vector<QVector2D> textCoord, std::string textPath) :
+		Object3D(position, normal, textCoord, textPath)
+	{};
 
 private:
-
-	/**
-	 * @brief initGeometryObj
-	 * construct attribute arrayBuf with all coordinates data
-	 *
-	 * @param position, normal, textCord  geometric data
-	 */
-	void InitGeometryObj(const std::vector<QVector3D> &position, const std::vector<QVector3D> &normal,
-			const std::vector<QVector2D> &textCoord);
-
-	/**
-	 * @brief initTexture
-	 * Initialize texture from path to bind it to shader
-	 *
-	 * @param textPath
-	 */
-	void initTexture(std::string textPath);
-
-	int sizeArray = 0;
-	QOpenGLBuffer arrayBuffer;
-	QOpenGLBuffer indexBuffer;
-	QOpenGLTexture *texture = nullptr;
 };
 
 class Building3DFactory
@@ -107,7 +73,6 @@ private:
 	std::vector<QVector3D> normal;
 	std::vector<QVector2D> textCoord;
 	std::string textPath;
-
 };
 
 #endif // BUILDING3D_H

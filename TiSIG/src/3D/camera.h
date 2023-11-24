@@ -25,7 +25,10 @@ public:
 	 * Update the matrix MVP (converting 3D real point into 3D screen point)
 	 * M is 4D-identity because all buildings are linked
 	 *
+	 * Also update the MVP_Compass matrix
+	 *
 	 * @see getMVP
+	 * @see getMVPCompass
 	 *
 	 * @return 4D-matrix (QMatrix4x4) MVP
 	 */
@@ -33,13 +36,24 @@ public:
 
 	/**
 	 * @brief
-	 * Return MVP matrix without recomput it
+	 * Return MVP matrix without recompute it
 	 *
 	 * @return 4D-matrix (QMatrix4x4) MVP
 	 *
 	 * @see ComputeMVP
 	 */
 	QMatrix4x4 getMVP() const { return this->matMVP; };
+
+	/**
+	 * @brief
+	 * Return MVP matrix for compass (no projection, independent scale and
+	 * fixed translation to widget bottom-left corner) without recompute it
+	 *
+	 * @return 4D-matrix (QMatrix4x4) MVP
+	 *
+	 * @see ComputeMVP
+	 */
+	QMatrix4x4 getMVPCompass() const { return this->matMVPCompass; };
 
 	/**
 	 * @brief
@@ -191,9 +205,11 @@ private:
 	float zoom;
 	const float angleVMax = 45.;
 	float pxRatio;
+	float wHeight, wWidth;
 	QVector3D position;
 	QMatrix4x4 matProjection;
 	QMatrix4x4 matMVP;
+	QMatrix4x4 matMVPCompass;
 };
 
 #endif // CAMERA_H
