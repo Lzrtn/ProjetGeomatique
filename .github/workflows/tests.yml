@@ -2,7 +2,7 @@ name: Build and Test with qmake
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
