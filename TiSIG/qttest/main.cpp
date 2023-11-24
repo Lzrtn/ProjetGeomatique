@@ -23,6 +23,7 @@ private slots:
     void ajout_db();
     void ajout_db_bad();
     void nom_table();
+    void remplissage();
 };
 
 std::string pathDockerFile = "../src/data/Docker/docker-compose.yml";
@@ -37,7 +38,7 @@ void TestQShapefile::constructeur()
 void TestQShapefile::ajout_db()
 {
     const std::string ipAdress = docker.getIpAdress();
-    Shapefile shapefile ("../src/data/DONNEES_BDTOPO/TronconRoute/TronconRoute_Lyon5eme.shp");
+    Shapefile shapefile ("../src/data/Tests/pointsLyon.shp");
     DbManager db_manager("database2D", ipAdress);
     int res = shapefile.import_to_db(db_manager,  2154);
     QVERIFY(res == 0);
@@ -46,7 +47,7 @@ void TestQShapefile::ajout_db()
 void TestQShapefile::ajout_db_bad()
 {
     const std::string ipAdress = docker.getIpAdress();
-    Shapefile shapefile ("../src/DONNEES_BDTOPO/TronconRoute/TronconRoute_Lyon5eme.shp");
+    Shapefile shapefile ("../src/Tests/pointsLyon.shp");
     DbManager db_manager("database2D", ipAdress);
     int res = shapefile.import_to_db(db_manager,  2154);
     QVERIFY(res == 1);
@@ -55,11 +56,25 @@ void TestQShapefile::ajout_db_bad()
 void TestQShapefile::nom_table()
 {
     const std::string ipAdress = docker.getIpAdress();
-    Shapefile shapefile ("../src/data/DONNEES_BDTOPO/TronconRoute/TronconRoute_Lyon5eme.shp");
+    Shapefile shapefile ("../src/data/Tests/pointsLyon.shp");
     DbManager db_manager("database2D", ipAdress);
     shapefile.import_to_db(db_manager,  2154);
     std::string nom = shapefile.getTableName();
-    QVERIFY(nom == "TronconRoute_Lyon5eme");
+    QVERIFY(nom == "pointsLyon");
+}
+
+void TestQShapefile::remplissage()
+{
+    const std::string ipAdress = docker.getIpAdress();
+    Shapefile shapefile ("../src/data/Tests/test.shp");
+    DbManager db_manager("database2D", ipAdress);
+    shapefile.import_to_db(db_manager,  2154);
+    std::string nom = shapefile.getTableName();
+    std::string requete_SQL="SELECT hauteur FROM "+nom+" WHERE id='BATIMENT0000000240870596';";
+    db_manager.Request(requete_SQL);
+    pqxx::result resultat_SQL =db_manager.getResult();
+    double res = resultat_SQL[0][0].as<double>();
+    QVERIFY(res == 28.4);
 }
 
 QTEST_MAIN(TestQShapefile)
