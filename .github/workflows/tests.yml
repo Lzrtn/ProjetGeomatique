@@ -58,10 +58,10 @@ jobs:
         run: sudo apt-get install libpqxx-dev
 
       - name: copie yml pour build
-        run: mkdir /home/runner/work/ProjetGeomatique/Docker
+        run: mkdir /home/runner/work/ProjetGeomatique/data/Docker
 
       - name: copie yml pour build
-        run: cp TiSIG/src/data/Docker/* /home/runner/work/ProjetGeomatique/Docker
+        run: cp TiSIG/src/data/Docker/* /home/runner/work/ProjetGeomatique/data/Docker
         
       - name: Setup Docker
         run: sudo usermod -a -G docker $USER      
