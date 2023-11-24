@@ -8,12 +8,12 @@ QT += core
 CONFIG += c++17
 
 # Déclarez votre exécutable et les fichiers source
-SOURCES +=  outils/dbmanager.cpp\
-            outils/executor.cpp\
-            outils/docker.cpp
-HEADERS +=  outils/dbmanager.h \
-            outils/executor.h \
-            outils/docker.h
+SOURCES +=  ../src/outils/dbmanager.cpp\
+            ../src/outils/executor.cpp\
+            ../src/outils/docker.cpp
+HEADERS +=  ../src/outils/dbmanager.h \
+            ../src/outils/executor.h \
+            ../src/outils/docker.h
 
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17
