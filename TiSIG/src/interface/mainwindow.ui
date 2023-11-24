@@ -75,7 +75,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../icons/Information.png</normaloff>../icons/Information.png</iconset>
+              <normaloff>icons/Information.png</normaloff>icons/Information.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -95,7 +95,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../icons/ArrowUp.png</normaloff>../icons/ArrowUp.png</iconset>
+              <normaloff>icons/ArrowUp.png</normaloff>icons/ArrowUp.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -115,7 +115,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../icons/ArrowDown.png</normaloff>../icons/ArrowDown.png</iconset>
+              <normaloff>icons/ArrowDown.png</normaloff>icons/ArrowDown.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -135,7 +135,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../icons/Expand.png</normaloff>../icons/Expand.png</iconset>
+              <normaloff>icons/Expand.png</normaloff>icons/Expand.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -168,7 +168,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../icons/Trash.png</normaloff>../icons/Trash.png</iconset>
+              <normaloff>icons/Trash.png</normaloff>icons/Trash.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -312,7 +312,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../icons/ZoomMore.png</normaloff>../icons/ZoomMore.png</iconset>
+           <normaloff>icons/ZoomMore.png</normaloff>icons/ZoomMore.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -332,7 +332,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../icons/ZoomLess.png</normaloff>../icons/ZoomLess.png</iconset>
+           <normaloff>icons/ZoomLess.png</normaloff>icons/ZoomLess.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -352,7 +352,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../icons/Expand.png</normaloff>../icons/Expand.png</iconset>
+           <normaloff>icons/Expand.png</normaloff>icons/Expand.png</iconset>
          </property>
          <property name="iconSize">
           <size>
