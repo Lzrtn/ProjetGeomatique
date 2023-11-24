@@ -6,8 +6,6 @@
 
 #include <cmath>
 
-#include <iostream>
-
 CameraControls::CameraControls()
 {
 	this->reset();
@@ -93,7 +91,6 @@ void CameraControls::mouseMoveEvent(QMouseEvent *event)
 			static_cast<float>(delta.x()*cos(a) + delta.y()*sin(a)),
 			static_cast<float>(delta.y()*cos(a) - delta.x()*sin(a))
 		};
-		std::cout << a << std::endl;
 		this->camera->move(
 					{this->speedMouseMove * delta.x() / this->camera->getZoom() / this->camera->getPxRatio(),
 					 -this->speedMouseMove * delta.y() / this->camera->getZoom() / this->camera->getPxRatio(),
