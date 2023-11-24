@@ -23,7 +23,7 @@ jobs:
       #   run: sudo apt upgrade
         
       - name: install gdal
-        run: sudo apt-get install gdal-bin
+        run: sudo apt-get install gdal-bin libgdal-dev
 
       # - name: install gdal
       #   run: pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL
