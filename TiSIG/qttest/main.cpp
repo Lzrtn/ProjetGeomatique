@@ -2,15 +2,15 @@
 
 class TestQString: public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 private slots:
-    void toUpper();
+	void toUpper();
 };
 
 void TestQString::toUpper()
 {
-    QString str = "Hello";
-    QVERIFY(str.toUpper() == "HELLO");
+	QString str = "Hello";
+	QVERIFY(str.toUpper() == "HELLO");
 }
 
 QTEST_MAIN(TestQString)

@@ -133,6 +133,12 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
     ui->action_add3DRastorLayer->setEnabled(mode);
     ui->action_add3DModel->setEnabled(mode);
 
+    // when hidden, camera controls are disabled
+    if (!mode)
+        ui->openGLWidget_window3D->hide();
+    else
+        ui->openGLWidget_window3D->show();
+
     this->update();
 
     ui->stackedWidget->update();

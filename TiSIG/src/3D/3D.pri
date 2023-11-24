@@ -10,11 +10,15 @@ CONFIG += c++11
 
 SOURCES += \
     3D/building3d.cpp \
-    3D/openglcityview.cpp
+    3D/openglcityview.cpp \
+    3D/camera.cpp \
+    3D/cameracontrols.cpp
 
 HEADERS += \
     3D/building3d.h \
-    3D/openglcityview.h
+    3D/openglcityview.h \
+    3D/camera.h \
+    3D/cameracontrols.h
 
 RESOURCES += \
     3D/shaders.qrc \

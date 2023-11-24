@@ -3,12 +3,13 @@ CONFIG += testlib
 
 SOURCES += \
         google.cpp \
-        bddgoogle.cpp \
-        executorGoogle.cpp \
-        $$PWD/../src/outils/dbmanager.cpp \
-        $$PWD/../src/outils/docker.cpp \
-        $$PWD/../src/outils/executor.cpp \
-        main.cpp
+	test_camera.cpp \
+	bddgoogle.cpp \
+	executorGoogle.cpp \
+	$$PWD/../src/outils/dbmanager.cpp \
+	$$PWD/../src/outils/docker.cpp \
+	$$PWD/../src/outils/executor.cpp \
+	main.cpp
 #        bddgoogle.cpp \
 #        executorGoogle.cpp \
 

@@ -17,7 +17,7 @@ class Building3D : protected QOpenGLFunctions
 {
 public:
 	/**
-	 * @brief Building3D
+	 * @brief
 	 * make a building with geometrics properties
 	 *
 	 * @warning currentry, param normal is not used in shader.

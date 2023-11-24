@@ -1,5 +1,8 @@
 #include "openglcityview.h"
 
+#include <iostream>
+#include <QKeyEvent>
+
 OpenGLcityView::~OpenGLcityView()
 {
 	// Make sure the context is current when deleting the texture,
@@ -22,8 +25,12 @@ void OpenGLcityView::initializeGL()
 	//this->buildings[6] = new Building3D();
 	this->AddBuilding(5, Building3DFactory(0));
 	this->AddBuilding(156, Building3DFactory(1));
+	this->AddBuilding(4561, Building3DFactory(2));
+	this->AddBuilding(0, Building3DFactory(3));
 
-	//timer.start(12, this); // run this->timerEvent every n msec
+	this->camera.setAngleV(0);
+
+	this->controls.setCamera(&this->camera);
 }
 
 void OpenGLcityView::InitShaders()
@@ -45,6 +52,18 @@ void OpenGLcityView::InitShaders()
 		this->close();
 }
 
+void OpenGLcityView::timerEvent(QTimerEvent* /*e*/)
+{
+	float currentTime = (std::chrono::steady_clock::now() - this->timeStart).count() / 1e6;
+	float dt = currentTime - lastTimeUpdate;
+	lastTimeUpdate = currentTime;
+	// if dt is too hire than timerDuration (stop and restart)
+	if (dt > this->timerDuration * 2)
+		dt = 0 * this->timerDuration * 2;
+	if (this->controls.update(dt) && this->isValid())
+		this->update();
+}
+
 void OpenGLcityView::AddBuilding(const int id, const Building3DFactory &buildingFactory)
 {
 	if (this->buildings.find(id) != this->buildings.end())
@@ -60,15 +79,7 @@ void OpenGLcityView::DeleteBuilding(const int id)
 
 void OpenGLcityView::resizeGL(int w, int h)
 {
-	// Calculate aspect ratio
-	qreal aspect_ratio = qreal(w) / qreal(h ? h : 1);
-
-	// Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-	const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
-
-	// Reset and compute projection
-	this->projection.setToIdentity();
-	this->projection.perspective(fov, aspect_ratio, zNear, zFar);
+	this->camera.ResizeView(w, h);
 }
 
 void OpenGLcityView::paintGL()
@@ -82,18 +93,57 @@ void OpenGLcityView::paintGL()
 
 	this->shader.bind();
 
-	// TODO: use a Camera class to manage motion events and mvp matrix
-	// Calculate model view transformation
-	QMatrix4x4 matrix;
-	matrix.translate(0.0, 0.0, -5.0);
-	//matrix.rotate(rotation);
-	matrix.scale(0.5);
+	this->camera.ComputeMPV();
 
 	// Set modelview-projection matrix
-	this->shader.setUniformValue("mvp_matrix", this->projection * matrix);
+	this->shader.setUniformValue("mvp_matrix", this->camera.getMVP());
 
 	// Draw geometry
 	for (auto &pair : this->buildings) {
 		pair.second->Draw(&this->shader);
 	}
+}
+
+
+void OpenGLcityView::setVisible(bool visible)
+{
+	this->QOpenGLWidget::setVisible(visible);
+	if (visible)
+	{
+		this->timeStart = std::chrono::steady_clock::now();
+		this->lastTimeUpdate = 0;
+		timer.start(this->timerDuration, this); // run this->timerEvent every n msec
+		this->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
+		this->setFocus();
+		this->controls.reset();
+	}
+	else
+		timer.stop();
+}
+
+
+///////////////////////////  bind events  /////////////////////////////////////////////
+void OpenGLcityView::keyPressEvent(QKeyEvent *event)
+{
+	this->controls.keyPressEvent(event, true);
+}
+void OpenGLcityView::keyReleaseEvent(QKeyEvent *event)
+{
+	this->controls.keyPressEvent(event, false);
+}
+void OpenGLcityView::mousePressEvent(QMouseEvent *event)
+{
+	this->controls.mousePressEvent(event, true);
+}
+void OpenGLcityView::mouseReleaseEvent(QMouseEvent *event)
+{
+	this->controls.mousePressEvent(event, false);
+}
+void OpenGLcityView::mouseMoveEvent(QMouseEvent *event)
+{
+	this->controls.mouseMoveEvent(event);
+}
+void OpenGLcityView::wheelEvent(QWheelEvent *event)
+{
+	this->controls.wheelEvent(event);
 }
