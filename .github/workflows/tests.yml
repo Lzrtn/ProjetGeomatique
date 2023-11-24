@@ -111,7 +111,7 @@ jobs:
       #   run: mkdir /home/runner/work/ProjetGeomatique/src/data/Docker
 
       - name: copie Docker for build
-        run: cp TiSIG/src/data/* /home/runner/work/ProjetGeomatique/src/data/
+        run: cp -r TiSIG/src/data/* /home/runner/work/ProjetGeomatique/src/data/
         
       - name: Setup Docker
         run: sudo usermod -a -G docker $USER      
