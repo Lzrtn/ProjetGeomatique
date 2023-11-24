@@ -2,6 +2,8 @@
 #define SHAPEFILE_H
 #include <iostream>
 #include <vector>
+#include <pqxx/pqxx>
+
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPolygonItem>
@@ -10,7 +12,6 @@
 #include <QPointF>
 #include <QCheckBox>
 #include <QColor>
-#include <pqxx/pqxx>
 
 #include "../outils/dbmanager.h"
 
