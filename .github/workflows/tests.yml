@@ -74,13 +74,13 @@ jobs:
         run: sudo apt-get install libpqxx-dev
 
       - name: create data folder
-        run: mkdir /home/runner/work/ProjetGeomatique/data
+        run: mkdir /home/runner/work/ProjetGeomatique/scr/data
 
       - name: create Docker folder
-        run: mkdir /home/runner/work/ProjetGeomatique/data/Docker
+        run: mkdir /home/runner/work/ProjetGeomatique/src/data/Docker
 
       - name: copie Docker for build
-        run: cp TiSIG/src/data/Docker/* /home/runner/work/ProjetGeomatique/data/Docker
+        run: cp TiSIG/src/data/Docker/* /home/runner/work/ProjetGeomatique/src/data/Docker
         
       - name: Setup Docker
         run: sudo usermod -a -G docker $USER      
