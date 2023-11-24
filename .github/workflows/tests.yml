@@ -14,16 +14,16 @@ jobs:
       - uses: jurplel/install-qt-action@v3
 
       - name: add repository
-        run: sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+        run: sudo add-apt-repository ppa:ubuntugis/ppa
 
       - name: update
         run: sudo apt update 
         
-      - name: upgrade
-        run: sudo apt upgrade
+      # - name: upgrade
+      #   run: sudo apt upgrade
         
       - name: install gdal
-        run: sudo apt-get install libgdal-dev libgdal1i
+        run: sudo apt-get install gdal-bin
 
       # - name: install gdal
       #   run: pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL
@@ -72,6 +72,9 @@ jobs:
         run: sudo apt-get install xvfb
       - name: Install libpqxx-dev
         run: sudo apt-get install libpqxx-dev
+
+      - name: create src folder
+        run: mkdir /home/runner/work/ProjetGeomatique/scr
 
       - name: create data folder
         run: mkdir /home/runner/work/ProjetGeomatique/scr/data
