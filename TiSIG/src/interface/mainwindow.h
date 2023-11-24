@@ -59,14 +59,6 @@ public:
 
 private:
 	Ui::MainWindow *ui; ///< Ui::MainWindow ui
-	QPushButton btn_switchMode2D3D; ///< QPushButton btn_switchMode2D3D
-    QAction action_help; ///< QAction action_help
-    QAction action_add2DDataFlow; ///< QAction action_help
-    QAction action_add2DVectorLayer; ///< QAction action_add2DVectorLayer
-    QAction action_add2DRastorLayer; ///< QAction action_add2DRastorLayer
-    QAction action_add3DVectorLayer; ///< QAction action_add3DVectorLayer
-    QAction action_add3DRastorLayer; ///< QAction action_add3DRastorLayer
-    QAction action_add3DModel; ///< QAction action_add3DModel
 	bool mode; ///< bool mode
 
     QGraphicsScene *scene;

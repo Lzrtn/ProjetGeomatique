@@ -6,13 +6,13 @@ SOURCES += \
 	test_camera.cpp \
 	bddgoogle.cpp \
 	executorGoogle.cpp \
-	$$PWD/../src/outils/dbmanager.cpp \
-	$$PWD/../src/outils/docker.cpp \
-	$$PWD/../src/outils/executor.cpp \
+	test-geotiff.cpp
+	
 	main.cpp
 #        bddgoogle.cpp \
 #        executorGoogle.cpp \
-
+include(../src/2D/2D.pri)
+include(../src/outils/outils.pri)
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/qtestlib/tutorial1

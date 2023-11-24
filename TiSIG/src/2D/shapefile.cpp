@@ -4,12 +4,8 @@
 #include <gdal/ogrsf_frmts.h>
 #include <postgresql/libpq-fe.h>
 
-#include <ogr_api.h>
-#include <ogrsf_frmts.h>
-
 #include <gdal/gdal.h>
 #include <gdal/ogr_api.h>
-
 
 #include "shapefile.h"
 #include "transformation.h"
@@ -212,9 +208,9 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
         if (dataType == "LineString" || dataType == "MultiLineString")
         {
             std::vector<QVector <QLineF>> segmentsToPlot = t.JSONtoCoordsLIN(geojsongeom);
-            for(int i = 0; i< segmentsToPlot.size(); i++)
+            for(int i = 0; i< (int)segmentsToPlot.size(); i++)
             {
-                for (int j = 0; j< segmentsToPlot[i].size(); j++)
+                for (int j = 0; j< (int)segmentsToPlot[i].size(); j++)
                 {
                     QGraphicsLineItem *lineToPlotItem = new QGraphicsLineItem(segmentsToPlot[i][j]);
                     layerGroup->addToGroup(lineToPlotItem);
@@ -233,7 +229,7 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
         else if(dataType == "Point" || dataType == "MultiPoint")
         {
             std::vector<QPointF> pointsToPlot = t.JSONtoCoordsPTS(geojsongeom);
-            for(int i = 0; i< pointsToPlot.size(); i++)
+            for(int i = 0; i< (int)pointsToPlot.size(); i++)
             {
                 QGraphicsEllipseItem *pointToPlotItem = new QGraphicsEllipseItem(pointsToPlot[i].x(),pointsToPlot[i].y(),10,10);
                 layerGroup->addToGroup(pointToPlotItem);

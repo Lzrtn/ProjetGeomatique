@@ -34,6 +34,10 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
+
+    /*_______________________________Initialisation_________________________________________________________________________________________________*/
+
     ui->setupUi(this);
 
     // Initialisation in mode 2D //
@@ -50,15 +54,20 @@ MainWindow::MainWindow(QWidget *parent)
     ui->action_add3DModel->setEnabled(mode);
 
 
-    // Créer une scène pour QGraphicsView
+    /*_______________________________Variables_________________________________________________________________________________________________*/
+
+    // Creating scene for QGraphicsView
     scene = new QGraphicsScene(this);
 
-    // Définir la scène pour le QGraphicsView
+    // Connect scene to QGraphicsView
     ui->graphicsView_window2D->setScene(scene);
 
+    // ip Address
+    ipAdress = ipAdress_d;
 
-    // Connecting switch 2D/3D button
-    connect(ui->btn_switchMode2D3D, &QPushButton::clicked, this, &MainWindow::OnButtonSwitchTo2D3DClicked);
+
+    /*_______________________________Barre Gestion Couches et Aide_________________________________________________________________________________________________*/
+
 
     // Connecting help action
     connect(ui->action_help, &QAction::triggered, this, &MainWindow::OnActionHelpClicked);
@@ -77,6 +86,13 @@ MainWindow::MainWindow(QWidget *parent)
     // Connecting add3dmodel action
     connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::OnAction3DModelClicked);
 
+
+    /*_______________________________Barre d'outils___________________________________________________________________________________________________*/
+
+
+    // Connecting switch 2D/3D button
+    connect(ui->btn_switchMode2D3D, &QPushButton::clicked, this, &MainWindow::OnButtonSwitchTo2D3DClicked);
+
     // Connecting ZoomIn button
     connect(ui->btn_zoomIn, &QPushButton::clicked, this, &MainWindow::OnButtonZoomIn);
 
@@ -86,9 +102,11 @@ MainWindow::MainWindow(QWidget *parent)
     // Connecting ZoomOut button
     connect(ui->btn_zoomFull, &QPushButton::clicked, this, &MainWindow::OnButtonZoomFull);
 
-    // Connection action "Add Vector File"
-    //connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionAddShpFileClicked);
-    ipAdress = ipAdress_d;
+
+    /*_______________________________Barre d'outils dans le gestionnaire de couches___________________________________________________________________________________________________*/
+
+
+
 
 }
 
