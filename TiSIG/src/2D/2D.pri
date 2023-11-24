@@ -20,14 +20,17 @@ INCLUDEPATH += /usr/include
 LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
 
 SOURCES += \
-    2D/layer.cpp \
-    2D/shapefile.cpp \
-    2D/transformation.cpp
+    $$PWD/layer.cpp \
+    $$PWD/shapefile.cpp \
+    $$PWD/transformation.cpp \
+    $$PWD/geotiff.cpp
+
 
 HEADERS += \
-    2D/layer.h \
-    2D/shapefile.h \
-    2D/transformation.h
+    $$PWD/layer.h \
+    $$PWD/shapefile.h \
+    $$PWD/transformation.h \
+    $$PWD/geotiff.h
 
 
 # Ajoutez les flags de compilation nécessaires pour C++
