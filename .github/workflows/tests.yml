@@ -107,11 +107,11 @@ jobs:
       - name: create data folder
         run: mkdir /home/runner/work/ProjetGeomatique/src/data
 
-      - name: create Docker folder
-        run: mkdir /home/runner/work/ProjetGeomatique/src/data/Docker
+      # - name: create Docker folder
+      #   run: mkdir /home/runner/work/ProjetGeomatique/src/data/Docker
 
       - name: copie Docker for build
-        run: cp TiSIG/src/data/Docker/* /home/runner/work/ProjetGeomatique/src/data/Docker
+        run: cp TiSIG/src/data/* /home/runner/work/ProjetGeomatique/src/data/
         
       - name: Setup Docker
         run: sudo usermod -a -G docker $USER      
