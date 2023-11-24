@@ -19,18 +19,46 @@ jobs:
       - name: update
         run: sudo apt update 
         
-      # - name: upgrade
-      #   run: sudo apt upgrade
-        
       - name: install gdal
-        run: sudo apt-get install gdal-bin libgdal-dev
+        run: sudo apt-get install gdal-bin libgdal-dev libpq-dev
+        
+      - name: Install libpqxx-dev
+        run: sudo apt-get install libpqxx-dev
 
-      # - name: install gdal
-      #   run: pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL
-      
+             
+      - name: git clone https://github.com/nlohmann/json.git
+        run: git clone https://github.com/nlohmann/json.git 
+
+      - name: ls
+        run: ls json/
+
+      - name: mkdir json
+        run: mkdir /home/runner/work/test_unitaire_docker/json
+
+      - name: cp git
+        run: cp -r json/* /home/runner/work/test_unitaire_docker/json
+        
+      # - name: cd json
+      #   run: cd json
+
+      # - name: mkdir build
+      #   run: mkdir build
+
+      # - name: cd build
+      #   run: cd build
+        
+      - name: cmake /home/runner/work/test_unitaire_docker/json
+        run: cmake /home/runner/work/test_unitaire_docker/json
+        
+      - name: make
+        run: make /home/runner/work/test_unitaire_docker/json
+        
+      - name: sudo make install
+        run: sudo make install /home/runner/work/test_unitaire_docker/json
 
       - name: qmake
         run: qmake TiSIG/src/src.pro
+        
       - name: make
         run: make src
 
@@ -74,16 +102,16 @@ jobs:
         run: sudo apt-get install libpqxx-dev
 
       - name: create src folder
-        run: mkdir /home/runner/work/ProjetGeomatique/scr
+        run: mkdir /home/runner/work/test_unitaire_docker/src
 
       - name: create data folder
-        run: mkdir /home/runner/work/ProjetGeomatique/scr/data
+        run: mkdir /home/runner/work/test_unitaire_docker/src/data
 
       - name: create Docker folder
-        run: mkdir /home/runner/work/ProjetGeomatique/src/data/Docker
+        run: mkdir /home/runner/work/test_unitaire_docker/src/data/Docker
 
       - name: copie Docker for build
-        run: cp TiSIG/src/data/Docker/* /home/runner/work/ProjetGeomatique/src/data/Docker
+        run: cp TiSIG/src/data/Docker/* /home/runner/work/test_unitaire_docker/src/data/Docker
         
       - name: Setup Docker
         run: sudo usermod -a -G docker $USER      
