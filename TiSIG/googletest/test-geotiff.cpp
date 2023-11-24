@@ -68,13 +68,13 @@ TEST(GeotiffTest, TestWriteGeotiffAndMetadataToPostgis)
     Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5eme_20m.tif");
     geotiff.CalculateExtent();
     geotiff.CalculateResolution();
+    geotiff.WriteGeotiffAndMetadataToPostgis(test);
 
     int rows_before = geotiff.GetNumberOfImagesStored(test);
     geotiff.WriteGeotiffAndMetadataToPostgis(test);
     int rows_after = geotiff.GetNumberOfImagesStored(test);
     ASSERT_EQ(rows_after, rows_before + 1);
 }
-
 
 
 /**
