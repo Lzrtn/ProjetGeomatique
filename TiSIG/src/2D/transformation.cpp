@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <nlohmann/json.hpp>
+#include "../data/json.hpp"
 
 #include <QGraphicsView>
 #include <QGraphicsScene>

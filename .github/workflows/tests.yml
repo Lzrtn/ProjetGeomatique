@@ -2,7 +2,7 @@ name: Build and Test with qmake
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "front/rom" ]
   workflow_dispatch:
 
 jobs:
