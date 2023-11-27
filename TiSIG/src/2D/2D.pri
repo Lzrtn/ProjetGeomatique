@@ -25,7 +25,6 @@ SOURCES += \
     $$PWD/transformation.cpp \
     $$PWD/geotiff.cpp
 
-
 HEADERS += \
     $$PWD/layer.h \
     $$PWD/shapefile.h \
