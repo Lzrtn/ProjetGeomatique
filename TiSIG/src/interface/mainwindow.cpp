@@ -184,7 +184,10 @@ std::string MainWindow::OnActionVectorLayerClicked()
 {
     QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("ShapeFile (*.shp)"));
     std::string path = fileNameVectorLayer.toStdString();
-    this->AddShpFileClicked(path);
+    if (path != ""){
+
+        this->AddShpFileClicked(path);
+    }
     return path;
 }
 

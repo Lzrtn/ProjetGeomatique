@@ -26,12 +26,39 @@ int Shapefile::import_to_db(DbManager db_manager, const int epsg)
 
     std::string layer_name = path.substr(path.find_last_of("/")+1, path.find_last_of(".shp")-path.find_last_of("/")-4);
     table_name = layer_name;
+
+    // Remove spaces, points and parentheses in the table name
     if (table_name.find(".") != std::string::npos){
         std::replace(table_name.begin(), table_name.end(), '.', '_');
     }
     if (table_name.find(" ") != std::string::npos){
         std::replace(table_name.begin(), table_name.end(), ' ', '_');
     }
+    if (table_name.find("(") != std::string::npos || table_name.find(")") != std::string::npos){
+        std::replace(table_name.begin(), table_name.end(), '(', '_');
+        std::remove(table_name.begin(), table_name.end(), ')');
+    }
+
+    // Check if there is a table with the same name in the database
+    std::string tableExists = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '"+table_name+"');";
+    db_manager.Request(tableExists);
+    pqxx::result res = db_manager.getResult();
+    int n =0;
+    if(res[0][0].as<std::string>()=="t"){
+        n+=1;
+        table_name = table_name+ "_" + std::to_string(n);
+        std::string tableExists = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '"+table_name+"');";
+        db_manager.Request(tableExists);
+        res = db_manager.getResult();
+    }
+    while(res[0][0].as<std::string>()=="t"){
+        n+=1;
+        table_name = table_name.substr(0,table_name.find_last_of("_"))+ "_" + std::to_string(n);
+        std::string tableExists = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '"+table_name+"');";
+        db_manager.Request(tableExists);
+        res = db_manager.getResult();
+    }
+    std::cout<<table_name<<std::endl;
 
     // Initialize GDAL
     GDALAllRegister();
