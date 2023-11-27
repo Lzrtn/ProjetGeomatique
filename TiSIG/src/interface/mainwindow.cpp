@@ -1,6 +1,7 @@
 #include <iostream>
 #include <pqxx/pqxx>
 #include <stdlib.h>
+#include <cmath>
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -200,6 +201,21 @@ std::string MainWindow::OnAction3DModelClicked()
     QString fileName3Dmodel = QFileDialog::getOpenFileName(this, tr("Ouvrir un modèle 3D"), "../../../", tr("Modèle 3D (*.gml *.asc)"));
     /*std::cout<<fileName3Dmodel.toStdString()<<std::endl;*/
     return fileName3Dmodel.toStdString();
+}
+
+void MainWindow::Display3DCameraCoordinates(QVector3D camPosition)
+{
+    std::string camPositionX = std::to_string(round(camPosition.x()));
+    std::string camPositionY = std::to_string(round(camPosition.y()));
+    std::string camPositionZ = std::to_string(round(camPosition.z()));
+    QString text = QString::fromStdString(camPositionX+","+camPositionY+","+camPositionZ);
+    ui->lineEdit_coords3D->setText(text);
+}
+
+void MainWindow::Display3DZoomLevel(float zoom)
+{
+    QString text = QString::fromStdString(std::to_string(round(zoom*100)));
+    ui->lineEdit_coords3D->setText(text);
 }
 
 
