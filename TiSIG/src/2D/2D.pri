@@ -23,14 +23,16 @@ SOURCES += \
     $$PWD/layer.cpp \
     $$PWD/shapefile.cpp \
     $$PWD/transformation.cpp \
-    $$PWD/geotiff.cpp
-
+    $$PWD/geotiff.cpp \
+    $$PWD/geojson.cpp
+    
 
 HEADERS += \
     $$PWD/layer.h \
     $$PWD/shapefile.h \
     $$PWD/transformation.h \
-    $$PWD/geotiff.h
+    $$PWD/geotiff.h \
+    $$PWD/geojson.cpp
 
 
 # Ajoutez les flags de compilation nécessaires pour C++
