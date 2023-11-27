@@ -57,10 +57,11 @@ public:
     void addLayerToListWidget(int, Layer &layer);
 
     int index = 0; // Temporaire
+    void updateLayerOrderInGraphicsView();
 
 private:
-	Ui::MainWindow *ui; ///< Ui::MainWindow ui
-	bool mode; ///< bool mode
+	  Ui::MainWindow *ui; ///< Ui::MainWindow ui
+	  bool mode; ///< bool mode
 
     QGraphicsScene *scene;
     std::map <int, Layer*> layerList;
@@ -152,7 +153,8 @@ private slots:
    */
   void Display3DZoomLevel(float zoom);
 
-
+  void moveItemUp( );
+  void moveItemDown( );
 };
 
 #endif // MAINWINDOW_H

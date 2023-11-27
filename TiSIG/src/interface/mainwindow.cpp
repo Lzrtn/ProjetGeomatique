@@ -104,7 +104,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     /*_______________________________Barre d'outils dans le gestionnaire de couches___________________________________________________________________________________________________*/
 
+    // Connecter le bouton "Up" à la fonction de déplacement vers le haut
+    connect(ui->btn_moveLayerUp, &QPushButton::clicked, [=]() {
+        moveItemUp();
+    });
 
+    // Connecter le bouton "Down" à la fonction de déplacement vers le bas
+    connect(ui->btn_moveLayerDown, &QPushButton::clicked, [=]() {
+        moveItemDown();
+    });
 
 
 }
@@ -242,6 +250,7 @@ void MainWindow::AddShpFileClicked(std::string path)
     test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1.getTableName()+";");
     pqxx::result rowbis =test.getResult();
     QGraphicsItemGroup *layerGroup = essai1.plotShapefile(rowbis,scene);
+
     layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
     addLayerToListWidget(index, *layerList[index]);
     index++;
@@ -394,36 +403,113 @@ void MainWindow::OnButtonZoomFull()
 
 void MainWindow::addLayerToListWidget(int index, Layer &layer) {
 
+    // Initie le zIndex de la couche
+    layer.setZIndex(index);
+
     // Créez un nouvel élément pour la couche
     layer.layerItem = new QListWidgetItem(ui->listeWidget_layersList);
+    layer.layerItem->setData(Qt::UserRole, index);
 
     // Créez un widget personnalisé pour cet élément (contenant un label et une case à cocher)
     layer.layerWidget = new QWidget();
-    QHBoxLayout *layout = new QHBoxLayout(layer.layerWidget);
+    layer.layout = new QHBoxLayout(layer.layerWidget);
 
-    QCheckBox *visibilityCheckbox = new QCheckBox("");
-    visibilityCheckbox->setChecked(layer.isLayerVisible());
-    QLabel *layerLabel = new QLabel(layer.getLayerName());
-
+    layer.visibilityCheckbox = new QCheckBox("");
+    layer.visibilityCheckbox->setChecked(layer.isLayerVisible());
+    layer.layerLabel = new QLabel(layer.getLayerName());
 
     // Connectez le signal clicked de la case à cocher à une fonction pour gérer la visibilité
-    connect(visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
+    connect(layer.visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
         layerList[index]->getLayerGroup()->setVisible(checked);
         layerList[index]->setLayerVisible(checked);
     });
 
+    layer.layout->addWidget(layer.visibilityCheckbox);
+    layer.layout->addWidget(layer.layerLabel);
+    layer.layout->setAlignment(Qt::AlignLeft);
 
-    layout->addWidget(visibilityCheckbox);
-    layout->addWidget(layerLabel);
-    layout->setAlignment(Qt::AlignLeft);
+    layer.layout->setContentsMargins(2, 0, 2, 0); // Taille de la ligne de la couche dans le gestionnaire
+    layer.layout->setSpacing(10); // Écart entre la checkbox et le nom de la couche
 
-    layout->setContentsMargins(2, 0, 2, 0); // Taille de la ligne de la couche dans le gestionnaire
-    layout->setSpacing(10); // Écart entre la checkbox et le nom de la couche
-
-
-    layer.layerWidget->setLayout(layout);
+    layer.layerWidget->setLayout(layer.layout);
     layer.layerItem->setSizeHint(layer.layerWidget->sizeHint());
 
     ui->listeWidget_layersList->setItemWidget(layer.layerItem, layer.layerWidget);
 
+    // met à jour l'ordre de superpositions des couches
+    updateLayerOrderInGraphicsView();
+}
+
+void MainWindow::moveItemDown() {
+    QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
+    int currentIndex = ui->listeWidget_layersList->row(item);
+
+    if (item && currentIndex < ui->listeWidget_layersList->count()-1)
+    {
+        // Change la profondeur des couches
+        int currentId = item->data(Qt::UserRole).toInt();
+        QListWidgetItem *nextItem = ui->listeWidget_layersList->item(currentIndex+1);
+        int nextId = nextItem->data(Qt::UserRole).toInt();
+
+        int currentZIndex = layerList[currentId]->getZIndex();
+        int prevZIndex = layerList[nextId]->getZIndex();
+
+        layerList[currentId]->setZIndex(prevZIndex);
+        layerList[nextId]->setZIndex(currentZIndex);
+
+        updateLayerOrderInGraphicsView();
+
+        // Change l'ordre dans la liste des couches
+        QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
+        QWidget *tempWidget = new QWidget();
+        QLayout *widgetLayout = itemWidget->layout();
+        tempWidget->setLayout(widgetLayout);
+
+        QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
+
+        ui->listeWidget_layersList->insertItem(currentIndex+1, currentItem);
+        ui->listeWidget_layersList->setItemWidget(currentItem, tempWidget);
+        ui->listeWidget_layersList->setCurrentRow(currentIndex+1);
+    }
+}
+
+void MainWindow::moveItemUp() {
+    QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
+    int currentIndex = ui->listeWidget_layersList->row(item);
+
+    if (item && currentIndex > 0) {
+
+        // Change la profondeur des couches
+        int currentId = item->data(Qt::UserRole).toInt();
+        QListWidgetItem *prevItem = ui->listeWidget_layersList->item(currentIndex-1);
+        int prevId = prevItem->data(Qt::UserRole).toInt();
+
+        int currentZIndex = layerList[currentId]->getZIndex();
+        int prevZIndex = layerList[prevId]->getZIndex();
+
+        layerList[currentId]->setZIndex(prevZIndex);
+        layerList[prevId]->setZIndex(currentZIndex);
+
+        updateLayerOrderInGraphicsView();
+
+        // Change l'ordre dans la liste des couches
+        QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
+        QWidget *tempWidget = new QWidget();
+        QLayout *widgetLayout = itemWidget->layout();
+        tempWidget->setLayout(widgetLayout);
+
+        QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
+
+        ui->listeWidget_layersList->insertItem(currentIndex-1, currentItem);
+        ui->listeWidget_layersList->setItemWidget(currentItem, tempWidget);
+        ui->listeWidget_layersList->setCurrentRow(currentIndex-1);
+    }
+}
+
+void MainWindow::updateLayerOrderInGraphicsView() {
+    for(auto pair: layerList)
+    {
+        pair.second->getLayerGroup()->setZValue(pair.second->getZIndex());
+    }
+    ui->graphicsView_window2D->repaint();
 }
