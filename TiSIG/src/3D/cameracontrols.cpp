@@ -6,6 +6,8 @@
 
 #include <cmath>
 
+#include <iostream>
+
 CameraControls::CameraControls()
 {
 	this->reset();
@@ -74,6 +76,14 @@ void CameraControls::keyPressEvent(QKeyEvent *event, bool pressed)
 void CameraControls::mousePressEvent(QMouseEvent * event, bool /*pressed*/)
 {
 	this->lastPosClick = event->pos();
+
+	if (this->camera != nullptr) {
+		QVector3D p1, p2;
+		this->camera->Picking3D(event->pos(), p1, p2);
+		std::cout << "  1: " << p1.x() << " " << p1.y() << " " << p1.z()
+				  << "  2: " << p2.x() << " " << p2.y() << " " << p2.z()
+				  << std::endl;
+	}
 }
 
 void CameraControls::mouseMoveEvent(QMouseEvent *event)

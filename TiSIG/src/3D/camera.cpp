@@ -44,3 +44,15 @@ void Camera::ResizeView(int width, int height)
 	this->matProjection.setToIdentity();
 	this->matProjection.perspective(fov, aspect_ratio, zNear, zFar);
 }
+
+void Camera::Picking3D(const QPoint &posScreen, QVector3D &p1, QVector3D &p2)
+{
+	QVector4D posScreen4D = {
+		static_cast<float>(posScreen.x()),
+		static_cast<float>(posScreen.y()),
+		1, 1};
+
+	QVector4D p1bis = posScreen4D * this->matMVP.inverted();
+	p1 = QVector3D(p1bis.x(), p1bis.y(), p1bis.z());
+	p2 = QVector3D(posScreen.x(), posScreen.y(), -1);
+}

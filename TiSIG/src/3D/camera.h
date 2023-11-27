@@ -193,6 +193,8 @@ public:
 		return this->pxRatio;
 	}
 
+	void Picking3D(const QPoint & posScreen, QVector3D & p1, QVector3D &p2);
+
 
 private:
 	/**
