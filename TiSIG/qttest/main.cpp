@@ -25,7 +25,7 @@ private slots:
     void remplissage();
     void nom_table_espace();
     void nom_table_point();
-    void ouverture_bis();
+    //void ouverture_bis();
 };
 
 std::string pathDockerFile = "../src/data/Docker/docker-compose.yml";
