@@ -24,6 +24,8 @@ private slots:
     void ajout_db_bad();
     void nom_table();
     void remplissage();
+    void nom_table_espace();
+    void nom_table_point();
 };
 
 std::string pathDockerFile = "../src/data/Docker/docker-compose.yml";
@@ -75,6 +77,26 @@ void TestQShapefile::remplissage()
     pqxx::result resultat_SQL =db_manager.getResult();
     double res = resultat_SQL[0][0].as<double>();
     QVERIFY(res == 28.4);
+}
+
+void TestQShapefile::nom_table_espace()
+{
+    const std::string ipAdress = docker.getIpAdress();
+    Shapefile shapefile ("../src/data/Tests/test espace.shp");
+    DbManager db_manager("database2D", ipAdress);
+    shapefile.import_to_db(db_manager,  2154);
+    std::string nom = shapefile.getTableName();
+    QVERIFY(nom == "test_espace");
+}
+
+void TestQShapefile::nom_table_point()
+{
+    const std::string ipAdress = docker.getIpAdress();
+    Shapefile shapefile ("../src/data/Tests/test.point.shp");
+    DbManager db_manager("database2D", ipAdress);
+    shapefile.import_to_db(db_manager,  2154);
+    std::string nom = shapefile.getTableName();
+    QVERIFY(nom == "test_point");
 }
 
 QTEST_MAIN(TestQShapefile)

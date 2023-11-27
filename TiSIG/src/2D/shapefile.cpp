@@ -24,9 +24,15 @@ std::string Shapefile::getTableName(){
 int Shapefile::import_to_db(DbManager db_manager, const int epsg)
     {
 
-    std::string table_name = path.substr(path.find_last_of("/")+1, path.find_last_of(".shp")-path.find_last_of("/")-4);
+    std::string layer_name = path.substr(path.find_last_of("/")+1, path.find_last_of(".shp")-path.find_last_of("/")-4);
+    table_name = layer_name;
+    if (table_name.find(".") != std::string::npos){
+        std::replace(table_name.begin(), table_name.end(), '.', '_');
+    }
+    if (table_name.find(" ") != std::string::npos){
+        std::replace(table_name.begin(), table_name.end(), ' ', '_');
+    }
 
-    this->table_name = table_name;
     // Initialize GDAL
     GDALAllRegister();
 
@@ -48,7 +54,7 @@ int Shapefile::import_to_db(DbManager db_manager, const int epsg)
 
 
     // Get the layer from the shapefile
-    OGRLayer *poLayer = poDS->GetLayerByName(table_name.c_str());
+    OGRLayer *poLayer = poDS->GetLayerByName(layer_name.c_str());
     if (poLayer == nullptr) {
         std::cerr << "Failed to get layer from shapefile." << std::endl;
         //PQfinish(conn);
