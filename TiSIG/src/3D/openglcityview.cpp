@@ -94,6 +94,11 @@ void OpenGLcityView::paintGL()
 
 	this->shader.bind();
 
+	if (this->camInfoDisplayer != nullptr) {
+		this->camInfoDisplayer->Display3DCameraCoordinates(this->camera.getPosition());
+		this->camInfoDisplayer->Display3DZoomLevel(this->camera.getZoom());
+	}
+
 	this->camera.ComputeMPV();
 
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVPCompass());
