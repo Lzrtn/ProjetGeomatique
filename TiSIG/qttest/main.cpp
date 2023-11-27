@@ -38,7 +38,7 @@ void TestQShapefile::constructeur()
 void TestQShapefile::ajout_db()
 {
     const std::string ipAdress = docker.getIpAdress();
-    Shapefile shapefile ("../src/data/Tests/pointsLyon.shp");
+    Shapefile shapefile ("../src/data/Tests/test.shp");
     DbManager db_manager("database2D", ipAdress);
     int res = shapefile.import_to_db(db_manager,  2154);
     QVERIFY(res == 0);
@@ -47,7 +47,7 @@ void TestQShapefile::ajout_db()
 void TestQShapefile::ajout_db_bad()
 {
     const std::string ipAdress = docker.getIpAdress();
-    Shapefile shapefile ("../src/Tests/pointsLyon.shp");
+    Shapefile shapefile ("../src/Tests/test.shp");
     DbManager db_manager("database2D", ipAdress);
     int res = shapefile.import_to_db(db_manager,  2154);
     QVERIFY(res == 1);
@@ -56,11 +56,11 @@ void TestQShapefile::ajout_db_bad()
 void TestQShapefile::nom_table()
 {
     const std::string ipAdress = docker.getIpAdress();
-    Shapefile shapefile ("../src/data/Tests/pointsLyon.shp");
+    Shapefile shapefile ("../src/data/Tests/test.shp");
     DbManager db_manager("database2D", ipAdress);
     shapefile.import_to_db(db_manager,  2154);
     std::string nom = shapefile.getTableName();
-    QVERIFY(nom == "pointsLyon");
+    QVERIFY(nom == "test");
 }
 
 void TestQShapefile::remplissage()
