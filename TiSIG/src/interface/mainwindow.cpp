@@ -25,10 +25,11 @@
 
 //Initialisation du Docker
 // Creating container
-std::string pathDockerFile = "../src/data/Docker/docker-compose.yml";
-Docker docker(pathDockerFile);
+//std::string pathDockerFile = "../src/data/Docker/docker-compose.yml";
+//Docker docker(pathDockerFile);
 // Get the Ip Adress
-const std::string ipAdress_d = docker.getIpAdress();
+//const std::string ipAdress_d = docker.getIpAdress();
+const std::string ipAdress_d = "172.17.0.225";
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -210,14 +211,20 @@ void MainWindow::Display3DCameraCoordinates(QVector3D camPosition)
 	std::string camPositionX = std::to_string((int)(camPosition.x()));
 	std::string camPositionY = std::to_string((int)(camPosition.y()));
 	std::string camPositionZ = std::to_string((int)(camPosition.z()));
-	QString text = QString::fromStdString(camPositionX+","+camPositionY+","+camPositionZ);
-	ui->lineEdit_coords3D->setText(text);
+
+    QString textN = QString::fromStdString(camPositionY);
+    QString textE = QString::fromStdString(camPositionX);
+    QString textH = QString::fromStdString(camPositionZ);
+
+    ui->lineEdit_coords3DN->setText(textN);
+    ui->lineEdit_coords3DE->setText(textE);
+    ui->lineEdit_coords3DH->setText(textH);
 }
 
 void MainWindow::Display3DZoomLevel(float zoom)
 {
 	QString text = QString::fromStdString(std::to_string((int)(zoom*100)));
-	ui->lineEdit_zoom3D->setText(text);
+    ui->lineEdit_zoom3D->setText(text+"%");
 }
 
 
