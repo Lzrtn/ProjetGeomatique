@@ -24,6 +24,29 @@ Object3D::Object3D(std::vector<QVector3D> position, std::vector<QVector3D> norma
 	this->InitGeometryVectors(position, normal, textCoord);
 }
 
+Object3D::Object3D(std::vector<QVector3D> position, std::vector<QVector2D> textCoord, std::string textPath) :
+	indexBuffer(QOpenGLBuffer::IndexBuffer)
+{
+	this->initializeOpenGLFunctions();
+
+	// Generate 2 VBOs
+	this->arrayBuffer.create();
+	this->indexBuffer.create();
+
+	// Initializes geometry and texture
+	this->initTexture(textPath);
+	std::vector<QVector3D> normal;
+	int size = position.size();
+	for (int i=0; i<size; i+=3) {
+		// compute normal as vectorial product
+		QVector3D norm = QVector3D::crossProduct(position[i+0], position[i+1]);
+		normal.push_back(norm);
+		normal.push_back(norm);
+		normal.push_back(norm);
+	}
+	this->InitGeometryVectors(position, normal, textCoord);
+}
+
 Object3D::~Object3D()
 {
 	// free memory

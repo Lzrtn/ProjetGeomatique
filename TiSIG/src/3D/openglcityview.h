@@ -43,7 +43,13 @@ public:
 	 */
 	void DeleteBuilding(const int id);
 
+	void setCamInfoDisplayer(ICameraDisplayInfo * camInfoDisplayer) {
+		this->camInfoDisplayer = camInfoDisplayer;
+	};
+
 protected:
+
+	ICameraDisplayInfo * camInfoDisplayer;
 
 	/**
 	 * @brief these overrided methodes are used by QT to init and display the widget

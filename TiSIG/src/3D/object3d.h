@@ -20,9 +20,6 @@ public:
 	 * @brief
 	 * make an object with geometrics properties
 	 *
-	 * @warning currentry, param normal is not used in shader.
-	 * In future version, it will be used
-	 *
 	 * @throw exception if vertices have different sizes
 	 *
 	 * @param position  vertices 3D of points of faces
@@ -31,6 +28,21 @@ public:
 	 * @param textPath  path of texture image
 	 */
 	Object3D(std::vector<QVector3D> position, std::vector<QVector3D> normal,
+			std::vector<QVector2D> textCoord, std::string textPath);
+
+	/**
+	 * @brief
+	 * make an object with geometrics properties. Auto make normals as scalar product of coords
+	 *
+	 * @warning normals compute needs that faces are direct oriented
+	 *
+	 * @throw exception if vertices have different sizes
+	 *
+	 * @param position  vertices 3D of points of faces
+	 * @param textCord  vertices 2D of points in texture
+	 * @param textPath  path of texture image
+	 */
+	Object3D(std::vector<QVector3D> position,
 			std::vector<QVector2D> textCoord, std::string textPath);
 
 	virtual ~Object3D();

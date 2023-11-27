@@ -6,7 +6,8 @@ SOURCES += \
 	test_camera.cpp \
 	bddgoogle.cpp \
 	executorGoogle.cpp \
-	test-geotiff.cpp
+	test-geotiff.cpp \
+	test_geojson.cpp
 	
 	main.cpp
 #        bddgoogle.cpp \
