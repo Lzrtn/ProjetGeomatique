@@ -1,7 +1,6 @@
 #include <iostream>
 #include <pqxx/pqxx>
 #include <stdlib.h>
-#include <cmath>
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -20,6 +19,9 @@
 #include "2D/layer.h"
 #include "2D/transformation.h"
 #include "2D/shapefile.h"
+#include "2D/geotiff.h"
+#include "2D/rasteritem.h"
+#include "2D/rasterimport.h"
 #include "../outils/dbmanager.h"
 #include "../outils/docker.h"
 
@@ -105,8 +107,6 @@ MainWindow::MainWindow(QWidget *parent)
     /*_______________________________Barre d'outils dans le gestionnaire de couches___________________________________________________________________________________________________*/
 
 
-
-
 }
 
 MainWindow::~MainWindow()
@@ -124,6 +124,7 @@ MainWindow::~MainWindow()
     {
         delete item;
     }
+
 
 }
 
@@ -193,7 +194,9 @@ std::string MainWindow::OnActionRastorLayerClicked()
 {
     QString fileNameRastorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données raster"), "../../../", tr("GeoTIFF (*.tif)"));
     /*std::cout<<fileNameRastorLayer.toStdString()<<std::endl;*/
-    return fileNameRastorLayer.toStdString();
+    std::string path = fileNameRastorLayer.toStdString();
+    this->AddGeotiffFileClicked(path);
+    return path;
 }
 
 std::string MainWindow::OnAction3DModelClicked()
@@ -201,21 +204,6 @@ std::string MainWindow::OnAction3DModelClicked()
     QString fileName3Dmodel = QFileDialog::getOpenFileName(this, tr("Ouvrir un modèle 3D"), "../../../", tr("Modèle 3D (*.gml *.asc)"));
     /*std::cout<<fileName3Dmodel.toStdString()<<std::endl;*/
     return fileName3Dmodel.toStdString();
-}
-
-void MainWindow::Display3DCameraCoordinates(QVector3D camPosition)
-{
-    std::string camPositionX = std::to_string(round(camPosition.x()));
-    std::string camPositionY = std::to_string(round(camPosition.y()));
-    std::string camPositionZ = std::to_string(round(camPosition.z()));
-    QString text = QString::fromStdString(camPositionX+","+camPositionY+","+camPositionZ);
-    ui->lineEdit_coords3D->setText(text);
-}
-
-void MainWindow::Display3DZoomLevel(float zoom)
-{
-    QString text = QString::fromStdString(std::to_string(round(zoom*100)));
-    ui->lineEdit_coords3D->setText(text);
 }
 
 
@@ -248,6 +236,52 @@ void MainWindow::AddShpFileClicked(std::string path)
 
 
 }
+
+void MainWindow::AddGeotiffFileClicked(std::string path)
+{
+    // PostGreSQL Connection to the first database
+    DbManager test("database2D", ipAdress);
+    pqxx::connection conn(test.getString());
+
+    if (conn.is_open()) {
+        std::cout << "Connexion réussie à PostgreSQL" << std::endl;
+
+    } else {
+        std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
+        exit(1);
+    }
+
+    //Import raster from the file system into the DB
+
+    Geotiff geotiff(path);
+    std::cout << "geotiff ouverte" << std::endl;
+
+    geotiff.WriteGeotiffAndMetadataToPostgis(test);
+    std::cout << "geotiff ecrit dans la bdd" << std::endl;
+
+
+    //Import raster from the DB into a layer
+
+    QString filename = QString::fromStdString(path);
+    RasterItem* rasterItem = RasterImport::CreateRasterItemFromDb(filename,test);
+
+    QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
+    scene->addItem(layerGroup);
+
+
+    layerGroup->addToGroup(rasterItem);
+
+    layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
+    addLayerToListWidget(index, *layerList[index]);
+    index++;
+
+
+
+
+
+
+}
+
 
 void MainWindow::OnButtonZoomIn()
 {

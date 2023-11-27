@@ -8,10 +8,12 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QGraphicsScene>
-#include <QVector3D>
+
+#include <QVector>
 
 #include <iostream>
 #include "2D/layer.h"
+#include "2D/rasteritem.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -67,6 +69,8 @@ private:
     std::string ipAdress;
 
 
+
+
 private slots:
 
     /**
@@ -78,7 +82,7 @@ private slots:
     /**
     * @brief Function to zoom out
     *
-    *eturn path
+    *
     */
     void OnButtonZoomOut();
 
@@ -94,7 +98,7 @@ private slots:
 	 *
 	 *
 	 */
-  void OnButtonSwitchTo2D3DClicked();
+    void OnButtonSwitchTo2D3DClicked();
 
     /**
     * @brief Function to add SHP file
@@ -102,6 +106,13 @@ private slots:
     *
     */
     void AddShpFileClicked(std::string path);
+
+    /**
+    * @brief Function to add Geotiff file
+    *
+    *
+    */
+    void AddGeotiffFileClicked(std::string path);
 
   /**
    * @brief Function to show help window
@@ -119,39 +130,24 @@ private slots:
 
   /**
    * @brief Function to show add2DVectorLayer window
-   * @return path
+   *
    *
    */
   std::string OnActionVectorLayerClicked();
 
   /**
    * @brief Function to show add2DRastorLayer window
-   * @return path
+   *
    *
    */
   std::string OnActionRastorLayerClicked();
 
   /**
    * @brief Function to show add3DModel window
-   * @return path
+   *
    *
    */
   std::string OnAction3DModelClicked();
-
-  /**
-   * @brief Function to display camera coordinates in 3D window
-   * @param camera position
-   *
-   */
-  void Display3DCameraCoordinates(QVector3D camPosition);
-
-  /**
-   * @brief Function to display level of zoom in 3D window
-   * @param zoom
-   *
-   */
-  void Display3DZoomLevel(float zoom);
-
 
 };
 
