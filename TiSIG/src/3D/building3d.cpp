@@ -27,7 +27,12 @@ Building3DFactory::Building3DFactory(const int version)
 			{ 4,-1,-1}, { 4, 1, 1}, { 2,-1, 1},
 			{ 4,-1,-1}, { 2, 1,-1}, { 2,-1, 1}
 		};
-		//normal = position; // wrong values, but without light, it has no effects
+		normal = {
+			{-1, 1,-1}, { 1, 1, 1}, { 1,-1,-1},
+			{-1, 1,-1}, { 1, 1, 1}, {-1,-1, 1},
+			{ 1,-1,-1}, { 1, 1, 1}, {-1,-1, 1},
+			{ 1,-1,-1}, {-1, 1,-1}, {-1,-1, 1}
+		};
 		textCoord = {
 			{-1,1}, {1, 1}, {1, -1},
 			{-1,1}, {1, 1}, {1, -1},
@@ -44,7 +49,12 @@ Building3DFactory::Building3DFactory(const int version)
 			{ -2,-1,-1}, { -2, 1, 1}, { -4,-1, 1},
 			{ -2,-1,-1}, { -4, 1,-1}, { -4,-1, 1}
 		};
-		//normal = position; // wrong values, but without light, it has no effects
+		normal = {
+			{-1, 1,-1}, { 1, 1, 1}, { 1,-1,-1},
+			{-1, 1,-1}, { 1, 1, 1}, {-1,-1, 1},
+			{ 1,-1,-1}, { 1, 1, 1}, {-1,-1, 1},
+			{ 1,-1,-1}, {-1, 1,-1}, {-1,-1, 1}
+		};
 		textCoord = {
 			{-1,1}, {1, 1}, {1, -1},
 			{-1,1}, {1, 1}, {1, -1},
@@ -55,13 +65,16 @@ Building3DFactory::Building3DFactory(const int version)
 		break;
 	case 2:
 		position = {
-			{-2, 18, 0}, {-2, 22, 0}, {2, 22, 0},
-			{2, 22, 0}, {2, 18, 0}, {-2, 18, 0}
+			{-2, 18, 5}, {-2, 22, 5}, { 2, 22, 5},
+			{-2, 18, 5}, { 2, 18, 5}, { 2, 22, 5},
 		};
-		//normal = position;
+		normal = {
+			{0, 0, 1}, {0, 0, 1}, {0, 0, 1},
+			{0, 0, 1}, {0, 0, 1}, {0, 0, 1},
+		};
 		textCoord = {
+			{0, 0}, {0, 1}, {1, 1},
 			{0, 0}, {1, 0}, {1, 1},
-			{0, 0}, {0, 1}, {1, 1}
 		};
 		textPath = ":/cube.png";
 		break;
