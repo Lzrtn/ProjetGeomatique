@@ -20,7 +20,9 @@ Les noms sont sous format *typeObj_nameObj*.
   - Fenêtre où se dessine la carte : *openGLWidget_window3D*
   - Zone de texte de l'Epsg : *lineEdit_epsg3D*
   - Zone de texte du Zoom : *lineEdit_zoom3D*
-  - Zone de texte des coordonnées de la caméra : *lineEdit_coords3D*
+  - Zone de texte de la coordonnée N de la caméra : *lineEdit_coords3DN*
+  - Zone de texte de la coordonnée E de la caméra : *lineEdit_coords3DE*
+  - Zone de texte de la coordonnée H de la caméra : *lineEdit_coords3DH*
 
 ## Gestion des couches
 
