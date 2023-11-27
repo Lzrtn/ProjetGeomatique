@@ -25,11 +25,10 @@
 
 //Initialisation du Docker
 // Creating container
-//std::string pathDockerFile = "../src/data/Docker/docker-compose.yml";
-//Docker docker(pathDockerFile);
+std::string pathDockerFile = "../src/data/Docker/docker-compose.yml";
+Docker docker(pathDockerFile);
 // Get the Ip Adress
-//const std::string ipAdress_d = docker.getIpAdress();
-const std::string ipAdress_d = "172.17.0.225";
+const std::string ipAdress_d = docker.getIpAdress();
 
 
 MainWindow::MainWindow(QWidget *parent)
