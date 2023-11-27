@@ -388,4 +388,4 @@ CMakeFiles/main.dir/main.cpp.o: /home/axel/import_raster/main.cpp \
  /usr/local/include/opencv4/opencv2/video.hpp \
  /usr/local/include/opencv4/opencv2/video/tracking.hpp \
  /usr/local/include/opencv4/opencv2/video/background_segm.hpp \
- /home/axel/import_raster/wms.h
+ /home/axel/import_raster/wms.h /home/axel/import_raster/wmts.h
