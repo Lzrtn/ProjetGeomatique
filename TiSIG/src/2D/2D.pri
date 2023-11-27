@@ -22,12 +22,14 @@ LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
 SOURCES += \
     $$PWD/layer.cpp \
     $$PWD/shapefile.cpp \
-    $$PWD/transformation.cpp
+    $$PWD/transformation.cpp \
+    $$PWD/geotiff.cpp
 
 HEADERS += \
     $$PWD/layer.h \
     $$PWD/shapefile.h \
-    $$PWD/transformation.h
+    $$PWD/transformation.h \
+    $$PWD/geotiff.h
 
 
 # Ajoutez les flags de compilation nécessaires pour C++

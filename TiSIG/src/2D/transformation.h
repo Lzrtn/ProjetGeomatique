@@ -2,7 +2,7 @@
 #define TRANSFORMATION_H
 
 #include <string>
-#include <nlohmann/json.hpp>
+#include "../data/json.hpp"
 
 #include <QGraphicsView>
 #include <QGraphicsScene>

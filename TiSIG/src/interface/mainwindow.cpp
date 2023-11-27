@@ -42,8 +42,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Initialisation in mode 2D //
     ui->stackedWidget->setCurrentIndex(mode);
-    ui->label_attributeInformation->setVisible(!mode);
-    ui->tableWidget_layerAttributeInformation->setVisible(!mode);
         // Action 2D
     ui->action_add2DVectorLayer->setEnabled(!mode);
     ui->action_add2DRastorLayer->setEnabled(!mode);
@@ -140,8 +138,6 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
     ui->stackedWidget->setCurrentIndex(mode);
 
     ui->stackedWidget->setCurrentIndex(mode);
-    ui->tableWidget_layerAttributeInformation->setVisible(!mode);
-    ui->label_attributeInformation->setVisible(!mode);
 
     ui->action_add2DVectorLayer->setEnabled(!mode);
     ui->action_add2DRastorLayer->setEnabled(!mode);
