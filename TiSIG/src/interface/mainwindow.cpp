@@ -194,14 +194,12 @@ std::string MainWindow::OnActionVectorLayerClicked()
 std::string MainWindow::OnActionRastorLayerClicked()
 {
 	QString fileNameRastorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données raster"), "../../../", tr("GeoTIFF (*.tif)"));
-	/*std::cout<<fileNameRastorLayer.toStdString()<<std::endl;*/
 	return fileNameRastorLayer.toStdString();
 }
 
 std::string MainWindow::OnAction3DModelClicked()
 {
-	QString fileName3Dmodel = QFileDialog::getOpenFileName(this, tr("Ouvrir un modèle 3D"), "../../../", tr("Modèle 3D (*.gml *.asc)"));
-	/*std::cout<<fileName3Dmodel.toStdString()<<std::endl;*/
+    QString fileName3Dmodel = QFileDialog::getOpenFileName(this, tr("Ouvrir un modèle 3D"), "../../../", tr("CityGML (*.gml)"));
 	return fileName3Dmodel.toStdString();
 }
 
