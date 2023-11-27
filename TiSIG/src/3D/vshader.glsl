@@ -30,6 +30,6 @@ void main()
     ambDirLightDirection = normalize(ambDirLightDirection);
     vec3 normal = normalize(vec3(mvp_matrix * vec4(a_normal, 0.0)));
 
-    ambDirLightCoef = clamp(-dot(ambDirLightDirection, normal), 0.0, 1.0);
+    ambDirLightCoef = pow(clamp(-dot(ambDirLightDirection, normal), 0.0, 1.0), 0.5);
     ambUniLightCoef = 0.4;
 }
