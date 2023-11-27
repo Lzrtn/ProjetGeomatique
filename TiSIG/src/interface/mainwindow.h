@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include "2D/layer.h"
+#include "3D/camera.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,7 +23,7 @@ QT_END_NAMESPACE
  *
  * This class represents the main window of TiSIG application.
  */
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public ICameraDisplayInfo
 {
 	Q_OBJECT
 
@@ -44,51 +45,53 @@ public:
 	 */
 	bool getMode() const;
 
-    /**
-     * @brief Get the ui
-     * @return Ui::MainWindow *
-     */
-    Ui::MainWindow * getUi() const;
+	/**
+	 * @brief Get the ui
+	 * @return Ui::MainWindow *
+	 */
+	Ui::MainWindow * getUi() const;
 
 
-    /**
-     * @brief Function to add Layer to the ListWidget
-     */
-    void addLayerToListWidget(int, Layer &layer);
+	/**
+	 * @brief Function to add Layer to the ListWidget
+	 */
+	void addLayerToListWidget(int, Layer &layer);
+
 
     int index = 0; // Temporaire
     void updateLayerOrderInGraphicsView();
+
 
 private:
 	  Ui::MainWindow *ui; ///< Ui::MainWindow ui
 	  bool mode; ///< bool mode
 
-    QGraphicsScene *scene;
-    std::map <int, Layer*> layerList;
-    std::string ipAdress;
+	QGraphicsScene *scene;
+	std::map <int, Layer*> layerList;
+	std::string ipAdress;
 
 
 private slots:
 
-    /**
-    * @brief Function to zoom in
-    *
-    */
-    void OnButtonZoomIn();
+	/**
+	* @brief Function to zoom in
+	*
+	*/
+	void OnButtonZoomIn();
 
-    /**
-    * @brief Function to zoom out
-    *
-    *eturn path
-    */
-    void OnButtonZoomOut();
+	/**
+	* @brief Function to zoom out
+	*
+	*eturn path
+	*/
+	void OnButtonZoomOut();
 
-    /**
-    * @brief Function to zoom on full extent
-    *
-    *
-    */
-    void OnButtonZoomFull();
+	/**
+	* @brief Function to zoom on full extent
+	*
+	*
+	*/
+	void OnButtonZoomFull();
 
 	/**
 	 * @brief Function to switch between 2D and 3D mode
@@ -97,12 +100,12 @@ private slots:
 	 */
   void OnButtonSwitchTo2D3DClicked();
 
-    /**
-    * @brief Function to add SHP file
-    *
-    *
-    */
-    void AddShpFileClicked(std::string path);
+	/**
+	* @brief Function to add SHP file
+	*
+	*
+	*/
+	void AddShpFileClicked(std::string path);
 
   /**
    * @brief Function to show help window
@@ -139,19 +142,20 @@ private slots:
    */
   std::string OnAction3DModelClicked();
 
+public:
   /**
    * @brief Function to display camera coordinates in 3D window
    * @param camera position
    *
    */
-  void Display3DCameraCoordinates(QVector3D camPosition);
+  void Display3DCameraCoordinates(QVector3D camPosition) override;
 
   /**
    * @brief Function to display level of zoom in 3D window
    * @param zoom
    *
    */
-  void Display3DZoomLevel(float zoom);
+  void Display3DZoomLevel(float zoom) override;
 
   void moveItemUp( );
   void moveItemDown( );
