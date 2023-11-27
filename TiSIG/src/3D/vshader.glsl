@@ -6,7 +6,7 @@ precision mediump float;
 #endif
 
 uniform mat4 mvp_matrix;
-
+uniform float power_light;
 attribute vec3 a_position;
 attribute vec3 a_normal;
 attribute vec2 a_texcoord;
@@ -30,6 +30,6 @@ void main()
     ambDirLightDirection = normalize(ambDirLightDirection);
     vec3 normal = normalize(vec3(mvp_matrix * vec4(a_normal, 0.0)));
 
-    ambDirLightCoef = pow(clamp(-dot(ambDirLightDirection, normal), 0.0, 1.0), 0.5);
+    ambDirLightCoef = pow(clamp(-dot(ambDirLightDirection, normal), 0.0, 1.0), power_light);
     ambUniLightCoef = 0.4;
 }

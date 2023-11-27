@@ -97,10 +97,12 @@ void OpenGLcityView::paintGL()
 	this->camera.ComputeMPV();
 
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVPCompass());
+	this->shader.setUniformValue("power_light", GLfloat(0.5));
 	this->compass->Draw(&this->shader);
 
 	// Set modelview-projection matrix
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVP());
+	this->shader.setUniformValue("power_light", GLfloat(1.0));
 
 
 	// Draw geometry
