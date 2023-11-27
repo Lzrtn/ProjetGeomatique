@@ -63,7 +63,7 @@ CMAKE_BINARY_DIR = /home/axel/import_raster
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/import_raster.dir/all
+all: CMakeFiles/main.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -71,34 +71,34 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/import_raster.dir/clean
+clean: CMakeFiles/main.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/import_raster.dir
+# Target rules for target CMakeFiles/main.dir
 
 # All Build rule for target.
-CMakeFiles/import_raster.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/import_raster.dir/build.make CMakeFiles/import_raster.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/import_raster.dir/build.make CMakeFiles/import_raster.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/axel/import_raster/CMakeFiles --progress-num=1,2 "Built target import_raster"
-.PHONY : CMakeFiles/import_raster.dir/all
+CMakeFiles/main.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/axel/import_raster/CMakeFiles --progress-num=1,2,3,4 "Built target main"
+.PHONY : CMakeFiles/main.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/import_raster.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/axel/import_raster/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/import_raster.dir/all
+CMakeFiles/main.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/axel/import_raster/CMakeFiles 4
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/main.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/axel/import_raster/CMakeFiles 0
-.PHONY : CMakeFiles/import_raster.dir/rule
+.PHONY : CMakeFiles/main.dir/rule
 
 # Convenience name for target.
-import_raster: CMakeFiles/import_raster.dir/rule
-.PHONY : import_raster
+main: CMakeFiles/main.dir/rule
+.PHONY : main
 
 # clean rule for target.
-CMakeFiles/import_raster.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/import_raster.dir/build.make CMakeFiles/import_raster.dir/clean
-.PHONY : CMakeFiles/import_raster.dir/clean
+CMakeFiles/main.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/clean
+.PHONY : CMakeFiles/main.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

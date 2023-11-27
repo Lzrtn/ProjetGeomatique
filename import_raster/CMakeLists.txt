@@ -3,7 +3,7 @@ project(ImportRaster)
 
 find_package(OpenCV REQUIRED)
 
-add_executable(import_raster import_raster.cpp)
+add_executable(main main.cpp wms.h wms.cpp wmts.h wmts.cpp)
 
 # Add libcurl to the target_link_libraries
-target_link_libraries(import_raster PRIVATE curl ${OpenCV_LIBS})
+target_link_libraries(main PRIVATE curl ${OpenCV_LIBS})

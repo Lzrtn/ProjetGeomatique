@@ -117,41 +117,89 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named import_raster
+# Target rules for targets named main
 
 # Build rule for target.
-import_raster: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 import_raster
-.PHONY : import_raster
+main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 main
+.PHONY : main
 
 # fast build rule for target.
-import_raster/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/import_raster.dir/build.make CMakeFiles/import_raster.dir/build
-.PHONY : import_raster/fast
+main/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
+.PHONY : main/fast
 
-import_raster.o: import_raster.cpp.o
-.PHONY : import_raster.o
+main.o: main.cpp.o
+.PHONY : main.o
 
 # target to build an object file
-import_raster.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/import_raster.dir/build.make CMakeFiles/import_raster.dir/import_raster.cpp.o
-.PHONY : import_raster.cpp.o
+main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.o
+.PHONY : main.cpp.o
 
-import_raster.i: import_raster.cpp.i
-.PHONY : import_raster.i
+main.i: main.cpp.i
+.PHONY : main.i
 
 # target to preprocess a source file
-import_raster.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/import_raster.dir/build.make CMakeFiles/import_raster.dir/import_raster.cpp.i
-.PHONY : import_raster.cpp.i
+main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.i
+.PHONY : main.cpp.i
 
-import_raster.s: import_raster.cpp.s
-.PHONY : import_raster.s
+main.s: main.cpp.s
+.PHONY : main.s
 
 # target to generate assembly for a file
-import_raster.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/import_raster.dir/build.make CMakeFiles/import_raster.dir/import_raster.cpp.s
-.PHONY : import_raster.cpp.s
+main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.s
+.PHONY : main.cpp.s
+
+wms.o: wms.cpp.o
+.PHONY : wms.o
+
+# target to build an object file
+wms.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/wms.cpp.o
+.PHONY : wms.cpp.o
+
+wms.i: wms.cpp.i
+.PHONY : wms.i
+
+# target to preprocess a source file
+wms.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/wms.cpp.i
+.PHONY : wms.cpp.i
+
+wms.s: wms.cpp.s
+.PHONY : wms.s
+
+# target to generate assembly for a file
+wms.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/wms.cpp.s
+.PHONY : wms.cpp.s
+
+wmts.o: wmts.cpp.o
+.PHONY : wmts.o
+
+# target to build an object file
+wmts.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/wmts.cpp.o
+.PHONY : wmts.cpp.o
+
+wmts.i: wmts.cpp.i
+.PHONY : wmts.i
+
+# target to preprocess a source file
+wmts.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/wmts.cpp.i
+.PHONY : wmts.cpp.i
+
+wmts.s: wmts.cpp.s
+.PHONY : wmts.s
+
+# target to generate assembly for a file
+wmts.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/wmts.cpp.s
+.PHONY : wmts.cpp.s
 
 # Help Target
 help:
@@ -161,10 +209,16 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... import_raster"
-	@echo "... import_raster.o"
-	@echo "... import_raster.i"
-	@echo "... import_raster.s"
+	@echo "... main"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
+	@echo "... wms.o"
+	@echo "... wms.i"
+	@echo "... wms.s"
+	@echo "... wmts.o"
+	@echo "... wmts.i"
+	@echo "... wmts.s"
 .PHONY : help
 
 
