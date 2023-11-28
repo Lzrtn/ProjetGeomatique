@@ -271,20 +271,19 @@ void MainWindow::AddShpFileClicked(std::string path)
 	//import du shapefile dans la base de données
     Shapefile * essai1 = new Shapefile(path, test);
 
-
     essai1->import_to_db(2154);
+    QColor myColor = essai1->showColor();
 
+    //affichage des shapefiles importé
+    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
+    pqxx::result rowbis =test.getResult();
+    QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis,scene, myColor);
 
-  //affichage des shapefiles importé
-  test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
-  pqxx::result rowbis =test.getResult();
-  QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis,scene);
+    layerList[index] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
+    addLayerToListWidget(index, *layerList[index]);
+    index++;
 
-  layerList[index] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
-  addLayerToListWidget(index, *layerList[index]);
-  index++;
-
-  ShpList.push_back(essai1);
+    ShpList.push_back(essai1);
 
 
 }
