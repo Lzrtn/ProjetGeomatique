@@ -112,13 +112,27 @@ std::vector<QVector3D> Batiment::createBuilding(std::string id, std::string ipAd
 
 
     }
+    //Initializing the request
+    std::string request = "INSERT INTO triangle (geom, parent_id) VALUES ";
+    //Extracting the triplets of coordinates
+    for (int i =0;i < coordinates.size(); i+= 3){
+        const glm::vec3& v1 = coordinates[i];
+        const glm::vec3& v2 = coordinates[i + 1];
+        const glm::vec3& v3 = coordinates[i + 2];
 
-    if (!coordinates.empty()) {
-        QVector3D firstCoordinate = coordinates[0];
-        std::cout << "Premier élément de coordinates : " << firstCoordinate.x() << ", " << firstCoordinate.y() << ", " << firstCoordinate.z() << std::endl;
-    } else {
-        std::cout << "Le vecteur coordinates est vide." << std::endl;
+        std::string polygon = "POLYGON Z((";
+        polygon += std::to_string(v1.x) + " " + std::to_string(v1.y) + " " + std::to_string(v1.z) + "," +
+                " " + std::to_string(v2.x) + " " + std::to_string(v2.y) + " " + std::to_string(v2.z) + "," +
+                " " + std::to_string(v3.x) + " " + std::to_string(v3.y) + " " + std::to_string(v3.z) + "," +
+                " " + std::to_string(v1.x) + " " + std::to_string(v1.y) + " " + std::to_string(v1.z) + "))";
+        //std::cout<<polygon;
+        request += "(ST_GeomFromText('"+polygon+"', 4171),"+id+"),";
+        //std::string request = "INSERT INTO triangle (geom, parent_id) VALUES (ST_GeomFromText('"+polygon+"',4171),+"+id+");";
     }
+    request.erase(request.size() - 1);
+    request += ";";
+    //std::cout<<request<<std::endl;
+    manager.Request(request);
 
     return coordinates;
 
