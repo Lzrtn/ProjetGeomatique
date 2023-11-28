@@ -13,9 +13,10 @@
 
 #include <iostream>
 #include "../src/2D/layer.h"
-#include "../src/3D/camera.h"
 #include "../src/2D/rasteritem.h"
+#include "../src/3D/camera.h"
 #include "../src/2D/shapefile.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

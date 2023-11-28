@@ -11,7 +11,7 @@ CONFIG += c++11
 SOURCES += \
     $$PWD/dataflowwindow.cpp \
     $$PWD/helpwindow.cpp \
-    $$PWD/mainwindow.cpp
+    $$PWD/mainwindow.cpp \
     $$PWD/view_zoom.cpp \
 
 HEADERS += \
