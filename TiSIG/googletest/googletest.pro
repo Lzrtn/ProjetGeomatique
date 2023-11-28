@@ -13,6 +13,7 @@ SOURCES += \
 include($$PWD/../src/2D/2D.pri)
 include($$PWD/../src/3D/3D.pri)
 include($$PWD/../src/outils/outils.pri)
+#include($$PWD/../src/interface/interface.pri)
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/qtestlib/tutorial1
