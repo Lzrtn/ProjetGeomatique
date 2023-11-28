@@ -48,11 +48,11 @@ void Camera::ResizeView(int width, int height)
 void Camera::Picking3D(const QPoint &posScreen, QVector3D &p1, QVector3D &p2)
 {
 	QVector4D posScreen4D = {
-		static_cast<float>(posScreen.x()),
-		static_cast<float>(posScreen.y()),
-		1, 1};
+		static_cast<float>(posScreen.x() - this->wWidth/2),
+		static_cast<float>(posScreen.y() - this->wHeight/2),
+		0, 1};
 
-	QVector4D p1bis = posScreen4D * this->matMVP.inverted();
-	p1 = QVector3D(p1bis.x(), p1bis.y(), p1bis.z());
-	p2 = QVector3D(posScreen.x(), posScreen.y(), -1);
+	p1 = QVector3D(this->matMVP.inverted() * posScreen4D);
+	posScreen4D.setZ(1);
+	p2 = QVector3D(this->matMVP.inverted() * posScreen4D);
 }
