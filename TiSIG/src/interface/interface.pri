@@ -11,12 +11,14 @@ CONFIG += c++11
 
 
 SOURCES += \
+    $$PWD/view_zoom.cpp \
     interface/dataflowwindow.cpp \
     interface/helpwindow.cpp \
     interface/main.cpp \
     interface/mainwindow.cpp \
 
 HEADERS += \
+    $$PWD/view_zoom.h \
     interface/dataflowwindow.h \
     interface/helpwindow.h \
     interface/mainwindow.h \
