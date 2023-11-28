@@ -36,11 +36,11 @@ WMS::WMS(int crs, double north_limit, double south_limit, double east_limit, dou
 
     //Base url of the flow ("wms-r" for WMS-Raster)
     string link           = "https://data.geopf.fr/wms-r";    
-    string layer          = "ORTHOIMAGERY.ORTHOPHOTOS";
+    string layer          = "OI.OrthoimageCoverage";
     string exception      = "text/xml"; 
     string format         = "png";   
     string service        = "WMS";
-    string version        = "1.0.0";    
+    string version        = "1.3.0";    
     string request        = "GetMap";
     string bbox           = key_bbox+str_south+coma+str_west+coma+str_north+coma+str_east;
     string width_request  = key_width+str_width;
@@ -50,6 +50,8 @@ WMS::WMS(int crs, double north_limit, double south_limit, double east_limit, dou
     string str_url = link + key_layers + layer + key_exceptions + exception + key_format + format + 
                 key_service + service + key_version + version + key_request + request + key_styles + 
                 key_crs + str_crs + bbox + width_request + height_request;
+
+    std::cout<<url<<"\n";
     
     url = strdup(str_url.c_str());
     }

@@ -68,4 +68,13 @@ WMTS::WMTS(string tilematrixset, int tilematrix,
                 + key_tilerow + str_tilerow;
     
     std::cout<<str_url;
+    url = strdup(str_url.c_str());
+}
+
+
+const char* WMTS::getUrl() {
+    return url;
+}
+
+WMTS::~WMTS(){
 }

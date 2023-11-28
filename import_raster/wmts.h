@@ -11,10 +11,10 @@ class WMTS {
 public:
     WMTS(string tilematrixset, int tilematrix, 
         double north_limit, double west_limit);
-   /* ~WMTS();
+    ~WMTS();
     const char* getUrl();
 private:
-    const char* url;*/
+    const char* url;
 
 };
 

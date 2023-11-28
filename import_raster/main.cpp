@@ -24,6 +24,9 @@ int main() {
 
     //Convert into char*
     const char* url = wmsInstance.getUrl();
+    const char* url2 = wmtsInstance.getUrl();
+
+    cout<<url2;
 
     // Initialize libcurl
     CURL* curl = curl_easy_init();
