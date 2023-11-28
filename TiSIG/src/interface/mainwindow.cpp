@@ -192,8 +192,7 @@ std::string MainWindow::OnActionVectorLayerClicked()
 
 std::string MainWindow::OnActionRastorLayerClicked()
 {
-    QString fileNameRastorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données raster"), "../../../", tr("GeoTIFF (*.tif)"));
-    /*std::cout<<fileNameRastorLayer.toStdString()<<std::endl;*/
+    QString fileNameRastorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données raster"), "../../../", tr("GeoTIFF (*.tif *.TIF *.tiff)"));
     std::string path = fileNameRastorLayer.toStdString();
     this->AddGeotiffFileClicked(path);
     return path;
