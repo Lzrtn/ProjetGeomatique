@@ -28,8 +28,3 @@ RESOURCES += \
     3D/shaders.qrc \
     3D/textures.qrc \
     3D/objects.qrc
-
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
