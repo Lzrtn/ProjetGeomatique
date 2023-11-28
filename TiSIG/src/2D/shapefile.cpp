@@ -39,6 +39,10 @@ int Shapefile::import_to_db(const int epsg)
     std::string layer_name = path.substr(path.find_last_of("/")+1, path.find_last_of(".shp")-path.find_last_of("/")-4);
     table_name = layer_name;
 
+    //Pass the table name to lower case
+    std::transform(table_name.begin(), table_name.end(), table_name.begin(),
+        [](unsigned char c){ return std::tolower(c); });
+
     // Remove spaces, points and parentheses in the table name
     if (table_name.find(".") != std::string::npos){
         std::replace(table_name.begin(), table_name.end(), '.', '_');
@@ -70,6 +74,7 @@ int Shapefile::import_to_db(const int epsg)
         db_manager.Request(tableExists);
         res = db_manager.getResult();
     }
+    std::cout<<table_name<<std::endl;
 
     // Initialize GDAL
     GDALAllRegister();
@@ -204,7 +209,7 @@ int Shapefile::import_to_db(const int epsg)
             GDALClose(poDS);
 
             // Add color
-            /*std::string tableSymbo = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'symbologie');";
+            std::string tableSymbo = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'symbologie');";
             db_manager.Request(tableSymbo);
             pqxx::result r = db_manager.getResult();
             if(r[0][0].as<std::string>()=="f"){
@@ -212,7 +217,6 @@ int Shapefile::import_to_db(const int epsg)
                 db_manager.CreateTable(request_create_symbo);
                 std::string request_columns = "ALTER TABLE public.symbologie ADD COLUMN id int, ADD COLUMN name character varying, ADD COLUMN red int, ADD COLUMN green int, ADD COLUMN blue int, ADD COLUMN alpha int;";
                 db_manager.CreateTable(request_columns);
-                std::cout<< "table symbo crée"<<std::endl;
             }
             std::string request_max_id = "SELECT MAX (id) FROM symbologie";
             db_manager.Request(request_max_id);
@@ -224,12 +228,12 @@ int Shapefile::import_to_db(const int epsg)
             else {
                 index = i[0][0].as<int>() +1;
             }
+            srand(time(NULL));
             int red_random = rand()%255;
             int green_random = rand()%255;
             int blue_random = rand()%255;
             std::string add_line_symbo = "INSERT INTO symbologie (id, name, red, green, blue, alpha) VALUES ("+std::to_string(index)+",'"+table_name+"',"+std::to_string(red_random)+","+std::to_string(green_random)+","+std::to_string(blue_random)+",255);";
             db_manager.Request(add_line_symbo);
-            std::cout<< "ligne ajoutée " + add_line_symbo<<std::endl;*/
             std::cout<<"IT WORKS!"<<std::endl;
             return 0;
         }
@@ -263,9 +267,8 @@ std::vector<float> Shapefile::getBoundingBox()
 
 
 
-QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene *scene)
+QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene *scene, QColor myColor)
 {
-
 
     Transformation t;
 
@@ -295,7 +298,6 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
             QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojsongeom);
             QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
             layerGroup->addToGroup(polygoneToPlotItem);
-            QColor myColor = QColor("darkGreen");
             polygoneToPlotItem->setBrush(myColor);
         }
         else if(dataType == "Point" || dataType == "MultiPoint")
@@ -310,4 +312,16 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
         }
     }
     return(layerGroup);
+}
+
+QColor Shapefile::showColor(){
+    std::string requete_couleur = "SELECT red, green, blue, alpha from symbologie where name = '"+table_name+"';";
+    db_manager.Request(requete_couleur);
+    pqxx::result res = db_manager.getResult();
+    int red = res[0][0].as<int>();
+    int green = res[0][1].as<int>();
+    int blue = res[0][2].as<int>();
+    int alpha = res[0][3].as<int>();
+    return (QColor(red,blue,green,alpha));
+
 }

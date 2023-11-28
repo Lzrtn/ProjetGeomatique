@@ -68,7 +68,9 @@ public:
     */
    std::vector<float> getBoundingBox();
 
-   QGraphicsItemGroup * plotShapefile(pqxx::result rowbis, QGraphicsScene *scene);
+   QGraphicsItemGroup * plotShapefile(pqxx::result rowbis, QGraphicsScene *scene, QColor myColor);
+
+   QColor showColor();
 
 private:
     /**
