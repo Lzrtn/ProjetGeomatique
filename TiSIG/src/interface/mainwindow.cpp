@@ -15,6 +15,7 @@
 #include "ui_mainwindow.h"
 #include "helpwindow.h"
 #include "dataflowwindow.h"
+#include "view_zoom.h"
 
 #include "2D/layer.h"
 #include "2D/transformation.h"
@@ -64,6 +65,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// Connect scene to QGraphicsView
 	ui->graphicsView_window2D->setScene(scene);
+    ui->graphicsView_window2D->setDragMode(QGraphicsView::ScrollHandDrag);
+    View_zoom* z = new View_zoom(ui->graphicsView_window2D);
+    z->set_modifiers(Qt::NoModifier);
 
 	// ip Address
 	ipAdress = ipAdress_d;
