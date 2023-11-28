@@ -10,8 +10,16 @@
 #include "shapefile.h"
 #include "transformation.h"
 
-Shapefile::Shapefile(const std::string path):path(path)
+Shapefile::Shapefile(const std::string path, DbManager db_manager):path(path), db_manager(db_manager)
 {}
+
+Shapefile::~Shapefile(){
+    if (table_name!=""){
+        std::string drop_table = "DROP TABLE IF EXISTS "+table_name;
+        db_manager.Request(drop_table);
+        std::cout<<"table dropped"<<std::endl;
+    }
+}
 
 std::string Shapefile::getPath(){
     return (path);
@@ -21,7 +29,11 @@ std::string Shapefile::getTableName(){
     return (table_name);
 }
 
-int Shapefile::import_to_db(DbManager db_manager, const int epsg)
+DbManager Shapefile::getDbManager(){
+    return (db_manager);
+}
+
+int Shapefile::import_to_db(const int epsg)
     {
 
     std::string layer_name = path.substr(path.find_last_of("/")+1, path.find_last_of(".shp")-path.find_last_of("/")-4);
@@ -58,7 +70,6 @@ int Shapefile::import_to_db(DbManager db_manager, const int epsg)
         db_manager.Request(tableExists);
         res = db_manager.getResult();
     }
-    std::cout<<table_name<<std::endl;
 
     // Initialize GDAL
     GDALAllRegister();
@@ -71,133 +82,161 @@ int Shapefile::import_to_db(DbManager db_manager, const int epsg)
         return 1;
     }
 
+    else{
+        // Create the table in the database
+            std::string request = "DROP TABLE IF EXISTS "+table_name+";";
+            db_manager.CreateTable(request);
+            std::string request_create = "CREATE TABLE "+table_name+" ();";
+            db_manager.CreateTable(request_create);
+            std::cout << "Table created\n";
 
-    // Create the table in the database
-        std::string request = "DROP TABLE IF EXISTS "+table_name+";";
-        db_manager.CreateTable(request);
-        std::string request_create = "CREATE TABLE "+table_name+" ();";
-        db_manager.CreateTable(request_create);
-        std::cout << "Table created\n";
 
-
-    // Get the layer from the shapefile
-    OGRLayer *poLayer = poDS->GetLayerByName(layer_name.c_str());
-    if (poLayer == nullptr) {
-        std::cerr << "Failed to get layer from shapefile." << std::endl;
-        //PQfinish(conn);
-        GDALClose(poDS);
-        return 1;
-    }
-
-    // Add features columns
-    std::string instruction_add = "ALTER TABLE public."+table_name;
-    OGRFeatureDefn* featureDefn = poLayer->GetLayerDefn();
-    for (int i=0; i<featureDefn->GetFieldCount(); i++){
-        OGRFieldDefn* fieldDefn = featureDefn->GetFieldDefn(i);
-        const char* fieldName = fieldDefn->GetNameRef();
-        std::string field_name = fieldName;
-        OGRFieldType fieldType = fieldDefn->GetType();
-
-        // Access attribute values based on field type
-        std::string data_type;
-        switch (fieldType) {
-            case OFTInteger:
-                data_type = "integer";
-                break;
-            case OFTIntegerList:
-                data_type = "integer[]";
-            break;
-            case OFTReal:
-                data_type = "double precision";
-                break;
-            case OFTRealList:
-                data_type = "double precision[]";
-            break;
-            case OFTString:
-                data_type = "character varying";
-                break;
-            case OFTStringList:
-                data_type = "character varying[]";
-            break;
-            case OFTBinary:
-                data_type = "geom";
-                break;
-            case OFTWideString:
-                data_type = "text";
-            break;
-            case OFTWideStringList:
-                data_type = "text[]";
-            break;
-            case OFTDate:
-                data_type = "timestamp";
-            break;
-            case OFTDateTime:
-                data_type = "timestamp";
-            break;
-            case OFTTime:
-                data_type = "timestamp";
-            break;
-            default:
-                printf("%s: [Unhandled Field Type]\n", fieldName);
-                data_type = "character varying";
+        // Get the layer from the shapefile
+        OGRLayer *poLayer = poDS->GetLayerByName(layer_name.c_str());
+        if (poLayer == nullptr) {
+            std::cerr << "Failed to get layer from shapefile." << std::endl;
+            GDALClose(poDS);
+            return 1;
         }
-        instruction_add += " ADD COLUMN "+field_name+" "+data_type+",";
-    }
+        else{
+            // Add features columns
+            std::string instruction_add = "ALTER TABLE public."+table_name;
+            OGRFeatureDefn* featureDefn = poLayer->GetLayerDefn();
+            for (int i=0; i<featureDefn->GetFieldCount(); i++){
+                OGRFieldDefn* fieldDefn = featureDefn->GetFieldDefn(i);
+                const char* fieldName = fieldDefn->GetNameRef();
+                std::string field_name = fieldName;
+                OGRFieldType fieldType = fieldDefn->GetType();
 
-    // Build the SQL ADD COLUMN statement
-    instruction_add += " ADD COLUMN geom geometry;";
-    db_manager.CreateTable(instruction_add);
-
-    std::cout << "Columns added\n";
-
-    // Loop through features and insert them into the database
-    OGRFeature *poFeature;
-    std::string instruction_fill = "";
-    while ((poFeature = poLayer->GetNextFeature()) != nullptr) {
-        std::string instruction = "INSERT INTO "+table_name +"(" ;
-        std::string fields;
-        std::string values;
-        // Access attributes
-        for (int i=0; i<featureDefn->GetFieldCount(); i++){
-            OGRFieldDefn* fieldDefn = featureDefn->GetFieldDefn(i);
-            const char* fieldName = fieldDefn->GetNameRef();
-            std::string field_name = fieldName;
-            const char *fieldValue = poFeature->GetFieldAsString(fieldName);
-            std::string value = fieldValue;
-            if (!value.empty() && i !=featureDefn->GetFieldCount()-1){
-                fields += field_name + ",";
-                if (value.find("'") != std::string::npos){
-                    std::replace(value.begin(), value.end(), '\'', ' ');
+                // Access attribute values based on field type
+                std::string data_type;
+                switch (fieldType) {
+                    case OFTInteger:
+                        data_type = "integer";
+                        break;
+                    case OFTIntegerList:
+                        data_type = "integer[]";
+                    break;
+                    case OFTReal:
+                        data_type = "double precision";
+                        break;
+                    case OFTRealList:
+                        data_type = "double precision[]";
+                    break;
+                    case OFTString:
+                        data_type = "character varying";
+                        break;
+                    case OFTStringList:
+                        data_type = "character varying[]";
+                    break;
+                    case OFTBinary:
+                        data_type = "geom";
+                        break;
+                    case OFTWideString:
+                        data_type = "text";
+                    break;
+                    case OFTWideStringList:
+                        data_type = "text[]";
+                    break;
+                    case OFTDate:
+                        data_type = "timestamp";
+                    break;
+                    case OFTDateTime:
+                        data_type = "timestamp";
+                    break;
+                    case OFTTime:
+                        data_type = "timestamp";
+                    break;
+                    default:
+                        printf("%s: [Unhandled Field Type]\n", fieldName);
+                        data_type = "character varying";
                 }
-                values += "'"+ value + "',";
+                instruction_add += " ADD COLUMN "+field_name+" "+data_type+",";
             }
+
+            // Build the SQL ADD COLUMN statement
+            instruction_add += " ADD COLUMN geom geometry;";
+            db_manager.CreateTable(instruction_add);
+
+            std::cout << "Columns added\n";
+
+            // Loop through features and insert them into the database
+            OGRFeature *poFeature;
+            std::string instruction_fill = "";
+            while ((poFeature = poLayer->GetNextFeature()) != nullptr) {
+                std::string instruction = "INSERT INTO "+table_name +"(" ;
+                std::string fields;
+                std::string values;
+                // Access attributes
+                for (int i=0; i<featureDefn->GetFieldCount(); i++){
+                    OGRFieldDefn* fieldDefn = featureDefn->GetFieldDefn(i);
+                    const char* fieldName = fieldDefn->GetNameRef();
+                    std::string field_name = fieldName;
+                    const char *fieldValue = poFeature->GetFieldAsString(fieldName);
+                    std::string value = fieldValue;
+                    if (!value.empty() && i !=featureDefn->GetFieldCount()-1){
+                        fields += field_name + ",";
+                        if (value.find("'") != std::string::npos){
+                            std::replace(value.begin(), value.end(), '\'', ' ');
+                        }
+                        values += "'"+ value + "',";
+                    }
+                }
+
+                // Get the geometry
+                OGRGeometry *poGeometry = poFeature->GetGeometryRef();
+                if (poGeometry != nullptr) {
+                    // Convert the geometry to WKT (Well-Known Text)
+                    char *wkt;
+                    poGeometry->exportToWkt(&wkt);
+
+                    // Build the SQL INSERT statement
+                    instruction_fill += instruction + fields+"geom) VALUES("+values+"ST_GeomFromText('" + std::string(wkt) + "', "+std::to_string(epsg)+"));";
+
+                }
+
+                // Cleanup
+                OGRFeature::DestroyFeature(poFeature);
+            }
+            db_manager.Request(instruction_fill);
+
+            // Close the shapefile
+            GDALClose(poDS);
+
+            // Add color
+            /*std::string tableSymbo = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'symbologie');";
+            db_manager.Request(tableSymbo);
+            pqxx::result r = db_manager.getResult();
+            if(r[0][0].as<std::string>()=="f"){
+                std::string request_create_symbo = "CREATE TABLE symbologie ();";
+                db_manager.CreateTable(request_create_symbo);
+                std::string request_columns = "ALTER TABLE public.symbologie ADD COLUMN id int, ADD COLUMN name character varying, ADD COLUMN red int, ADD COLUMN green int, ADD COLUMN blue int, ADD COLUMN alpha int;";
+                db_manager.CreateTable(request_columns);
+                std::cout<< "table symbo crée"<<std::endl;
+            }
+            std::string request_max_id = "SELECT MAX (id) FROM symbologie";
+            db_manager.Request(request_max_id);
+            pqxx::result i = db_manager.getResult();
+            int index;
+            if (i[0][0].is_null()){
+                index = 0;
+            }
+            else {
+                index = i[0][0].as<int>() +1;
+            }
+            int red_random = rand()%255;
+            int green_random = rand()%255;
+            int blue_random = rand()%255;
+            std::string add_line_symbo = "INSERT INTO symbologie (id, name, red, green, blue, alpha) VALUES ("+std::to_string(index)+",'"+table_name+"',"+std::to_string(red_random)+","+std::to_string(green_random)+","+std::to_string(blue_random)+",255);";
+            db_manager.Request(add_line_symbo);
+            std::cout<< "ligne ajoutée " + add_line_symbo<<std::endl;*/
+            std::cout<<"IT WORKS!"<<std::endl;
+            return 0;
         }
-
-        // Get the geometry
-        OGRGeometry *poGeometry = poFeature->GetGeometryRef();
-        if (poGeometry != nullptr) {
-            // Convert the geometry to WKT (Well-Known Text)
-            char *wkt;
-            poGeometry->exportToWkt(&wkt);
-
-            // Build the SQL INSERT statement
-            instruction_fill += instruction + fields+"geom) VALUES("+values+"ST_GeomFromText('" + std::string(wkt) + "', "+std::to_string(epsg)+"));";
-
-        }
-
-        // Cleanup
-        OGRFeature::DestroyFeature(poFeature);
     }
-    db_manager.Request(instruction_fill);
-
-    // Close the shapefile
-    GDALClose(poDS);
-
-    std::cout<<"IT WORKS!"<<std::endl;
-    return 0;
 }
 
-std::vector<float> Shapefile::getBoundingBox(DbManager db_manager)
+std::vector<float> Shapefile::getBoundingBox()
 {
     std::string requete_SQL= "SELECT ST_Extent(geom) FROM "+table_name+";";
     db_manager.Request(requete_SQL);
