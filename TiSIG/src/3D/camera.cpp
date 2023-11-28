@@ -45,14 +45,60 @@ void Camera::ResizeView(int width, int height)
 	this->matProjection.perspective(fov, aspect_ratio, zNear, zFar);
 }
 
-void Camera::Picking3D(const QPoint &posScreen, QVector3D &p1, QVector3D &p2)
+void Camera::Picking3D(const QPoint &posScreen, QVector3D &p1, QVector3D &p2) const
 {
-	QVector4D posScreen4D = {
-		static_cast<float>(posScreen.x() - this->wWidth/2),
-		static_cast<float>(posScreen.y() - this->wHeight/2),
-		0, 1};
+	p1 = this->ProjFromScreen(QVector3D(posScreen.x(), posScreen.y(), -1));
+	p2 = this->ProjFromScreen(QVector3D(posScreen.x(), posScreen.y(), 1));
+}
 
-	p1 = QVector3D(this->matMVP.inverted() * posScreen4D);
-	posScreen4D.setZ(1);
-	p2 = QVector3D(this->matMVP.inverted() * posScreen4D);
+QVector3D Camera::ProjToScreen(const QVector3D &pos) const
+{
+	QVector3D scale = {
+		static_cast<float>(2./this->wWidth),
+		static_cast<float>(-2./this->wHeight),
+		1.0
+	};
+	const QVector3D delta = {
+		1,
+		-1,
+		0.0
+	};
+	return (this->matMVP * pos + delta) * scale;
+}
+
+QVector3D Camera::ProjFromScreen(const QVector3D &pos) const
+{
+	QVector3D scale = {
+		static_cast<float>(2./this->wWidth),
+		static_cast<float>(-2./this->wHeight),
+		1.0
+	};
+	const QVector3D delta = {
+		1,
+		-1,
+		0.0
+	};
+	return this->matMVP.inverted() * (pos * scale - delta);
+}
+
+Emprise Camera::getEmprise() const
+{
+	Emprise emprise;
+	this->Picking3D({0, 0}, emprise.a, emprise.e);
+	this->Picking3D({0, static_cast<int>(this->wWidth)}, emprise.b, emprise.f);
+	this->Picking3D({static_cast<int>(this->wHeight), static_cast<int>(this->wWidth)}, emprise.c, emprise.g);
+	this->Picking3D({static_cast<int>(this->wHeight), 0}, emprise.d, emprise.h);
+	emprise.updateGroundCoordinates();
+
+	return emprise;
+}
+
+void Emprise::updateGroundCoordinates()
+{
+	// intersection between line (a,e) [resp. (b,f); (c,g); (e,h)] and plane (z=0)
+	// if no intersect, first point will be chosen
+	g_a = e.z() != a.z() ? a - a.z() * (e-a) / (e.z() - a.z()) : a;
+	g_b = f.z() != b.z() ? b - b.z() * (f-b) / (f.z() - b.z()) : b;
+	g_c = g.z() != c.z() ? c - c.z() * (g-c) / (g.z() - c.z()) : c;
+	g_d = h.z() != d.z() ? d - d.z() * (h-d) / (h.z() - d.z()) : d;
 }
