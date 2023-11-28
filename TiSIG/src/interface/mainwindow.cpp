@@ -1,7 +1,6 @@
 #include <iostream>
 #include <pqxx/pqxx>
 #include <stdlib.h>
-#include <cmath>
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -16,12 +15,17 @@
 #include "ui_mainwindow.h"
 #include "helpwindow.h"
 #include "dataflowwindow.h"
+#include "view_zoom.h"
 
 #include "../src/2D/layer.h"
 #include "../src/2D/transformation.h"
 #include "../src/2D/shapefile.h"
+#include "../src/2D/geotiff.h"
+#include "../src/2D/rasteritem.h"
+#include "../src/2D/rasterimport.h"
 #include "../src/outils/dbmanager.h"
 #include "../src/outils/docker.h"
+
 
 //Initialisation du Docker
 // Creating container
@@ -62,6 +66,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// Connect scene to QGraphicsView
 	ui->graphicsView_window2D->setScene(scene);
+	ui->graphicsView_window2D->setDragMode(QGraphicsView::ScrollHandDrag);
+	View_zoom* z = new View_zoom(ui->graphicsView_window2D);
+	z->set_modifiers(Qt::NoModifier);
 
 	// ip Address
 	ipAdress = ipAdress_d;
@@ -116,23 +123,33 @@ MainWindow::MainWindow(QWidget *parent)
 		moveItemDown();
 	});
 
-
 }
 
 MainWindow::~MainWindow()
 {
-	delete ui;
-	delete scene;
-
+	// Delete all layers
 	for(auto pair: layerList)
 	{
 		delete pair.second;
 		layerList.erase(pair.first);
 	}
 
+	// Delete all items from 2D window
 	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
 	{
 		delete item;
+	}
+
+
+	// Delete scene
+	delete scene;
+
+	// Delete interface
+	delete ui;
+
+	//Delete shapefiles
+	for (Shapefile* shp : ShpList){
+		shp->~Shapefile();
 	}
 
 }
@@ -205,8 +222,12 @@ std::string MainWindow::OnActionVectorLayerClicked()
 
 std::string MainWindow::OnActionRastorLayerClicked()
 {
-	QString fileNameRastorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données raster"), "../../../", tr("GeoTIFF (*.tif)"));
-	return fileNameRastorLayer.toStdString();
+
+	QString fileNameRastorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données raster"), "../../../", tr("GeoTIFF (*.tif *.TIF *.tiff)"));
+	std::string path = fileNameRastorLayer.toStdString();
+	this->AddGeotiffFileClicked(path);
+	return path;
+
 }
 
 std::string MainWindow::OnAction3DModelClicked()
@@ -214,6 +235,7 @@ std::string MainWindow::OnAction3DModelClicked()
 	QString fileName3Dmodel = QFileDialog::getOpenFileName(this, tr("Ouvrir un modèle 3D"), "../../../", tr("CityGML (*.gml)"));
 	return fileName3Dmodel.toStdString();
 }
+
 
 void MainWindow::Display3DCameraCoordinates(QVector3D camPosition)
 {
@@ -251,67 +273,107 @@ void MainWindow::AddShpFileClicked(std::string path)
 		exit(1);
 	}
 	//import du shapefile dans la base de données
-	Shapefile essai1 = Shapefile(path);
+	Shapefile * essai1 = new Shapefile(path, test);
 
+	essai1->import_to_db(2154);
+	QColor myColor = essai1->showColor();
 
-	essai1.import_to_db(test, 2154);
+	//affichage des shapefiles importé
+	test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
+	pqxx::result rowbis =test.getResult();
+	QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis,scene, myColor);
 
+	layerList[index] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
+	addLayerToListWidget(index, *layerList[index]);
+	index++;
 
-  //affichage des shapefiles importé
-  test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1.getTableName()+";");
-  pqxx::result rowbis =test.getResult();
-  QGraphicsItemGroup *layerGroup = essai1.plotShapefile(rowbis,scene);
-
-  layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
-  addLayerToListWidget(index, *layerList[index]);
-  index++;
-
+	ShpList.push_back(essai1);
 
 
 }
+
+void MainWindow::AddGeotiffFileClicked(std::string path)
+{
+	// PostGreSQL Connection to the first database
+	DbManager test("database2D", ipAdress);
+	pqxx::connection conn(test.getString());
+
+	if (conn.is_open()) {
+		std::cout << "Connexion réussie à PostgreSQL" << std::endl;
+
+	} else {
+		std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
+		exit(1);
+	}
+
+	//Import raster from the file system into the DB
+
+	Geotiff geotiff(path);
+	std::cout << "geotiff ouverte" << std::endl;
+
+	geotiff.WriteGeotiffAndMetadataToPostgis(test);
+	std::cout << "geotiff ecrit dans la bdd" << std::endl;
+
+
+	//Import raster from the DB into a layer
+
+	QString filename = QString::fromStdString(path);
+	RasterItem* rasterItem = RasterImport::CreateRasterItemFromDb(filename,test);
+
+	QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
+	scene->addItem(layerGroup);
+
+
+	layerGroup->addToGroup(rasterItem);
+
+	layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
+	addLayerToListWidget(index, *layerList[index]);
+	index++;
+}
+
 
 void MainWindow::OnButtonZoomIn()
 {
 	ui->graphicsView_window2D->scale(1.2,1.2);
 	qreal currentScale = ui->graphicsView_window2D->transform().m11();
 
-		// Parcourir tous les éléments de la scène
-		for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
-			QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
-			QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
-			QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
+	// Parcourir tous les éléments de la scène
+	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
+		QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+		QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+		QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
 
-			if (polyItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+		if (polyItem) {
+			// Ajuster la largeur du trait en fonction du facteur de zoom
+			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-				// Mettre à jour la largeur du trait
-				QPen pen = polyItem->pen();
-				pen.setWidthF(adjustedWidth);
-				polyItem->setPen(pen);
-			}
-
-
-			if (lineItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-				// Mettre à jour la largeur du trait
-				QPen pen = lineItem->pen();
-				pen.setWidthF(adjustedWidth);
-				lineItem->setPen(pen);
-			}
-
-			if (pointItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-				// Mettre à jour la largeur du trait
-				QPen pen = pointItem->pen();
-				pen.setWidthF(adjustedWidth);
-				pointItem->setPen(pen);
-			}
+			// Mettre à jour la largeur du trait
+			QPen pen = polyItem->pen();
+			pen.setWidthF(adjustedWidth);
+			polyItem->setPen(pen);
 		}
+
+
+		if (lineItem) {
+			// Ajuster la largeur du trait en fonction du facteur de zoom
+			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+			// Mettre à jour la largeur du trait
+			QPen pen = lineItem->pen();
+			pen.setWidthF(adjustedWidth);
+			lineItem->setPen(pen);
+		}
+
+		if (pointItem) {
+			// Ajuster la largeur du trait en fonction du facteur de zoom
+			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+			// Mettre à jour la largeur du trait
+			QPen pen = pointItem->pen();
+			pen.setWidthF(adjustedWidth);
+			pointItem->setPen(pen);
+		}
+	}
 }
 
 void MainWindow::OnButtonZoomOut()
@@ -319,43 +381,43 @@ void MainWindow::OnButtonZoomOut()
 	ui->graphicsView_window2D->scale(1/1.2,1/1.2);
 	qreal currentScale = ui->graphicsView_window2D->transform().m11();
 
-		// Parcourir tous les éléments de la scène
-		for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
-			QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
-			QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
-			QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
+	// Parcourir tous les éléments de la scène
+	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
+		QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+		QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+		QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
 
-			if (polyItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+		if (polyItem) {
+			// Ajuster la largeur du trait en fonction du facteur de zoom
+			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-				// Mettre à jour la largeur du trait
-				QPen pen = polyItem->pen();
-				pen.setWidthF(adjustedWidth);
-				polyItem->setPen(pen);
-			}
-
-			if (lineItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-				// Mettre à jour la largeur du trait
-				QPen pen = lineItem->pen();
-				pen.setWidthF(adjustedWidth);
-				lineItem->setPen(pen);
-			}
-
-			if (pointItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-				// Mettre à jour la largeur du trait
-				QPen pen = pointItem->pen();
-				pen.setWidthF(adjustedWidth);
-				pointItem->setPen(pen);
-			}
-
+			// Mettre à jour la largeur du trait
+			QPen pen = polyItem->pen();
+			pen.setWidthF(adjustedWidth);
+			polyItem->setPen(pen);
 		}
+
+		if (lineItem) {
+			// Ajuster la largeur du trait en fonction du facteur de zoom
+			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+			// Mettre à jour la largeur du trait
+			QPen pen = lineItem->pen();
+			pen.setWidthF(adjustedWidth);
+			lineItem->setPen(pen);
+		}
+
+		if (pointItem) {
+			// Ajuster la largeur du trait en fonction du facteur de zoom
+			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+			// Mettre à jour la largeur du trait
+			QPen pen = pointItem->pen();
+			pen.setWidthF(adjustedWidth);
+			pointItem->setPen(pen);
+		}
+
+	}
 }
 
 void MainWindow::OnButtonZoomFull()
@@ -374,43 +436,43 @@ void MainWindow::OnButtonZoomFull()
 
 	qreal currentScale = ui->graphicsView_window2D->transform().m11();
 
-		// Parcourir tous les éléments de la scène
-		for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
-			QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
-			QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
-			QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
+	// Parcourir tous les éléments de la scène
+	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
+		QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+		QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+		QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
 
-			if (polyItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+		if (polyItem) {
+			// Ajuster la largeur du trait en fonction du facteur de zoom
+			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-				// Mettre à jour la largeur du trait
-				QPen pen = polyItem->pen();
-				pen.setWidthF(adjustedWidth);
-				polyItem->setPen(pen);
-			}
-
-
-			if (lineItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-				// Mettre à jour la largeur du trait
-				QPen pen = lineItem->pen();
-				pen.setWidthF(adjustedWidth);
-				lineItem->setPen(pen);
-			}
-
-			if (pointItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-				// Mettre à jour la largeur du trait
-				QPen pen = pointItem->pen();
-				pen.setWidthF(adjustedWidth);
-				pointItem->setPen(pen);
-			}
+			// Mettre à jour la largeur du trait
+			QPen pen = polyItem->pen();
+			pen.setWidthF(adjustedWidth);
+			polyItem->setPen(pen);
 		}
+
+
+		if (lineItem) {
+			// Ajuster la largeur du trait en fonction du facteur de zoom
+			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+			// Mettre à jour la largeur du trait
+			QPen pen = lineItem->pen();
+			pen.setWidthF(adjustedWidth);
+			lineItem->setPen(pen);
+		}
+
+		if (pointItem) {
+			// Ajuster la largeur du trait en fonction du facteur de zoom
+			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+			// Mettre à jour la largeur du trait
+			QPen pen = pointItem->pen();
+			pen.setWidthF(adjustedWidth);
+			pointItem->setPen(pen);
+		}
+	}
 }
 
 void MainWindow::addLayerToListWidget(int index, Layer &layer) {

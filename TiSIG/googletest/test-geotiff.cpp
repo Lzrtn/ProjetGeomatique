@@ -11,7 +11,7 @@
 TEST(GeotiffTest, TestCalculateNumberBands)
 {
     Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5eme_20m.tif");
-    ASSERT_EQ(geotiff.CalculateNumberBands(), 3);
+    ASSERT_EQ(geotiff.CalculateNumberBands(), 4);
 }
 
 /**
@@ -23,7 +23,7 @@ TEST(GeotiffTest, TestCalculateNumberBands)
 TEST(GeotiffTest, TestCalculateImageDimensions)
 {
     Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5eme_20m.tif");
-    ASSERT_EQ(geotiff.CalculateImageDimensions(), std::vector<int>({2598, 1744}));
+    ASSERT_EQ(geotiff.CalculateImageDimensions(), std::vector<int>({260, 174}));
 }
 
 /**
@@ -49,7 +49,7 @@ TEST(GeotiffTest, TestCalculateExtent)
 TEST(GeotiffTest, TestCalculateResolution)
 {
     Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5eme_20m.tif");
-    ASSERT_EQ(geotiff.CalculateResolution(), std::vector<double>({2.0002, -1.9998}));
+    ASSERT_EQ(geotiff.CalculateResolution(), std::vector<double>({19.9869, -20.0444}));
 }
 
 

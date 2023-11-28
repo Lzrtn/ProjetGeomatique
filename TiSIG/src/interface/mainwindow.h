@@ -8,11 +8,14 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QGraphicsScene>
-#include <QVector3D>
+
+#include <QVector>
 
 #include <iostream>
 #include "../src/2D/layer.h"
 #include "../src/3D/camera.h"
+#include "../src/2D/rasteritem.h"
+#include "../src/2D/shapefile.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -69,9 +72,13 @@ private:
 	QGraphicsScene *scene;
 	std::map <int, Layer*> layerList;
 	std::string ipAdress;
+	std::vector<Shapefile*> ShpList;
+
+
 
 
 private slots:
+
 
 	/**
 	* @brief Function to zoom in
@@ -98,7 +105,7 @@ private slots:
 	 *
 	 *
 	 */
-  void OnButtonSwitchTo2D3DClicked();
+	void OnButtonSwitchTo2D3DClicked();
 
 	/**
 	* @brief Function to add SHP file
@@ -106,6 +113,13 @@ private slots:
 	*
 	*/
 	void AddShpFileClicked(std::string path);
+
+	/**
+	* @brief Function to add Geotiff file
+	*
+	*
+	*/
+	void AddGeotiffFileClicked(std::string path);
 
   /**
    * @brief Function to show help window
@@ -123,22 +137,22 @@ private slots:
 
   /**
    * @brief Function to show add2DVectorLayer window
-   * @return path
+   *
    *
    */
   std::string OnActionVectorLayerClicked();
 
   /**
    * @brief Function to show add2DRastorLayer window
-   * @return path
+   *
    *
    */
   std::string OnActionRastorLayerClicked();
 
   /**
    * @brief Function to show add3DModel window
-   * @return path
    *
+
    */
   std::string OnAction3DModelClicked();
 
@@ -156,6 +170,7 @@ public:
    *
    */
   void Display3DZoomLevel(float zoom) override;
+
 
   void moveItemUp( );
   void moveItemDown( );

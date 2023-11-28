@@ -24,14 +24,18 @@ SOURCES += \
     $$PWD/shapefile.cpp \
     $$PWD/transformation.cpp \
     $$PWD/geotiff.cpp \
-    $$PWD/geojson.cpp
+    $$PWD/geojson.cpp \
+    $$PWD/rasteritem.cpp \
+    $$PWD/rasterimport.cpp
 
 HEADERS += \
     $$PWD/layer.h \
     $$PWD/shapefile.h \
     $$PWD/transformation.h \
     $$PWD/geotiff.h \
-    $$PWD/geojson.h
+    $$PWD/geojson.h \
+    $$PWD/rasteritem.h \
+    $$PWD/rasterimport.h
 
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17

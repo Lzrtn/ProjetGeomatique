@@ -11,15 +11,16 @@ CONFIG += c++11
 SOURCES += \
     $$PWD/dataflowwindow.cpp \
     $$PWD/helpwindow.cpp \
-#    $$PWD/main.cpp \
     $$PWD/mainwindow.cpp
+    $$PWD/view_zoom.cpp \
 
 HEADERS += \
     $$PWD/dataflowwindow.h \
     $$PWD/helpwindow.h \
-    $$PWD/mainwindow.h
+    $$PWD/mainwindow.h \
+    $$PWD/view_zoom.h \
 
 FORMS += \
     $$PWD/dataflowwindow.ui \
     $$PWD/helpwindow.ui \
-    $$PWD/mainwindow.ui
+    $$PWD/mainwindow.ui \
