@@ -22,8 +22,10 @@ private slots:
     void constructeur();
     void ajout_db();
     void ajout_db_bad();
-    void nom_table();
     void remplissage();
+    void nom_table_espace();
+    void nom_table_point();
+    //void ouverture_bis();
 };
 
 std::string pathDockerFile = "../src/data/Docker/docker-compose.yml";
@@ -41,7 +43,8 @@ void TestQShapefile::ajout_db()
     Shapefile shapefile ("../src/data/Tests/test.shp");
     DbManager db_manager("database2D", ipAdress);
     int res = shapefile.import_to_db(db_manager,  2154);
-    QVERIFY(res == 0);
+    std::string nom = shapefile.getTableName();
+    QVERIFY(res == 0 && nom == "test");
 }
 
 void TestQShapefile::ajout_db_bad()
@@ -51,16 +54,6 @@ void TestQShapefile::ajout_db_bad()
     DbManager db_manager("database2D", ipAdress);
     int res = shapefile.import_to_db(db_manager,  2154);
     QVERIFY(res == 1);
-}
-
-void TestQShapefile::nom_table()
-{
-    const std::string ipAdress = docker.getIpAdress();
-    Shapefile shapefile ("../src/data/Tests/test.shp");
-    DbManager db_manager("database2D", ipAdress);
-    shapefile.import_to_db(db_manager,  2154);
-    std::string nom = shapefile.getTableName();
-    QVERIFY(nom == "test");
 }
 
 void TestQShapefile::remplissage()
@@ -76,6 +69,37 @@ void TestQShapefile::remplissage()
     double res = resultat_SQL[0][0].as<double>();
     QVERIFY(res == 28.4);
 }
+
+void TestQShapefile::nom_table_espace()
+{
+    const std::string ipAdress = docker.getIpAdress();
+    Shapefile shapefile ("../src/data/Tests/test espace.shp");
+    DbManager db_manager("database2D", ipAdress);
+    shapefile.import_to_db(db_manager,  2154);
+    std::string nom = shapefile.getTableName();
+    QVERIFY(nom == "test_espace");
+}
+
+void TestQShapefile::nom_table_point()
+{
+    const std::string ipAdress = docker.getIpAdress();
+    Shapefile shapefile ("../src/data/Tests/test.point.shp");
+    DbManager db_manager("database2D", ipAdress);
+    shapefile.import_to_db(db_manager,  2154);
+    std::string nom = shapefile.getTableName();
+    QVERIFY(nom == "test_point");
+}
+
+//Test non fonctionnel : problème de base de données (pas de suppression des tables)
+/*void TestQShapefile::ouverture_bis()
+{
+    const std::string ipAdress = docker.getIpAdress();
+    Shapefile shapefile ("../src/data/Tests/test.shp");
+    DbManager db_manager("database2D", ipAdress);
+    shapefile.import_to_db(db_manager,  2154);
+    std::string nom = shapefile.getTableName();
+    QVERIFY(nom == "test_2");
+}*/
 
 QTEST_MAIN(TestQShapefile)
 #include "main.moc"
