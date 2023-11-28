@@ -19,6 +19,7 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
 }
 
 int main() {
+    //Initialize
     WMS wmsInstance(4326, 45.88624572753906, 45.43631057739258, 4.98760461807251, 4.668561363220215, 1080, 1080);
     WMTS wmtsInstance((string)"LAMB93",18,275951.78,6241946.52);
 
