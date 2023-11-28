@@ -32,3 +32,11 @@ Texture::Texture(const std::string& path)
         }
     }
 }
+
+Texture::~Texture()
+{
+    if (m_RendererID != 0) {
+        GLCall(glDeleteTextures(1, &m_RendererID));
+    }
+}
+
