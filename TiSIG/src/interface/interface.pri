@@ -8,23 +8,18 @@ CONFIG += c++11
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-
-
 SOURCES += \
-    interface/dataflowwindow.cpp \
-    interface/helpwindow.cpp \
-    interface/main.cpp \
-    interface/mainwindow.cpp \
+    $$PWD/dataflowwindow.cpp \
+    $$PWD/helpwindow.cpp \
+    $$PWD/main.cpp \
+    $$PWD/mainwindow.cpp \
 
 HEADERS += \
-    interface/dataflowwindow.h \
-    interface/helpwindow.h \
-    interface/mainwindow.h \
+    $$PWD/dataflowwindow.h \
+    $$PWD/helpwindow.h \
+    $$PWD/mainwindow.h \
 
 FORMS += \
-    interface/dataflowwindow.ui \
-    interface/helpwindow.ui \
-    interface/mainwindow.ui
-
-
-
+    $$PWD/dataflowwindow.ui \
+    $$PWD/helpwindow.ui \
+    $$PWD/mainwindow.ui

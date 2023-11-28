@@ -25,17 +25,13 @@ SOURCES += \
     $$PWD/transformation.cpp \
     $$PWD/geotiff.cpp \
     $$PWD/geojson.cpp
-    
 
 HEADERS += \
     $$PWD/layer.h \
     $$PWD/shapefile.h \
     $$PWD/transformation.h \
     $$PWD/geotiff.h \
-    $$PWD/geojson.cpp
-
+    $$PWD/geojson.h
 
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17
-
-
