@@ -13,6 +13,7 @@
 #include <iostream>
 #include "2D/layer.h"
 #include "3D/camera.h"
+#include "2D/shapefile.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -69,6 +70,7 @@ private:
 	QGraphicsScene *scene;
 	std::map <int, Layer*> layerList;
 	std::string ipAdress;
+    std::vector<Shapefile*> ShpList;
 
 
 private slots:
