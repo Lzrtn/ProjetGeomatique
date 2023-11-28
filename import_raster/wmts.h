@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 #include <opencv2/opencv.hpp>
+#include <curl/curl.h>
+#include <fstream>
+
 
 using namespace std;
 
@@ -13,6 +16,7 @@ public:
         double north_limit, double west_limit);
     ~WMTS();
     const char* getUrl();
+    void getImage();
 private:
     const char* url;
 

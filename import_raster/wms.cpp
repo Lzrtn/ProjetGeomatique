@@ -2,6 +2,8 @@
 #include "wms.h"
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <curl/curl.h>
+#include <fstream>
 
 
 using namespace std;
@@ -62,3 +64,39 @@ const char* WMS::getUrl() {
 
 WMS::~WMS(){
 }
+
+// Callback function to write the received data to a file
+size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
+    size_t realsize = size * nmemb;
+    std::ostream* out = static_cast<std::ostream*>(userp);
+    out->write(static_cast<char*>(contents), realsize);
+    return realsize;
+}
+
+void WMS::getImage()
+    {
+    // Initialize libcurl
+    CURL* curl = curl_easy_init();
+
+    if (curl) {
+
+        // Set the URL to download
+        curl_easy_setopt(curl, CURLOPT_URL, url);
+
+        // Set up the callback to write the data to a file
+        std::ofstream imageFile("dowloaded_images/wms_images/downloaded_wms_image.jpeg", std::ios::binary);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &imageFile);
+
+        // Perform the HTTP request
+        CURLcode res = curl_easy_perform(curl);
+
+        // Check for errors
+        if (res != CURLE_OK)
+            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+
+        // Cleanup
+        curl_easy_cleanup(curl);
+        imageFile.close();
+    } 
+    }

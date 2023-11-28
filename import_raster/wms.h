@@ -3,6 +3,8 @@
 #define WMS_H
 #include <string>
 #include <opencv2/opencv.hpp>
+#include <curl/curl.h>
+#include <fstream>
 
 class WMS {
 public:
@@ -10,6 +12,7 @@ public:
         int width, int height);
     ~WMS();
     const char* getUrl();
+    void getImage();
 private:
     const char* url;
 

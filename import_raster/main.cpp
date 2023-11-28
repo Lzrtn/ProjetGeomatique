@@ -10,25 +10,18 @@
 
 using namespace std;
 
-// Callback function to write the received data to a file
-size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
-    size_t realsize = size * nmemb;
-    std::ostream* out = static_cast<std::ostream*>(userp);
-    out->write(static_cast<char*>(contents), realsize);
-    return realsize;
-}
-
 int main() {
     //Initialize
-    WMS wmsInstance(4326, 45.88624572753906, 45.43631057739258, 4.98760461807251, 4.668561363220215, 1080, 1080);
-    WMTS wmtsInstance((string)"LAMB93",18,275951.78,6241946.52);
+    WMS wmsInstance(4326, 45.98624572753906, 45.63631057739258, 4.98760461807251, 4.668561363220215, 1080, 1080);
+    WMTS wmtsInstance((string)"LAMB93", 18, 536225.222852, 5739265.686868);
 
     //Convert into char*
     const char* url = wmsInstance.getUrl();
     const char* url2 = wmtsInstance.getUrl();
-
-    cout<<url2;
-
+    wmsInstance.getImage();
+    wmtsInstance.getImage();
+    
+    /*
     // Initialize libcurl
     CURL* curl = curl_easy_init();
 
@@ -38,7 +31,7 @@ int main() {
         curl_easy_setopt(curl, CURLOPT_URL, url);
 
         // Set up the callback to write the data to a file
-        std::ofstream imageFile("downloaded_image.tiff", std::ios::binary);
+        std::ofstream imageFile("downloaded_image.png", std::ios::binary);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &imageFile);
 
@@ -56,9 +49,10 @@ int main() {
 
     // Use stb_image to load the downloaded image
     int width, height, channels;
-    unsigned char* image = stbi_load("downloaded_image.tiff", &width, &height, &channels, 0);
+    unsigned char* image = stbi_load("downloaded_image.png", &width, &height, &channels, 0);
+    */
 
-    if (image) {
+    /*if (image) {
         // Create an OpenCV Mat from the loaded image data
         cv::Mat imgMat(height, width, channels == 4 ? CV_8UC4 : CV_8UC3, image);
 
@@ -71,6 +65,6 @@ int main() {
         
     } else {
         std::cerr << "Error loading image" << std::endl;
-    }
+    }*/
     return 0;
 }
