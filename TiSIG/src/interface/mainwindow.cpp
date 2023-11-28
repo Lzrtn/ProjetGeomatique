@@ -17,11 +17,11 @@
 #include "helpwindow.h"
 #include "dataflowwindow.h"
 
-#include "2D/layer.h"
-#include "2D/transformation.h"
-#include "2D/shapefile.h"
-#include "../outils/dbmanager.h"
-#include "../outils/docker.h"
+#include "../src/2D/layer.h"
+#include "../src/2D/transformation.h"
+#include "../src/2D/shapefile.h"
+#include "../src/outils/dbmanager.h"
+#include "../src/outils/docker.h"
 
 //Initialisation du Docker
 // Creating container
@@ -106,15 +106,15 @@ MainWindow::MainWindow(QWidget *parent)
 
 	/*_______________________________Barre d'outils dans le gestionnaire de couches___________________________________________________________________________________________________*/
 
-    // Connecter le bouton "Up" à la fonction de déplacement vers le haut
-    connect(ui->btn_moveLayerUp, &QPushButton::clicked, [=]() {
-        moveItemUp();
-    });
+	// Connecter le bouton "Up" à la fonction de déplacement vers le haut
+	connect(ui->btn_moveLayerUp, &QPushButton::clicked, [=]() {
+		moveItemUp();
+	});
 
-    // Connecter le bouton "Down" à la fonction de déplacement vers le bas
-    connect(ui->btn_moveLayerDown, &QPushButton::clicked, [=]() {
-        moveItemDown();
-    });
+	// Connecter le bouton "Down" à la fonction de déplacement vers le bas
+	connect(ui->btn_moveLayerDown, &QPushButton::clicked, [=]() {
+		moveItemDown();
+	});
 
 
 }
@@ -193,13 +193,13 @@ void MainWindow::OnAction2DDataFlowClicked()
 
 std::string MainWindow::OnActionVectorLayerClicked()
 {
-    QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("ShapeFile (*.shp)"));
-    std::string path = fileNameVectorLayer.toStdString();
-    if (path != ""){
+	QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("ShapeFile (*.shp)"));
+	std::string path = fileNameVectorLayer.toStdString();
+	if (path != ""){
 
-        this->AddShpFileClicked(path);
-    }
-    return path;
+		this->AddShpFileClicked(path);
+	}
+	return path;
 
 }
 
@@ -211,7 +211,7 @@ std::string MainWindow::OnActionRastorLayerClicked()
 
 std::string MainWindow::OnAction3DModelClicked()
 {
-    QString fileName3Dmodel = QFileDialog::getOpenFileName(this, tr("Ouvrir un modèle 3D"), "../../../", tr("CityGML (*.gml)"));
+	QString fileName3Dmodel = QFileDialog::getOpenFileName(this, tr("Ouvrir un modèle 3D"), "../../../", tr("CityGML (*.gml)"));
 	return fileName3Dmodel.toStdString();
 }
 
@@ -221,19 +221,19 @@ void MainWindow::Display3DCameraCoordinates(QVector3D camPosition)
 	std::string camPositionY = std::to_string((int)(camPosition.y()));
 	std::string camPositionZ = std::to_string((int)(camPosition.z()));
 
-    QString textN = QString::fromStdString(camPositionY);
-    QString textE = QString::fromStdString(camPositionX);
-    QString textH = QString::fromStdString(camPositionZ);
+	QString textN = QString::fromStdString(camPositionY);
+	QString textE = QString::fromStdString(camPositionX);
+	QString textH = QString::fromStdString(camPositionZ);
 
-    ui->lineEdit_coords3DN->setText(textN);
-    ui->lineEdit_coords3DE->setText(textE);
-    ui->lineEdit_coords3DH->setText(textH);
+	ui->lineEdit_coords3DN->setText(textN);
+	ui->lineEdit_coords3DE->setText(textE);
+	ui->lineEdit_coords3DH->setText(textH);
 }
 
 void MainWindow::Display3DZoomLevel(float zoom)
 {
 	QString text = QString::fromStdString(std::to_string((int)(zoom*100)));
-    ui->lineEdit_zoom3D->setText(text+"%");
+	ui->lineEdit_zoom3D->setText(text+"%");
 }
 
 
@@ -416,117 +416,117 @@ void MainWindow::OnButtonZoomFull()
 void MainWindow::addLayerToListWidget(int index, Layer &layer) {
 
 
-    // Initie le zIndex de la couche
-    layer.setZIndex(index);
+	// Initie le zIndex de la couche
+	layer.setZIndex(index);
 
-    // Créez un nouvel élément pour la couche
-    layer.layerItem = new QListWidgetItem(ui->listeWidget_layersList);
-    layer.layerItem->setData(Qt::UserRole, index);
+	// Créez un nouvel élément pour la couche
+	layer.layerItem = new QListWidgetItem(ui->listeWidget_layersList);
+	layer.layerItem->setData(Qt::UserRole, index);
 
-    // Créez un widget personnalisé pour cet élément (contenant un label et une case à cocher)
-    layer.layerWidget = new QWidget();
-    layer.layout = new QHBoxLayout(layer.layerWidget);
-
-
-    layer.visibilityCheckbox = new QCheckBox("");
-    layer.visibilityCheckbox->setChecked(layer.isLayerVisible());
-    layer.layerLabel = new QLabel(layer.getLayerName());
-
-    // Connectez le signal clicked de la case à cocher à une fonction pour gérer la visibilité
-    connect(layer.visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
-        layerList[index]->getLayerGroup()->setVisible(checked);
-        layerList[index]->setLayerVisible(checked);
-    });
+	// Créez un widget personnalisé pour cet élément (contenant un label et une case à cocher)
+	layer.layerWidget = new QWidget();
+	layer.layout = new QHBoxLayout(layer.layerWidget);
 
 
-    layer.layout->addWidget(layer.visibilityCheckbox);
-    layer.layout->addWidget(layer.layerLabel);
-    layer.layout->setAlignment(Qt::AlignLeft);
+	layer.visibilityCheckbox = new QCheckBox("");
+	layer.visibilityCheckbox->setChecked(layer.isLayerVisible());
+	layer.layerLabel = new QLabel(layer.getLayerName());
 
-    layer.layout->setContentsMargins(2, 0, 2, 0); // Taille de la ligne de la couche dans le gestionnaire
-    layer.layout->setSpacing(10); // Écart entre la checkbox et le nom de la couche
+	// Connectez le signal clicked de la case à cocher à une fonction pour gérer la visibilité
+	connect(layer.visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
+		layerList[index]->getLayerGroup()->setVisible(checked);
+		layerList[index]->setLayerVisible(checked);
+	});
 
-    layer.layerWidget->setLayout(layer.layout);
-    layer.layerItem->setSizeHint(layer.layerWidget->sizeHint());
+
+	layer.layout->addWidget(layer.visibilityCheckbox);
+	layer.layout->addWidget(layer.layerLabel);
+	layer.layout->setAlignment(Qt::AlignLeft);
+
+	layer.layout->setContentsMargins(2, 0, 2, 0); // Taille de la ligne de la couche dans le gestionnaire
+	layer.layout->setSpacing(10); // Écart entre la checkbox et le nom de la couche
+
+	layer.layerWidget->setLayout(layer.layout);
+	layer.layerItem->setSizeHint(layer.layerWidget->sizeHint());
 
 
 
 	ui->listeWidget_layersList->setItemWidget(layer.layerItem, layer.layerWidget);
 
-    // met à jour l'ordre de superpositions des couches
-    updateLayerOrderInGraphicsView();
+	// met à jour l'ordre de superpositions des couches
+	updateLayerOrderInGraphicsView();
 }
 
 void MainWindow::moveItemDown() {
-    QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
-    int currentIndex = ui->listeWidget_layersList->row(item);
+	QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
+	int currentIndex = ui->listeWidget_layersList->row(item);
 
-    if (item && currentIndex < ui->listeWidget_layersList->count()-1)
-    {
-        // Change la profondeur des couches
-        int currentId = item->data(Qt::UserRole).toInt();
-        QListWidgetItem *nextItem = ui->listeWidget_layersList->item(currentIndex+1);
-        int nextId = nextItem->data(Qt::UserRole).toInt();
+	if (item && currentIndex < ui->listeWidget_layersList->count()-1)
+	{
+		// Change la profondeur des couches
+		int currentId = item->data(Qt::UserRole).toInt();
+		QListWidgetItem *nextItem = ui->listeWidget_layersList->item(currentIndex+1);
+		int nextId = nextItem->data(Qt::UserRole).toInt();
 
-        int currentZIndex = layerList[currentId]->getZIndex();
-        int prevZIndex = layerList[nextId]->getZIndex();
+		int currentZIndex = layerList[currentId]->getZIndex();
+		int prevZIndex = layerList[nextId]->getZIndex();
 
-        layerList[currentId]->setZIndex(prevZIndex);
-        layerList[nextId]->setZIndex(currentZIndex);
+		layerList[currentId]->setZIndex(prevZIndex);
+		layerList[nextId]->setZIndex(currentZIndex);
 
-        updateLayerOrderInGraphicsView();
+		updateLayerOrderInGraphicsView();
 
-        // Change l'ordre dans la liste des couches
-        QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
-        QWidget *tempWidget = new QWidget();
-        QLayout *widgetLayout = itemWidget->layout();
-        tempWidget->setLayout(widgetLayout);
+		// Change l'ordre dans la liste des couches
+		QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
+		QWidget *tempWidget = new QWidget();
+		QLayout *widgetLayout = itemWidget->layout();
+		tempWidget->setLayout(widgetLayout);
 
-        QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
+		QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
 
-        ui->listeWidget_layersList->insertItem(currentIndex+1, currentItem);
-        ui->listeWidget_layersList->setItemWidget(currentItem, tempWidget);
-        ui->listeWidget_layersList->setCurrentRow(currentIndex+1);
-    }
+		ui->listeWidget_layersList->insertItem(currentIndex+1, currentItem);
+		ui->listeWidget_layersList->setItemWidget(currentItem, tempWidget);
+		ui->listeWidget_layersList->setCurrentRow(currentIndex+1);
+	}
 }
 
 void MainWindow::moveItemUp() {
-    QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
-    int currentIndex = ui->listeWidget_layersList->row(item);
+	QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
+	int currentIndex = ui->listeWidget_layersList->row(item);
 
-    if (item && currentIndex > 0) {
+	if (item && currentIndex > 0) {
 
-        // Change la profondeur des couches
-        int currentId = item->data(Qt::UserRole).toInt();
-        QListWidgetItem *prevItem = ui->listeWidget_layersList->item(currentIndex-1);
-        int prevId = prevItem->data(Qt::UserRole).toInt();
+		// Change la profondeur des couches
+		int currentId = item->data(Qt::UserRole).toInt();
+		QListWidgetItem *prevItem = ui->listeWidget_layersList->item(currentIndex-1);
+		int prevId = prevItem->data(Qt::UserRole).toInt();
 
-        int currentZIndex = layerList[currentId]->getZIndex();
-        int prevZIndex = layerList[prevId]->getZIndex();
+		int currentZIndex = layerList[currentId]->getZIndex();
+		int prevZIndex = layerList[prevId]->getZIndex();
 
-        layerList[currentId]->setZIndex(prevZIndex);
-        layerList[prevId]->setZIndex(currentZIndex);
+		layerList[currentId]->setZIndex(prevZIndex);
+		layerList[prevId]->setZIndex(currentZIndex);
 
-        updateLayerOrderInGraphicsView();
+		updateLayerOrderInGraphicsView();
 
-        // Change l'ordre dans la liste des couches
-        QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
-        QWidget *tempWidget = new QWidget();
-        QLayout *widgetLayout = itemWidget->layout();
-        tempWidget->setLayout(widgetLayout);
+		// Change l'ordre dans la liste des couches
+		QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
+		QWidget *tempWidget = new QWidget();
+		QLayout *widgetLayout = itemWidget->layout();
+		tempWidget->setLayout(widgetLayout);
 
-        QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
+		QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
 
-        ui->listeWidget_layersList->insertItem(currentIndex-1, currentItem);
-        ui->listeWidget_layersList->setItemWidget(currentItem, tempWidget);
-        ui->listeWidget_layersList->setCurrentRow(currentIndex-1);
-    }
+		ui->listeWidget_layersList->insertItem(currentIndex-1, currentItem);
+		ui->listeWidget_layersList->setItemWidget(currentItem, tempWidget);
+		ui->listeWidget_layersList->setCurrentRow(currentIndex-1);
+	}
 }
 
 void MainWindow::updateLayerOrderInGraphicsView() {
-    for(auto pair: layerList)
-    {
-        pair.second->getLayerGroup()->setZValue(pair.second->getZIndex());
-    }
-    ui->graphicsView_window2D->repaint();
+	for(auto pair: layerList)
+	{
+		pair.second->getLayerGroup()->setZValue(pair.second->getZIndex());
+	}
+	ui->graphicsView_window2D->repaint();
 }

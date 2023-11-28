@@ -11,8 +11,8 @@
 #include <QVector3D>
 
 #include <iostream>
-#include "2D/layer.h"
-#include "3D/camera.h"
+#include "../src/2D/layer.h"
+#include "../src/3D/camera.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -58,8 +58,8 @@ public:
 	void addLayerToListWidget(int, Layer &layer);
 
 
-    int index = 0; // Temporaire
-    void updateLayerOrderInGraphicsView();
+	int index = 0; // Temporaire
+	void updateLayerOrderInGraphicsView();
 
 
 private:

@@ -9,6 +9,8 @@ include($$PWD/2D/2D.pri)
 include($$PWD/interface/interface.pri)
 include($$PWD/outils/outils.pri)
 
+SOURCES += $$PWD/main.cpp
+
 # Copy icons and data
 copydata.commands = $(COPY_DIR) $$PWD/icons $$OUT_PWD && $(COPY_DIR) $$PWD/data $$OUT_PWD ;
 first.depends = $(first) copydata
