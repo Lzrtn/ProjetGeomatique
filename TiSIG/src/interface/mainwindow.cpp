@@ -121,20 +121,24 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-	delete ui;
-	delete scene;
+    // Delete all layers
+    for(auto pair: layerList)
+    {
+        delete pair.second;
+        layerList.erase(pair.first);
+    }
 
-	for(auto pair: layerList)
-	{
-		delete pair.second;
-		layerList.erase(pair.first);
-	}
+    // Delete all items from 2D window
+    for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
+    {
+        delete item;
+    }
 
-	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
-	{
-		delete item;
-	}
+    // Delete scene
+    delete scene;
 
+    // Delete interface
+    delete ui;
 }
 
 
