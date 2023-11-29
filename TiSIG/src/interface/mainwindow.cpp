@@ -278,10 +278,12 @@ void MainWindow::AddShpFileClicked(std::string path)
 	essai1->import_to_db(2154);
 	QColor myColor = essai1->showColor();
 
-	//affichage des shapefiles importé
-	test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
-	pqxx::result rowbis =test.getResult();
-	QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis,scene, myColor);
+
+    //affichage des shapefiles importé
+    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
+    pqxx::result rowbis =test.getResult();
+    QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis,scene, myColor);
+    ui->lineEdit_epsg2D->setText(essai1->getEPSGtoSet());
 
 	layerList[index] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
 	addLayerToListWidget(index, *layerList[index]);
