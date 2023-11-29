@@ -1,8 +1,12 @@
 #include "dataflowwindow.h"
 #include "ui_dataflowwindow.h"
+#include "../src/2D/fluxvector.h"
+
 #include <iostream>
 #include <string>
+using namespace std;
 #include <QDebug>
+#include <algorithm>
 
 DataFlowWindow::DataFlowWindow(QWidget *parent) :
     QDialog(parent),
@@ -39,11 +43,15 @@ const char* DataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
         lien = "URL vers BDTopo Bati";
     }
     if(flow == "BDTopo - Route"){
-        lien = "URL vers BDTopo Route";
+        lien = "https://data.geopf.fr/wfs/ows?VERSION=2.0.0&OUTPUTFORMAT=SHAPE-ZIP&request=GetFeature&service=wfs&bbox=45.727093,4.819074,45.746508,4.850961&srsname=EPSG:2154&typename=BDTOPO_V3:troncon_de_route";
     }
     if(flow == "BDOrtho"){
         lien = "URL vers BDOrtho";
     }
+    FluxVector *fluxVect = new FluxVector(lien);
+    fluxVect->downloadZIP();
+    fluxVect->unzipFile();
+
     return lien;
 }
 
