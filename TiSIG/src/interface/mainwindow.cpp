@@ -119,6 +119,11 @@ MainWindow::MainWindow(QWidget *parent)
         moveItemDown();
     });
 
+    // Connecter le bouton "Poubelle" à la fonction de suppression
+    connect(ui->btn_deleteLayer, &QPushButton::clicked, [=]() {
+        deleteLayer();
+    });
+
 }
 
 MainWindow::~MainWindow()
@@ -593,4 +598,12 @@ void MainWindow::updateLayerOrderInGraphicsView() {
         pair.second->getLayerGroup()->setZValue(pair.second->getZIndex());
     }
     ui->graphicsView_window2D->repaint();
+}
+
+void MainWindow::deleteLayer()
+{
+    QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
+    int currentIndex = ui->listeWidget_layersList->row(item);
+
+    if (item && currentIndex > 0) {}
 }
