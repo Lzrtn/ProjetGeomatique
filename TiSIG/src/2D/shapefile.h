@@ -72,6 +72,10 @@ public:
 
    QColor showColor();
 
+   QString getEPSGtoSet(){return EPSGtoSet;}
+
+
+
 private:
     /**
      * @brief Absolute or relative path of your shapefile
@@ -87,6 +91,11 @@ private:
     * @brief DB manager in which the shapefile is stocked
     */
    DbManager db_manager;
+
+   /**
+   * @brief DB manager in which the shapefile is stocked
+   */
+   QString EPSGtoSet;
 
 };
 
