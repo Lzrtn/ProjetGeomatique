@@ -279,6 +279,15 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
 
     QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
     scene->addItem(layerGroup);
+    std::string EPSG;
+        for (const auto& rowbi : rowbis)
+        {
+            auto geojsongeom = rowbi[0].as<std::string>();
+            EPSG = t.whichCRS(geojsongeom).substr(5,7);
+            break;
+        }
+    EPSGtoSet = QString::fromStdString(EPSG);
+
     for (const auto& rowbi : rowbis)
     {
 

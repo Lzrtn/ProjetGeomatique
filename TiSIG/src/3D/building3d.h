@@ -75,6 +75,8 @@ public:
 	 */
 	Building3DFactory(const int version = 0);
 
+	Building3DFactory(const QVector3D pt);
+
 	/**
 	 * @brief Genere a building
 	 *

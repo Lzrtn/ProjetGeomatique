@@ -9,8 +9,9 @@ Layer::Layer(const QString& name, bool isVisible, QGraphicsItemGroup* layerGroup
 
 
 Layer::~Layer() {
-    delete layerItem;
+
     delete layerWidget;
+    delete layerItem;
 }
 
 QString Layer::getLayerName() const {
