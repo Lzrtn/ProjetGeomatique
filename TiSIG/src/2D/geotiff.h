@@ -26,11 +26,11 @@ private:
 
 public:
     /**
-     * @brief Constructs a Geotiff object with the specified file name.
+     * @brief Constructs a Geotiff object with the specified file path.
      *
-     * @param fileName The name of the Geotiff file.
+     * @param filePath The path of the Geotiff file.
      */
-    Geotiff(std::string fileName);
+    Geotiff(std::string filePath);
     /**
      * @brief Destructor for the Geotiff class.
      *
