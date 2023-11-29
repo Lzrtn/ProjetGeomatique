@@ -137,7 +137,7 @@ private slots:
   void OnAction2DDataFlowClicked();
 
   /**
-   * @brief Function to show add2DVectorLayer window
+   * @brief Function to show addVectorLayer window
    *
    *
    */
@@ -148,7 +148,15 @@ private slots:
    *
    *
    */
-  std::string OnActionRastorLayerClicked();
+  std::string OnActionRastor2DLayerClicked();
+
+  /**
+   * @brief Function to show add3DRastorLayer window
+   *
+   *
+   */
+  void OnActionRastor3DLayerClicked();
+
 
   /**
    * @brief Function to show add3DModel window
@@ -156,6 +164,7 @@ private slots:
 
    */
   std::string OnAction3DModelClicked();
+
 
 public:
   /**

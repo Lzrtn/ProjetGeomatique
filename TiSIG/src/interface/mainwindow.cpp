@@ -16,6 +16,7 @@
 #include "helpwindow.h"
 #include "dataflowwindow.h"
 #include "view_zoom.h"
+#include "mntwindow.h"
 
 #include "../src/2D/layer.h"
 #include "../src/2D/transformation.h"
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->action_add3DVectorLayer->setEnabled(mode);
 	ui->action_add3DRastorLayer->setEnabled(mode);
 	ui->action_add3DModel->setEnabled(mode);
+    ui->action_add3DDTM->setEnabled(mode);
 
 	ui->openGLWidget_window3D->setCamInfoDisplayer(this);
 
@@ -88,11 +90,13 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->action_add3DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVectorLayerClicked);
 
 	// Connecting add2drastorlayer action and add3drastorlayer action
-	connect(ui->action_add2DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastorLayerClicked);
-	connect(ui->action_add3DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastorLayerClicked);
+    connect(ui->action_add2DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastor2DLayerClicked);
+    connect(ui->action_add3DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastor3DLayerClicked);
 
 	// Connecting add3dmodel action
 	connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::OnAction3DModelClicked);
+
+
 
 
 	/*_______________________________Barre d'outils___________________________________________________________________________________________________*/
@@ -237,7 +241,7 @@ std::string MainWindow::OnActionVectorLayerClicked()
 
 }
 
-std::string MainWindow::OnActionRastorLayerClicked()
+std::string MainWindow::OnActionRastor2DLayerClicked()
 {
 
 	QString fileNameRastorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données raster"), "../../../", tr("GeoTIFF (*.tif *.TIF *.tiff)"));
@@ -246,6 +250,15 @@ std::string MainWindow::OnActionRastorLayerClicked()
 	return path;
 
 }
+
+void MainWindow::OnActionRastor3DLayerClicked()
+{
+    MntWindow mntwindow;
+    mntwindow.setModal(true);
+    mntwindow.exec();
+}
+
+
 
 std::string MainWindow::OnAction3DModelClicked()
 {
