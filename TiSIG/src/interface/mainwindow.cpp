@@ -25,6 +25,7 @@
 #include "../src/2D/rasterimport.h"
 #include "../src/outils/dbmanager.h"
 #include "../src/outils/docker.h"
+#include "../src/2D/geojson.h"
 
 //Initialisation du Docker
 // Creating container
@@ -215,11 +216,22 @@ void MainWindow::OnAction2DDataFlowClicked()
 
 std::string MainWindow::OnActionVectorLayerClicked()
 {
-	QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("ShapeFile (*.shp)"));
+    QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("Fichier vecteur (*.shp *.geojson)"));
 	std::string path = fileNameVectorLayer.toStdString();
+    std::string shp = "shp";
+    std::string json = "geojson";
 	if (path != ""){
+        if (path.size() >= shp.size() &&
+                path.compare(path.size() - shp.size(), shp.size(), shp) == 0){
 
-		this->AddShpFileClicked(path);
+            this->AddShpFileClicked(path);
+        }
+        else if (path.size() >= json.size() &&
+                 path.compare(path.size() - json.size(), json.size(), json) == 0){
+            GeoJson file = GeoJson(path);
+            file.ConvertToShp();
+            this->AddShpFileClicked(file.GetShpFilePath());
+        }
 	}
 	return path;
 
