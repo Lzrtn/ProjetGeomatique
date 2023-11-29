@@ -3,6 +3,7 @@
 
 #include "rasteritem.h"
 #include "../outils/dbmanager.h"
+#include <tuple>
 
 /**
  * @brief Class for raster import from the database
@@ -17,20 +18,20 @@ public:
      * @brief Creates a RasterItem with the given file path and the
      * associated extent retrieved from the database
      *
-     * @param fileName Path of the image file
+     * @param filePath Path of the image file
      * @return RasterItem item
      */
-    static RasterItem* CreateRasterItemFromDb(const QString& fileName,DbManager& db);
+    static RasterItem* CreateRasterItemFromDb(const QString& filePath,DbManager& db);
 
 private:
     /**
      * @brief Queries the geotiff table in the database to retrieve
      * extent data and formate it to be usable by RasterItem construction
      *
-     * @param fileName Path of the image file
-     * @return Extent of the raster
+     * @param filePath Path of the image file
+     * @return ID and extent of the most recent geotiff with the given file path
      */
-    static QRectF RetrieveRasterExtentFromDb(const QString& fileName, DbManager& db);
+    static std::tuple<int, QRectF> RetrieveRasterExtentFromDb(const QString& filePath, DbManager& db);
 
 };
 

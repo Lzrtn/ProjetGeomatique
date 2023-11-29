@@ -25,23 +25,25 @@ public:
 
 
     /**
-     * @brief RasterItem class constructor from the image file name
+     * @brief RasterItem class constructor from the image file path
      *
-     * @param fileName Path of the image file
+     * @param filePath Path of the image file
      * @param parent Optional parent item
      */
-    RasterItem(const QString& fileName, QGraphicsItem* parent = nullptr);
+    RasterItem(const QString& filePath, QGraphicsItem* parent = nullptr);
 
 
     /**
-     * @brief RasterItem class constructor from the image file name, that
-     * takes an extent as an argument and directly assign it to the raster item
+     * @brief RasterItem class constructor from the image file path, that
+     * takes an id as well as an extent as an argument and directly assigns
+     * it to the raster item
      *
-     * @param fileName Path of the image file
+     * @param filePath Path of the image file
      * @param extent Extent that the raster must have
+     * @param id Id of the raster item
      * @param parent Optional parent item
      */
-    RasterItem(const QString& fileName, const QRectF & extent, QGraphicsItem* parent = nullptr);
+    RasterItem(const QString& filePath, const QRectF & extent,const int id, QGraphicsItem* parent = nullptr);
 
 
     /**
@@ -59,6 +61,15 @@ public:
      */
     QRectF getExtent();
 
+    /**
+     * @brief Get the id of the raster
+     *
+     * @return The id of the raster
+     */
+    int getId();
+
+private:
+    int id = 0;
 };
 
 #endif // RASTERITEM_H
