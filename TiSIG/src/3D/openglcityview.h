@@ -48,6 +48,12 @@ public:
 		this->camInfoDisplayer = camInfoDisplayer;
 	};
 
+	/**
+	 * @brief linkBuildingStorage
+	 * link to a building storage object, to load buildings
+	 *
+	 * @param buildingStorage
+	 */
 	void linkBuildingStorage(OpenGLCityView_BuildingStorage * buildingStorage);
 
 protected:
@@ -77,6 +83,13 @@ protected:
 	void timerEvent(QTimerEvent* /*e*/) override; // remove parameter name because unused (disable warning)
 
 private:
+
+	/**
+	 * @brief UpdateBuildings
+	 * Load buildings from buildingsStorage
+	 */
+	void UpdateBuildings();
+
 	QOpenGLShaderProgram shader;
 	std::map<int, Building3D*> buildings;
 	Object3D * compass = nullptr;
@@ -90,6 +103,8 @@ private:
 	float lastTimeUpdate;
 	std::chrono::steady_clock::time_point timeStart;
 	const int timerDuration = 15; // in msec
+
+	OpenGLCityView_BuildingStorage * buildingStorage = nullptr;
 };
 
 #endif // OPENGLCITYVIEW_H

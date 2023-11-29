@@ -201,6 +201,12 @@ public:
 
 	Emprise getEmprise() const { return this->emprise; };
 
+	bool consumeChanges() {
+		bool l = this->hasChanged;
+		this->hasChanged = false;
+		return l;
+	}
+
 private:
 	/**
 	 * @brief angles (in degrees !)
@@ -218,6 +224,7 @@ private:
 	QMatrix4x4 matMVP;
 	QMatrix4x4 matMVPCompass;
 	Emprise emprise;
+	bool hasChanged = true;
 };
 
 class ICameraDisplayInfo {

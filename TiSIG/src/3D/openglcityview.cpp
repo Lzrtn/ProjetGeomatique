@@ -64,9 +64,22 @@ void OpenGLcityView::timerEvent(QTimerEvent* /*e*/)
 	lastTimeUpdate = currentTime;
 	// if dt is too hire than timerDuration (stop and restart)
 	if (dt > this->timerDuration * 2)
-		dt = 0 * this->timerDuration * 2;
+		dt = this->timerDuration * 2;
 	if (this->controls.update(dt) && this->isValid())
+		this->camera.ComputeMPV();
+	if (this->camera.consumeChanges()) {
+		this->UpdateBuildings();
 		this->update();
+	}
+}
+
+void OpenGLcityView::UpdateBuildings()
+{
+	if (this->buildingStorage != nullptr) {
+		for (auto pair: this->buildingStorage->getBuildingsInEmprise(this->camera.getEmprise())) {
+			this->AddBuilding(pair.first, pair.second);
+		}
+	}
 }
 
 void OpenGLcityView::AddBuilding(const int id, const Building3DFactory &buildingFactory)
@@ -102,8 +115,6 @@ void OpenGLcityView::paintGL()
 		this->camInfoDisplayer->Display3DCameraCoordinates(this->camera.getPosition());
 		this->camInfoDisplayer->Display3DZoomLevel(this->camera.getZoom());
 	}
-
-	this->camera.ComputeMPV();
 
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVPCompass());
 	this->shader.setUniformValue("power_light", GLfloat(0.5));
