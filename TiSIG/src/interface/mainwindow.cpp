@@ -121,7 +121,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Connecter le bouton "Poubelle" à la fonction de suppression
     connect(ui->btn_deleteLayer, &QPushButton::clicked, [=]() {
-        deleteLayer();
+        onButtonClickedDeleteLayer();
     });
 
 }
@@ -279,13 +279,15 @@ void MainWindow::AddShpFileClicked(std::string path)
     essai1->import_to_db(2154);
     QColor myColor = essai1->showColor();
 
+    int layerId = essai1->getId();
+
     //affichage des shapefiles importé
     test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
     pqxx::result rowbis =test.getResult();
     QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis,scene, myColor);
 
-    layerList[index] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
-    addLayerToListWidget(index, *layerList[index]);
+    layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
+    addLayerToListWidget(layerId, *layerList[layerId]);
     index++;
 
     ShpList.push_back(essai1);
@@ -324,17 +326,11 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
     QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
     scene->addItem(layerGroup);
 
-
     layerGroup->addToGroup(rasterItem);
 
     layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
     addLayerToListWidget(index, *layerList[index]);
     index++;
-
-
-
-
-
 
 }
 
@@ -482,7 +478,7 @@ void MainWindow::OnButtonZoomFull()
 		}
 }
 
-void MainWindow::addLayerToListWidget(int index, Layer &layer) {
+void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 
 
     // Initie le zIndex de la couche
@@ -490,7 +486,7 @@ void MainWindow::addLayerToListWidget(int index, Layer &layer) {
 
     // Créez un nouvel élément pour la couche
     layer.layerItem = new QListWidgetItem(ui->listeWidget_layersList);
-    layer.layerItem->setData(Qt::UserRole, index);
+    layer.layerItem->setData(Qt::UserRole, layerId);
 
     // Créez un widget personnalisé pour cet élément (contenant un label et une case à cocher)
     layer.layerWidget = new QWidget();
@@ -503,8 +499,8 @@ void MainWindow::addLayerToListWidget(int index, Layer &layer) {
 
     // Connectez le signal clicked de la case à cocher à une fonction pour gérer la visibilité
     connect(layer.visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
-        layerList[index]->getLayerGroup()->setVisible(checked);
-        layerList[index]->setLayerVisible(checked);
+        layerList[layerId]->getLayerGroup()->setVisible(checked);
+        layerList[layerId]->setLayerVisible(checked);
     });
 
 
@@ -600,10 +596,19 @@ void MainWindow::updateLayerOrderInGraphicsView() {
     ui->graphicsView_window2D->repaint();
 }
 
-void MainWindow::deleteLayer()
+void MainWindow::onButtonClickedDeleteLayer()
 {
     QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
-    int currentIndex = ui->listeWidget_layersList->row(item);
 
-    if (item && currentIndex > 0) {}
+
+    if (item)
+    {
+        int layerId = item->data(Qt::UserRole).toInt();
+        ui->listeWidget_layersList->removeItemWidget(item);
+        delete item;
+
+        ui->graphicsView_window2D->scene()->removeItem(layerList[layerId]->getLayerGroup());
+        delete layerList[layerId]->getLayerGroup();
+        layerList.erase(layerId);
+    }
 }
