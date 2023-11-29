@@ -22,12 +22,16 @@ LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
 SOURCES += \
     2D/layer.cpp \
     2D/shapefile.cpp \
-    2D/transformation.cpp
+    2D/transformation.cpp \
+    2D/wms.cpp \
+    2D/wmts.cpp
 
 HEADERS += \
     2D/layer.h \
     2D/shapefile.h \
-    2D/transformation.h
+    2D/transformation.h \
+    2D/wms.h \
+    2D/wmts.h
 
 
 # Ajoutez les flags de compilation nécessaires pour C++
