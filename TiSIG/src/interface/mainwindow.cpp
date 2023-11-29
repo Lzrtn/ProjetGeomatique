@@ -539,11 +539,13 @@ void MainWindow::moveItemDown() {
 
 		updateLayerOrderInGraphicsView();
 
-		// Change l'ordre dans la liste des couches
-		QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
-		QWidget *tempWidget = new QWidget();
-		QLayout *widgetLayout = itemWidget->layout();
-		tempWidget->setLayout(widgetLayout);
+        // Change l'ordre dans la liste des couches
+        QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
+        QWidget *tempWidget = new QWidget();
+        QLayout *widgetLayout = itemWidget->layout();
+        tempWidget->setLayout(widgetLayout);
+
+        layerList[currentId]->layerWidget = tempWidget;
 
 		QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
 
@@ -572,11 +574,13 @@ void MainWindow::moveItemUp() {
 
 		updateLayerOrderInGraphicsView();
 
-		// Change l'ordre dans la liste des couches
-		QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
-		QWidget *tempWidget = new QWidget();
-		QLayout *widgetLayout = itemWidget->layout();
-		tempWidget->setLayout(widgetLayout);
+        // Change l'ordre dans la liste des couches
+        QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
+        QWidget *tempWidget = new QWidget();
+        QLayout *widgetLayout = itemWidget->layout();
+        tempWidget->setLayout(widgetLayout);
+
+        layerList[currentId]->layerWidget = tempWidget;
 
 		QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
 
