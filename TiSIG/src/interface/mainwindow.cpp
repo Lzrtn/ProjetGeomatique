@@ -395,7 +395,6 @@ void MainWindow::OnButtonZoomIn()
 			polyItem->setPen(pen);
 		}
 
-
 		if (lineItem) {
 			// Ajuster la largeur du trait en fonction du facteur de zoom
 			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
