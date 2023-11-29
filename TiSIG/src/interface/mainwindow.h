@@ -175,6 +175,7 @@ public:
 
   void moveItemUp( );
   void moveItemDown( );
+  void onButtonClickedDeleteLayer();
 };
 
 #endif // MAINWINDOW_H

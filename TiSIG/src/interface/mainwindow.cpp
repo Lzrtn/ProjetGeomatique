@@ -118,10 +118,15 @@ MainWindow::MainWindow(QWidget *parent)
 		moveItemUp();
 	});
 
-	// Connecter le bouton "Down" à la fonction de déplacement vers le bas
-	connect(ui->btn_moveLayerDown, &QPushButton::clicked, [=]() {
-		moveItemDown();
-	});
+    // Connecter le bouton "Down" à la fonction de déplacement vers le bas
+    connect(ui->btn_moveLayerDown, &QPushButton::clicked, [=]() {
+        moveItemDown();
+    });
+
+    // Connecter le bouton "Poubelle" à la fonction de suppression
+    connect(ui->btn_deleteLayer, &QPushButton::clicked, [=]() {
+        onButtonClickedDeleteLayer();
+    });
 
 }
 
@@ -275,8 +280,10 @@ void MainWindow::AddShpFileClicked(std::string path)
 	//import du shapefile dans la base de données
 	Shapefile * essai1 = new Shapefile(path, test);
 
-	essai1->import_to_db(2154);
-	QColor myColor = essai1->showColor();
+    essai1->import_to_db(2154);
+    QColor myColor = essai1->showColor();
+
+    int layerId = essai1->getId();
 
 	//affichage des shapefiles importé
 	test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
@@ -284,9 +291,9 @@ void MainWindow::AddShpFileClicked(std::string path)
 	QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis,scene, myColor);
 	ui->lineEdit_epsg2D->setText(essai1->getEPSGtoSet());
 
-	layerList[index] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
-	addLayerToListWidget(index, *layerList[index]);
-	index++;
+    layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
+    addLayerToListWidget(layerId, *layerList[layerId]);
+    index++;
 
 	ShpList.push_back(essai1);
 
@@ -476,15 +483,15 @@ void MainWindow::OnButtonZoomFull()
 	}
 }
 
-void MainWindow::addLayerToListWidget(int index, Layer &layer) {
+void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 
 
 	// Initie le zIndex de la couche
 	layer.setZIndex(index);
 
-	// Créez un nouvel élément pour la couche
-	layer.layerItem = new QListWidgetItem(ui->listeWidget_layersList);
-	layer.layerItem->setData(Qt::UserRole, index);
+    // Créez un nouvel élément pour la couche
+    layer.layerItem = new QListWidgetItem(ui->listeWidget_layersList);
+    layer.layerItem->setData(Qt::UserRole, layerId);
 
 	// Créez un widget personnalisé pour cet élément (contenant un label et une case à cocher)
 	layer.layerWidget = new QWidget();
@@ -495,11 +502,11 @@ void MainWindow::addLayerToListWidget(int index, Layer &layer) {
 	layer.visibilityCheckbox->setChecked(layer.isLayerVisible());
 	layer.layerLabel = new QLabel(layer.getLayerName());
 
-	// Connectez le signal clicked de la case à cocher à une fonction pour gérer la visibilité
-	connect(layer.visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
-		layerList[index]->getLayerGroup()->setVisible(checked);
-		layerList[index]->setLayerVisible(checked);
-	});
+    // Connectez le signal clicked de la case à cocher à une fonction pour gérer la visibilité
+    connect(layer.visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
+        layerList[layerId]->getLayerGroup()->setVisible(checked);
+        layerList[layerId]->setLayerVisible(checked);
+    });
 
 
 	layer.layout->addWidget(layer.visibilityCheckbox);
@@ -596,4 +603,21 @@ void MainWindow::updateLayerOrderInGraphicsView() {
 		pair.second->getLayerGroup()->setZValue(pair.second->getZIndex());
 	}
 	ui->graphicsView_window2D->repaint();
+}
+
+void MainWindow::onButtonClickedDeleteLayer()
+{
+    QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
+
+
+    if (item)
+    {
+        int layerId = item->data(Qt::UserRole).toInt();
+        ui->listeWidget_layersList->removeItemWidget(item);
+        delete item;
+
+        ui->graphicsView_window2D->scene()->removeItem(layerList[layerId]->getLayerGroup());
+        delete layerList[layerId]->getLayerGroup();
+        layerList.erase(layerId);
+    }
 }
