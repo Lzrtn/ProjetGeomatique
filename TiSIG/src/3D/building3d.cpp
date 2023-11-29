@@ -98,6 +98,24 @@ Building3DFactory::Building3DFactory(const int version)
 
 }
 
+Building3DFactory::Building3DFactory(const QVector3D pt)
+{
+	float x = pt.x(), y = pt.y(), z = pt.z();
+	position = {
+		{x-1, y-1, z}, {x-1, y+1, z}, { x+1, y+1, z},
+		{x-1, y-1, z}, {x+1, y-1, z}, { x+1, y+1, z},
+	};
+	normal = {
+		{0, 0, 1}, {0, 0, 1}, {0, 0, 1},
+		{0, 0, 1}, {0, 0, 1}, {0, 0, 1},
+	};
+	textCoord = {
+		{0, 0}, {0, 1}, {1, 1},
+		{0, 0}, {1, 0}, {1, 1},
+	};
+	textPath = ":/rose des vents.png";
+}
+
 Building3D * Building3DFactory::NewBuilding() const
 {
 	if (this->normal.size() == 0)

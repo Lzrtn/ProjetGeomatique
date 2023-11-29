@@ -29,7 +29,6 @@ SOURCES += \
     $$PWD/rasterimport.cpp \
     $$PWD/geotiff_to_obj.cpp
 
-
 HEADERS += \
     $$PWD/layer.h \
     $$PWD/shapefile.h \
@@ -40,8 +39,5 @@ HEADERS += \
     $$PWD/rasterimport.h \
      $$PWD/geotiff_to_obj.h
 
-
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17
-
-

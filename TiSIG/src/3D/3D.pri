@@ -11,20 +11,24 @@ CONFIG += c++11
 SOURCES += \
     $$PWD/compass.cpp \
     $$PWD/object3d.cpp \
-    3D/building3d.cpp \
-    3D/openglcityview.cpp \
-    3D/camera.cpp \
-    3D/cameracontrols.cpp
+    $$PWD/building3d.cpp \
+    $$PWD/openglcityview.cpp \
+    $$PWD/camera.cpp \
+    $$PWD/cameracontrols.cpp \
+    #$$PWD/batiment.cpp \ 
+    #$$PWD/batiments.cpp \
 
 HEADERS += \
     $$PWD/compass.h \
     $$PWD/object3d.h \
-    3D/building3d.h \
-    3D/openglcityview.h \
-    3D/camera.h \
-    3D/cameracontrols.h
+    $$PWD/building3d.h \
+    $$PWD/openglcityview.h \
+    $$PWD/camera.h \
+    $$PWD/cameracontrols.h \
+    #$$PWD/batiment.h \ 
+    #$$PWD/batiments.h \
 
 RESOURCES += \
-    3D/shaders.qrc \
-    3D/textures.qrc \
-    3D/objects.qrc
+    $$PWD/shaders.qrc \
+    $$PWD/textures.qrc \
+    $$PWD/objects.qrc

@@ -12,10 +12,10 @@
 #include <QVector>
 
 #include <iostream>
-#include "2D/layer.h"
-#include "2D/rasteritem.h"
-#include "3D/camera.h"
-#include "2D/shapefile.h"
+#include "../src/2D/layer.h"
+#include "../src/2D/rasteritem.h"
+#include "../src/3D/camera.h"
+#include "../src/2D/shapefile.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -62,8 +62,8 @@ public:
 	void addLayerToListWidget(int, Layer &layer);
 
 
-    int index = 0; // Temporaire
-    void updateLayerOrderInGraphicsView();
+	int index = 0; // Temporaire
+	void updateLayerOrderInGraphicsView();
 
 
 private:
@@ -73,7 +73,7 @@ private:
 	QGraphicsScene *scene;
 	std::map <int, Layer*> layerList;
 	std::string ipAdress;
-    std::vector<Shapefile*> ShpList;
+	std::vector<Shapefile*> ShpList;
 
 
 
@@ -106,7 +106,7 @@ private slots:
 	 *
 	 *
 	 */
-    void OnButtonSwitchTo2D3DClicked();
+	void OnButtonSwitchTo2D3DClicked();
 
 	/**
 	* @brief Function to add SHP file
@@ -115,12 +115,12 @@ private slots:
 	*/
 	void AddShpFileClicked(std::string path);
 
-    /**
-    * @brief Function to add Geotiff file
-    *
-    *
-    */
-    void AddGeotiffFileClicked(std::string path);
+	/**
+	* @brief Function to add Geotiff file
+	*
+	*
+	*/
+	void AddGeotiffFileClicked(std::string path);
 
   /**
    * @brief Function to show help window
@@ -161,7 +161,7 @@ private slots:
   /**
    * @brief Function to show add3DModel window
    *
-   
+
    */
   std::string OnAction3DModelClicked();
 
@@ -184,6 +184,7 @@ public:
 
   void moveItemUp( );
   void moveItemDown( );
+  void onButtonClickedDeleteLayer();
 };
 
 #endif // MAINWINDOW_H

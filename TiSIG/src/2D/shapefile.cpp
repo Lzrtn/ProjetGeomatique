@@ -33,6 +33,10 @@ DbManager Shapefile::getDbManager(){
     return (db_manager);
 }
 
+int Shapefile::getId(){
+    return (id);
+}
+
 int Shapefile::import_to_db(const int epsg)
     {
 
@@ -223,11 +227,12 @@ int Shapefile::import_to_db(const int epsg)
             pqxx::result i = db_manager.getResult();
             int index;
             if (i[0][0].is_null()){
-                index = 0;
+                index = 1000;
             }
             else {
                 index = i[0][0].as<int>() +1;
             }
+            id=index;
             srand(time(NULL));
             int red_random = rand()%255;
             int green_random = rand()%255;
@@ -274,6 +279,15 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
 
     QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
     scene->addItem(layerGroup);
+    std::string EPSG;
+        for (const auto& rowbi : rowbis)
+        {
+            auto geojsongeom = rowbi[0].as<std::string>();
+            EPSG = t.whichCRS(geojsongeom).substr(5,7);
+            break;
+        }
+    EPSGtoSet = QString::fromStdString(EPSG);
+
     for (const auto& rowbi : rowbis)
     {
 

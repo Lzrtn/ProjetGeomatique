@@ -6,6 +6,8 @@
 
 #include <cmath>
 
+#include <iostream>
+
 CameraControls::CameraControls()
 {
 	this->reset();

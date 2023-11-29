@@ -4,10 +4,12 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
-include(3D/3D.pri)
-include(2D/2D.pri)
-include(interface/interface.pri)
-include(outils/outils.pri)
+include($$PWD/3D/3D.pri)
+include($$PWD/2D/2D.pri)
+include($$PWD/interface/interface.pri)
+include($$PWD/outils/outils.pri)
+
+SOURCES += $$PWD/main.cpp
 
 # Copy icons and data
 copydata.commands = $(COPY_DIR) $$PWD/icons $$OUT_PWD && $(COPY_DIR) $$PWD/data $$OUT_PWD ;

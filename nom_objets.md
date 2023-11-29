@@ -20,9 +20,7 @@ Les noms sont sous format *typeObj_nameObj*.
   - Fenêtre où se dessine la carte : *openGLWidget_window3D*
   - Zone de texte de l'Epsg : *lineEdit_epsg3D*
   - Zone de texte du Zoom : *lineEdit_zoom3D*
-  - Zone de texte de la coordonnée N de la caméra : *lineEdit_coords3DN*
-  - Zone de texte de la coordonnée E de la caméra : *lineEdit_coords3DE*
-  - Zone de texte de la coordonnée H de la caméra : *lineEdit_coords3DH*
+  - Zone de texte des coordonnées de la caméra : *lineEdit_coords3D*
 
 ## Gestion des couches
 
@@ -60,4 +58,11 @@ Les noms sont sous format *typeObj_nameObj*.
  - Url d'un flux : *lineEdit_dataFlowWindow*
  - Bouton Valider Url : *btn_validateDataFlowUrl*
  - Bouton Valider Pré-enregistré : *btn_validateDataFlowPreSaved*
-
+ 
+## Fenêtre Ajouter raster 3D
+ - Chemin du fichier MNT : *lineEdit_DTMPath*
+ - Chemin du fichier Orthoimage : *lineEdit_OrthoPath*
+ - Ajouter un fichier MNT : *btn_DTMFile*
+ - Ajouter un fichier Orthoimage : *btn_OrthoFile*
+ - Label erreur : *label_Error*
+ - Bouton Valider : *btn_Submit*
