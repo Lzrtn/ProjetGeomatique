@@ -199,7 +199,7 @@ public:
 	QVector3D ProjToScreen(const QVector3D & pos) const;
 	QVector3D ProjFromScreen(const QVector3D & pos) const;
 
-	Emprise getEmprise() const;
+	Emprise getEmprise() const { return this->emprise; };
 
 private:
 	/**
@@ -217,6 +217,7 @@ private:
 	QMatrix4x4 matProjection;
 	QMatrix4x4 matMVP;
 	QMatrix4x4 matMVPCompass;
+	Emprise emprise;
 };
 
 class ICameraDisplayInfo {

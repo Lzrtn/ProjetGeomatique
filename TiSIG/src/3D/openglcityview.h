@@ -14,6 +14,7 @@
 #include "camera.h"
 #include "cameracontrols.h"
 #include "compass.h"
+#include "i_openglcityview.h"
 
 #include <map>
 
@@ -46,6 +47,8 @@ public:
 	void setCamInfoDisplayer(ICameraDisplayInfo * camInfoDisplayer) {
 		this->camInfoDisplayer = camInfoDisplayer;
 	};
+
+	void linkBuildingStorage(OpenGLCityView_BuildingStorage * buildingStorage);
 
 protected:
 
