@@ -9,9 +9,20 @@
 
 
 using namespace std;
+using namespace cv;
 
-WMTS::WMTS(string tilematrixset, int tilematrix, 
-    double west_limit, double north_limit, int width, int height)
+WMTS::WMTS(int tilematrix, double west_limit, double north_limit, int width, int height)
+/*
+*
+*   WMTS Class Constructor
+*
+*   tilematrix : level of zoom (interval depends on the base link used)
+*   west_limit : west coordinate limit of the bounding box
+*   north_limit : north coordinate limit of the bounding box
+*   width : width of display screen
+*   height : height of display screen
+*
+*/
 {
     //String utils 
     string coma              = ",";
@@ -37,7 +48,7 @@ WMTS::WMTS(string tilematrixset, int tilematrix,
     string version        = "1.0.0";    
     string request        = "GetTile";
     string style          = "normal";
-    tilematrixset         = "PM";     
+    string tilematrixset         = "PM";     
 
     //Utils (coordinate in different projections)
     int tileSize = 256; //Size of one tile
@@ -146,4 +157,42 @@ void WMTS::getImage(){
         curl_easy_cleanup(curl);
         
     } 
+}
+
+void WMTS::combine()
+{
+    int rows = tablurl.size();
+    int cols = tablurl[0].size();
+    //Verify size
+    if (rows <= 0 || cols <= 0) {
+        cerr << "Erreur : Nombre de lignes ou de colonnes invalide." << endl;
+        return;
+    }
+
+    // Create grid
+    Mat gridImage(rows * 256, cols * 256, CV_8UC3, Scalar(255, 255, 255)); // Taille de chaque image = 100x100
+
+    // Upload and concatenate images
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            // Build path
+            string imagePath = "dowloaded_images/wmts_images/downloaded_wmts_image"+to_string(i)+to_string(j)+".jpeg";
+
+            // Upload image
+            Mat image = imread(imagePath);
+            if (image.empty()) {
+                cerr << "Erreur : Impossible de charger l'image " << imagePath << endl;
+                return;
+            }
+
+            // Copy in grid
+            Rect roi(j * 256, i * 256, 256, 256);
+            image.copyTo(gridImage(roi));
+        }
+    }
+
+    // Save output image
+    imwrite("dowloaded_images/wmts_combine/combine.jpeg", gridImage);
+
+    cout << "Grille d'images créée avec succès"<< endl;
 }

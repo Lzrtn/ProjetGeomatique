@@ -22,6 +22,7 @@ int main() {
     //Getting Image
     //wmsInstance.getImage();
     wmtsInstance.getImage();
+    wmtsInstance.combine();
 
     return 0;
 }
