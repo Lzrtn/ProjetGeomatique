@@ -1,4 +1,4 @@
-#include "gdal_priv.h"
+#include "gdal/gdal_priv.h"
 #include <stdexcept>
 #include <iostream>
 #include <string.h>
