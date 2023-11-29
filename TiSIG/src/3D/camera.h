@@ -3,18 +3,7 @@
 
 #include <QMatrix4x4>
 
-
-class Emprise {
-public:
-	// 3D coordinates for volume
-	QVector3D a, b, c, d, e, f, g, h;
-
-	// 3D coordinates for ground plan (z=0)
-	QVector3D g_a, g_b, g_c, g_d;
-
-	void updateGroundCoordinates();
-};
-
+#include "i_openglcityview.h"
 
 /**
  * @brief The Camera class

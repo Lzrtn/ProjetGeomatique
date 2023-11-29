@@ -20,6 +20,7 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/compass.h \
+    $$PWD/i_openglcityview.h \
     $$PWD/object3d.h \
     $$PWD/building3d.h \
     $$PWD/openglcityview.h \
