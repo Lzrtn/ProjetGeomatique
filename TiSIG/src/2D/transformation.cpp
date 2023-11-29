@@ -19,6 +19,12 @@ Transformation::~Transformation(){
 
 }
 
+std::string Transformation::whichCRS(std::string data)
+{
+    nlohmann::json dataJSON = nlohmann::json::parse(data);
+    return dataJSON["crs"]["properties"]["name"];
+
+}
 
 std::string Transformation::whatType(std::string data)
 {
