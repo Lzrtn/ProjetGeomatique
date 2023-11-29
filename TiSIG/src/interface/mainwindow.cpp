@@ -194,7 +194,7 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 	this->update();
 
 	ui->stackedWidget->update();
-	ui->graphicsView_window2D->update();
+    ui->graphicsView_window2D->update();
 	ui->openGLWidget_window3D->update();
 
 	this->repaint();
@@ -345,23 +345,28 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 	std::cout << "geotiff ouverte" << std::endl;
 
 	geotiff.WriteGeotiffAndMetadataToPostgis(test);
-	std::cout << "geotiff ecrit dans la bdd" << std::endl;
+    std::cout << "geotiff ecrit dans la bdd" << std::endl;
 
 
 	//Import raster from the DB into a layer
 
-	QString filename = QString::fromStdString(path);
-	RasterItem* rasterItem = RasterImport::CreateRasterItemFromDb(filename,test);
+    QString filePath = QString::fromStdString(path);
+    RasterItem* rasterItem = RasterImport::CreateRasterItemFromDb(filePath,test);
 
-	QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
-	scene->addItem(layerGroup);
+    QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
+    scene->addItem(layerGroup);
+    layerGroup->addToGroup(rasterItem);
 
+    int layerId = rasterItem->getId();
 
-	layerGroup->addToGroup(rasterItem);
+    size_t lastSlash = path.find_last_of("/\\");
+    std::string fileName = path.substr(lastSlash + 1);
+    fileName = fileName.substr(0, fileName.find_last_of("."));
 
-	layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
-	addLayerToListWidget(index, *layerList[index]);
-	index++;
+    layerList[layerId] = new Layer("Layer "+QString::number(index)+" : "+QString::fromStdString(fileName), true, layerGroup);
+
+    addLayerToListWidget(layerId, *layerList[layerId]);
+    index++;
 }
 
 

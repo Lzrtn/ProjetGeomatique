@@ -2,24 +2,30 @@
 #include <string>
 
 
-RasterItem* RasterImport::CreateRasterItemFromDb(const QString& fileName,DbManager& db)
+RasterItem* RasterImport::CreateRasterItemFromDb(const QString& filePath,DbManager& db)
 {
+    auto resultTuple =RetrieveRasterExtentFromDb(filePath,db);
 
-    QRectF extent = RetrieveRasterExtentFromDb(fileName,db);
-    RasterItem* rasterItem = new RasterItem(fileName, extent);
+    int rasterId = std::get<0>(resultTuple);
+    QRectF extent = std::get<1>(resultTuple);
+
+    RasterItem* rasterItem = new RasterItem(filePath,extent,rasterId);
 
     return rasterItem;
 
 }
 
-QRectF RasterImport::RetrieveRasterExtentFromDb(const QString& fileName,DbManager& db)
+std::tuple<int, QRectF> RasterImport::RetrieveRasterExtentFromDb(const QString& filePath,DbManager& db)
 {
 
 
-    std::string request = "SELECT min_x,min_y,max_x,max_y FROM geotiff_data WHERE file_path ='" + fileName.toStdString()+"'";
+    std::string request = "SELECT min_x,min_y,max_x,max_y,id FROM geotiff_data WHERE file_path ='" + filePath.toStdString()
+            +"' ORDER BY id DESC LIMIT 1";
+
     db.Request(request);
     std::vector<std::vector<std::string>> parsedData = db.ArrayParseResult();
 
+    int rasterId = std::stoi(parsedData[0][4]);
 
     double xMin = std::stod(parsedData[0][0]);
     double yMax = -std::stod(parsedData[0][1]);
@@ -29,5 +35,5 @@ QRectF RasterImport::RetrieveRasterExtentFromDb(const QString& fileName,DbManage
     QRectF extent(QPointF(xMin,yMin),QPointF(xMax,yMax));
 
 
-    return extent;
+    return std::make_tuple(rasterId, extent);
 }
