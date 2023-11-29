@@ -2,12 +2,13 @@ QT +=testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-include (../src/2D/2D.pri)
-include (../src/outils/outils.pri)
+include ($$PWD/../src/2D/2D.pri)
+include ($$PWD/../src/3D/3D.pri)
+include ($$PWD/../src/outils/outils.pri)
+include ($$PWD/../src/interface/interface.pri)
 
 SOURCES += \
-        main.cpp
-
+    $$PWD/main.cpp
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/qtestlib/tutorial1

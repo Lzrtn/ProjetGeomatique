@@ -28,7 +28,6 @@ SOURCES += \
     $$PWD/rasteritem.cpp \
     $$PWD/rasterimport.cpp
 
-
 HEADERS += \
     $$PWD/layer.h \
     $$PWD/shapefile.h \
@@ -38,8 +37,5 @@ HEADERS += \
     $$PWD/rasteritem.h \
     $$PWD/rasterimport.h
 
-
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17
-
-
