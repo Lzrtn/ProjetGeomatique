@@ -11,7 +11,7 @@
 using namespace std;
 
 WMTS::WMTS(string tilematrixset, int tilematrix, 
-    double west_limit, double north_limit)
+    double west_limit, double north_limit, int width, int height)
 {
     //String utils 
     string coma              = ",";
@@ -27,6 +27,17 @@ WMTS::WMTS(string tilematrixset, int tilematrix,
     string key_tilematrix    = "&TILEMATRIX=";
     string key_tilecol       = "&TILECOL=";
     string key_tilerow       = "&TILEROW=";
+
+    //Base url of the flow ("wms-r" for WMS-Raster)
+    string link           = "https://wxs.ign.fr/essentiels/geoportail/wmts";    
+    string layer          = "ORTHOIMAGERY.ORTHOPHOTOS";
+    string exception      = "text/xml"; 
+    string format         = "jpeg";   
+    string service        = "WMTS";
+    string version        = "1.0.0";    
+    string request        = "GetTile";
+    string style          = "normal";
+    tilematrixset         = "PM";     
 
     //Utils (coordinate in different projections)
     int tileSize = 256; //Size of one tile
@@ -47,39 +58,51 @@ WMTS::WMTS(string tilematrixset, int tilematrix,
     0.7974864315, 0.3987432149, 0.1993716073, 0.0996858037, 0.0498429018};   
 
     std::vector<double> lamb93_5cm_resol = {209715.2, 104857.6, 52428.8, 26214.4, 13107.2, 6553.6, 3276.8, 1638.4, 819.2, 409.6, 204.8, 102.4, 51.2, 25.6, 12.8, 
-    6.4, 3.2, 1.6, 0.8, 0.4, 0.2, 0.1, 0.05};
+    6.4, 3.2, 1.6, 0.8, 0.4, 0.2, 0.1, 0.05};    
 
     //Calculate TLC
     double x_tlc = west_limit - x0;
     double y_tlc = y0 - north_limit;
     double distance_per_tile = 256 * initialResolution/pow(2,tilematrix);
-    int tilecol = round(x_tlc/distance_per_tile);
-    int tilerow = round(y_tlc/distance_per_tile);
 
-    //Base url of the flow ("wms-r" for WMS-Raster)
-    string link           = "https://wxs.ign.fr/essentiels/geoportail/wmts";    
-    string layer          = "ORTHOIMAGERY.ORTHOPHOTOS";
-    string exception      = "text/xml"; 
-    string format         = "jpeg";   
-    string service        = "WMTS";
-    string version        = "1.0.0";    
-    string request        = "GetTile";
-    string style          = "normal";
-    tilematrixset         = "PM"; 
-    string str_tilecol    = to_string(tilecol);
-    string str_tilerow    = to_string(tilerow);
-    
-    string str_url = link + key_service + service + key_version + version + key_request + request +
+    //Calculate number of tiles
+    int tilecol_lenght = round(width/256) + 1;
+    int tilerow_lenght = round(height/256) + 1;
+
+    //Getting useful tiles
+    int tilerow = round(y_tlc/distance_per_tile);
+    for (int i = 0; i<tilerow_lenght; i++)
+    {
+        vector<const char*> vecurl;
+        tilerow ++;
+        int tilecol = round(x_tlc/distance_per_tile);
+        for (int j = 0; j<tilecol_lenght; j++)
+        {
+            tilecol ++;
+            string str_tilerow    = to_string(tilerow);
+            string str_tilecol    = to_string(tilecol);
+
+            string str_url = link + key_service + service + key_version + version + key_request + request +
                 key_styles + style + key_layers + layer + key_exceptions + exception + key_format + format +         
                 key_tilematrixset + tilematrixset + key_tilematrix + str_tilematrix + 
                 key_tilecol + str_tilecol + key_tilerow + str_tilerow;
+            
+            url = strdup(str_url.c_str());
+            vecurl.push_back(url);
+        }
+        tablurl.push_back(vecurl);
+    }
 
-    url = strdup(str_url.c_str());
 }
 
 
-const char* WMTS::getUrl() {
-    return url;
+vector<vector<const char*>> WMTS::getUrl() {
+    for (size_t i = 0; i <tablurl.size(); ++i) {
+            for (size_t j = 0; j < tablurl[i].size(); ++j) {
+                cout << i << " " << j << " : " << tablurl[i][j] << endl;
+            }
+        }
+    return tablurl;    
 }
 
 WMTS::~WMTS(){
@@ -93,30 +116,34 @@ size_t WriteCallbacks(void* contents, size_t size, size_t nmemb, void* userp) {
     return realsize;
 }
 
-void WMTS::getImage()
-    {
+void WMTS::getImage(){
     // Initialize libcurl
     CURL* curl = curl_easy_init();
 
     if (curl) {
 
-        // Set the URL to download
-        curl_easy_setopt(curl, CURLOPT_URL, url);
+        for (size_t i = 0; i <tablurl.size(); ++i) {
+            for (size_t j = 0; j < tablurl[i].size(); ++j) {
+                // Set the URL to download
+                curl_easy_setopt(curl, CURLOPT_URL, tablurl[i][j]);
 
-        // Set up the callback to write the data to a file
-        std::ofstream imageFile("dowloaded_images/wmts_images/downloaded_wmts_image.jpeg", std::ios::binary);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallbacks);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &imageFile);
+                // Set up the callback to write the data to a file
+                std::ofstream imageFile("dowloaded_images/wmts_images/downloaded_wmts_image"+to_string(i)+to_string(j)+".jpeg", std::ios::binary);
+                curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallbacks);
+                curl_easy_setopt(curl, CURLOPT_WRITEDATA, &imageFile);
 
-        // Perform the HTTP request
-        CURLcode res = curl_easy_perform(curl);
+                // Perform the HTTP request
+                CURLcode res = curl_easy_perform(curl);
 
-        // Check for errors
-        if (res != CURLE_OK)
-            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+                // Check for errors
+                if (res != CURLE_OK)
+                    fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
 
+                imageFile.close();               
+            }
+        }
         // Cleanup
         curl_easy_cleanup(curl);
-        imageFile.close();
+        
     } 
-    }
+}

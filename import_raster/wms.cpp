@@ -62,7 +62,7 @@ const char* WMS::getUrl() {
     return url;
 }
 
-WMS::~WMS(){
+WMS::~WMS() {
 }
 
 // Callback function to write the received data to a file
@@ -99,4 +99,8 @@ void WMS::getImage()
         curl_easy_cleanup(curl);
         imageFile.close();
     } 
+    }
+
+string WMS::getPath() {
+        return "dowloaded_images/wms_images/downloaded_wms_image.jpeg";
     }

@@ -13,9 +13,9 @@ public:
     ~WMS();
     const char* getUrl();
     void getImage();
+    std::string getPath();
 private:
     const char* url;
-
 };
 
 #endif // WMS_H

@@ -221,6 +221,9 @@ ImportRaster_SOURCE_DIR:STATIC=/home/axel/ProjetGeomatique/import_raster
 //The directory containing a CMake configuration file for OpenCV.
 OpenCV_DIR:PATH=/usr/local/lib/cmake/opencv4
 
+//The directory containing a CMake configuration file for Proj.
+Proj_DIR:PATH=Proj_DIR-NOTFOUND
+
 
 ########################
 # INTERNAL cache entries

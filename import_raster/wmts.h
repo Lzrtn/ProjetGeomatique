@@ -7,19 +7,18 @@
 #include <curl/curl.h>
 #include <fstream>
 
-
 using namespace std;
 
 class WMTS {
 public:
     WMTS(string tilematrixset, int tilematrix, 
-        double north_limit, double west_limit);
+        double north_limit, double west_limit, int width, int height);
     ~WMTS();
-    const char* getUrl();
+    vector<vector<const char*>> getUrl();
     void getImage();
 private:
     const char* url;
-
+    vector<vector<const char*>> tablurl;
 };
 
 #endif // WMTS_H
