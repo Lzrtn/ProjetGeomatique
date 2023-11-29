@@ -1,8 +1,11 @@
 #include "geotiff.h"
 
-Geotiff::Geotiff(std::string fileName) : fileName(fileName)
+Geotiff::Geotiff(std::string filePath) : filePath(filePath)
 {
     GDALAllRegister();
+    size_t lastSlash = filePath.find_last_of("/\\");
+    fileName = filePath.substr(lastSlash + 1);
+    fileName = fileName.substr(0, fileName.find_last_of("."));
     Read();
 }
 
@@ -13,7 +16,7 @@ Geotiff::~Geotiff()
 
 void Geotiff::Read()
 {
-    poDataset = (GDALDataset *)GDALOpen(fileName.c_str(), GA_ReadOnly);
+    poDataset = (GDALDataset *)GDALOpen(filePath.c_str(), GA_ReadOnly);
     if (!poDataset)
     {
         std::cerr << "Error: Unable to open GeoTIFF file." << std::endl;
@@ -107,12 +110,12 @@ std::vector<double> Geotiff::CalculateResolution()
 
 std::string Geotiff::GetFilePath()
 {
-    if (fileName.empty())
+    if (filePath.empty())
     {
-        throw std::runtime_error("fileName is not initialized");
+        throw std::runtime_error("filePath is not initialized");
     }
 
-    std::filesystem::path path(fileName);
+    std::filesystem::path path(filePath);
     if (!std::filesystem::exists(path))
     {
         throw std::runtime_error("Path does not exist");
@@ -163,10 +166,24 @@ void Geotiff::WriteGeotiffAndMetadataToPostgis(DbManager &db)
         rasterStr += newStr;
         rasterBinary = pqxx::binarystring(rasterStr.c_str(), rasterStr.size());
     }
+
     // Writing to the database
-    db.CreateTable("CREATE TABLE IF NOT EXISTS geotiff_data (raster_data BYTEA ,height INT, width INT, band_count INT, min_x DOUBLE PRECISION, max_x DOUBLE PRECISION, min_y DOUBLE PRECISION, max_y DOUBLE PRECISION, pixel_height_resolution DOUBLE PRECISION, pixel_width_resolution DOUBLE PRECISION, file_path TEXT)");
-    std::string query = "INSERT INTO geotiff_data (raster_data, height, width, band_count, min_x, max_x, min_y, max_y, pixel_height_resolution, pixel_width_resolution, file_path) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)";
-    std::vector<std::variant<int, double, std::string, pqxx::binarystring>> params = {rasterBinary, height, width, bandCount, minX, maxX, minY, maxY, pixelHeightResolution, pixelWidthResolution, filePath};
+    db.CreateTable("CREATE TABLE IF NOT EXISTS geotiff_data (id SERIAL PRIMARY KEY, raster_data BYTEA ,height INT, width INT, band_count INT, min_x DOUBLE PRECISION, max_x DOUBLE PRECISION, min_y DOUBLE PRECISION, max_y DOUBLE PRECISION, pixel_height_resolution DOUBLE PRECISION, pixel_width_resolution DOUBLE PRECISION, file_path TEXT, file_name TEXT)");
+    if (GetNumberOfImagesStored(db) == 0)
+    {
+        // Creating a sequence
+        db.Request("CREATE SEQUENCE IF NOT EXISTS geotiff_data_id_seq");
+
+        // Setting the start value for the sequence
+        db.Request("SELECT setval('geotiff_data_id_seq', 2000, false)");
+
+        // Altering the table to use the sequence as the default value for the id column
+        db.Request("ALTER TABLE geotiff_data ALTER COLUMN id SET DEFAULT nextval('geotiff_data_id_seq')");
+    }
+
+    // Inserting data into the table
+    std::string query = "INSERT INTO geotiff_data (raster_data, height, width, band_count, min_x, max_x, min_y, max_y, pixel_height_resolution, pixel_width_resolution, file_path, file_name) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)";
+    std::vector<std::variant<int, double, std::string, pqxx::binarystring>> params = {rasterBinary, height, width, bandCount, minX, maxX, minY, maxY, pixelHeightResolution, pixelWidthResolution, filePath, fileName};
     // Construct the SQL query string with parameters
     for (size_t i = 0; i < params.size(); ++i)
     {
