@@ -10,7 +10,20 @@ using namespace std;
 
 WMS::WMS(int crs, double north_limit, double south_limit, double east_limit, double west_limit,
          int width, int height)
-    {
+/*
+*
+*   WMTS Class Constructor
+*
+*   crs : coordinate reference systeme of north,south,est and west coordinate limit
+*   north_limit : north coordinate limit of the bounding box
+*   south_limit : south coordinate limit of the bounding box
+*   east_limit : east coordinate limit of the bounding box
+*   west_limit : west coordinate limit of the bounding box
+*   width : width of display screen
+*   height : height of display screen
+*
+*/
+{
     //String utils 
     string coma           = ",";
 
@@ -56,7 +69,7 @@ WMS::WMS(int crs, double north_limit, double south_limit, double east_limit, dou
     std::cout<<url<<"\n";
     
     url = strdup(str_url.c_str());
-    }
+}
 
 const char* WMS::getUrl() {
     return url;
