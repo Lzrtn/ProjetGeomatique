@@ -45,7 +45,7 @@ TEST(camera_3D_picking, test_revert_proj_center) {
 	//*/
 
 	// assert
-	//EXPECT_EQ (pReel2, pReel);
+	EXPECT_EQ (pReel2, pReel);
 }
 
 TEST(camera_3D_picking, test_revert_proj_excenter) {
@@ -73,7 +73,7 @@ TEST(camera_3D_picking, test_revert_proj_excenter) {
 	//*/
 
 	// assert
-	//EXPECT_TRUE ((pReel2 - pReel).length() < 1e-3);	// due to rounds errors, vectors are not strictly equals
+	EXPECT_TRUE ((pReel2 - pReel).length() < 1e-3);	// due to rounds errors, vectors are not strictly equals
 }
 
 TEST(camera_3D_picking, test_proj_excenter) {
@@ -95,7 +95,7 @@ TEST(camera_3D_picking, test_proj_excenter) {
 	QVector3D pScr2 = camera.ProjToScreen(pRe);
 
 	// assert
-	//EXPECT_TRUE ((pScr - pScr2).length() < 1e-3);	// due to rounds errors, vectors are not strictly equals
+	EXPECT_TRUE ((pScr - pScr2).length() < 1e-3);	// due to rounds errors, vectors are not strictly equals
 }
 
 TEST(camera_3D_picking, test_proj_screen_center) {

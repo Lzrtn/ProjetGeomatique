@@ -63,7 +63,7 @@ QVector3D Camera::ProjToScreen(const QVector3D &pos) const
 		-1,
 		0.0
 	};
-	return (this->matMVP * pos + delta) * scale;
+	return (this->matMVP * pos + delta) / scale;
 }
 
 QVector3D Camera::ProjFromScreen(const QVector3D &pos) const
