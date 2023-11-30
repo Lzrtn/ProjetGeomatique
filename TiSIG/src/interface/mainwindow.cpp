@@ -10,6 +10,7 @@
 #include <QPointF>
 #include <QCheckBox>
 #include <QColor>
+#include <QMouseEvent>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -65,9 +66,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// Connect scene to QGraphicsView
 	ui->graphicsView_window2D->setScene(scene);
-	ui->graphicsView_window2D->setDragMode(QGraphicsView::ScrollHandDrag);
-	View_zoom* z = new View_zoom(ui->graphicsView_window2D);
-	z->set_modifiers(Qt::NoModifier);
+    ui->graphicsView_window2D->setDragMode(QGraphicsView::ScrollHandDrag);
+    //View_zoom* z = new View_zoom(ui->graphicsView_window2D);
+    //z->set_modifiers(Qt::NoModifier);
 
 	// ip Address
 	ipAdress = ipAdress_d;
@@ -100,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent)
 	// Connecting switch 2D/3D button
 	connect(ui->btn_switchMode2D3D, &QPushButton::clicked, this, &MainWindow::OnButtonSwitchTo2D3DClicked);
 
-	// Connecting ZoomIn button
+    /*// Connecting ZoomIn button
 	connect(ui->btn_zoomIn, &QPushButton::clicked, this, &MainWindow::OnButtonZoomIn);
 
 	// Connecting ZoomOut button
@@ -108,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// Connecting ZoomOut button
 	connect(ui->btn_zoomFull, &QPushButton::clicked, this, &MainWindow::OnButtonZoomFull);
-
+*/
 
 	/*_______________________________Barre d'outils dans le gestionnaire de couches___________________________________________________________________________________________________*/
 
@@ -340,7 +341,7 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 }
 
 
-void MainWindow::OnButtonZoomIn()
+/*void MainWindow::OnButtonZoomIn()
 {
 	ui->graphicsView_window2D->scale(1.2,1.2);
 	qreal currentScale = ui->graphicsView_window2D->transform().m11();
@@ -482,7 +483,7 @@ void MainWindow::OnButtonZoomFull()
 		}
 	}
 }
-
+*/
 void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 
 
@@ -620,4 +621,39 @@ void MainWindow::onButtonClickedDeleteLayer()
         delete layerList[layerId]->getLayerGroup();
         layerList.erase(layerId);
     }
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event){
+    QPointF mousePos = ui->graphicsView_window2D->mapToScene(event->pos());
+    double x = mousePos.x();
+    double y = -mousePos.y();  // Assurez-vous du sens de l'axe y en fonction de votre scène
+
+    std::string x_str = std::to_string(x);
+    std::string y_str = std::to_string(y);
+    std::replace(x_str.begin(), x_str.end(), ',', '.');
+    std::replace(y_str.begin(), y_str.end(), ',', '.');
+    std::cout << "Les coordonnées écran : " << x_str << ", " << y_str << std::endl;
+    std::string path = "/home/formation/Documents/ProjetGeomatique/TiSIG/src/data/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
+
+
+    /*QGraphicsItem * truc =  scene->itemAt(mousePos.x(),mousePos.y(), QTransform());
+    std::cout<<truc<<std::endl;
+    truc->setPos(50,50);*/
+
+    // PostGreSQL Connection to the first database
+    DbManager db_manager("database2D", ipAdress);
+    pqxx::connection conn(db_manager.getString());
+
+    Shapefile essai = Shapefile(path, db_manager);
+    db_manager.Request("SELECT * FROM  Bati_Lyon5eme WHERE ST_Within(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom);");
+    pqxx::result rows_shape = db_manager.getResult();
+    if (!rows_shape.empty()) {
+        std::cout<<"dergi"<<std::endl;
+        const pqxx::row& first_row = rows_shape[0];
+        std::cout << first_row.at(0).c_str()<<std::endl;
+    } else
+    {
+        std::cout << "Aucune ligne trouvée." << std::endl;
+    }
+    QMainWindow::mousePressEvent(event);
 }

@@ -43,6 +43,8 @@ public:
 	 */
 	~MainWindow();
 
+    void mousePressEvent(QMouseEvent * event) override;
+
 	/**
 	 * @brief Get the mode
 	 * @return bool mode
@@ -85,21 +87,21 @@ private slots:
 	* @brief Function to zoom in
 	*
 	*/
-	void OnButtonZoomIn();
+    //void OnButtonZoomIn();
 
 	/**
 	* @brief Function to zoom out
 	*
 	*eturn path
 	*/
-	void OnButtonZoomOut();
+    //void OnButtonZoomOut();
 
 	/**
 	* @brief Function to zoom on full extent
 	*
 	*
 	*/
-	void OnButtonZoomFull();
+    //void OnButtonZoomFull();
 
 	/**
 	 * @brief Function to switch between 2D and 3D mode
