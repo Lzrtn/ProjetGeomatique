@@ -86,8 +86,8 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->action_add2DDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DDataFlowClicked);
 
 	// Connecting add2dvectorlayer action and add3dvectorlayer action
-	connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVectorLayerClicked);
-	connect(ui->action_add3DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVectorLayerClicked);
+    connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVector2DLayerClicked);
+    connect(ui->action_add3DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVector3DLayerClicked);
 
 	// Connecting add2drastorlayer action and add3drastorlayer action
     connect(ui->action_add2DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastor2DLayerClicked);
@@ -165,7 +165,6 @@ MainWindow::~MainWindow()
 	for (Shapefile* shp : ShpList){
 		shp->~Shapefile();
 	}
-
 }
 
 
@@ -222,7 +221,7 @@ void MainWindow::OnAction2DDataFlowClicked()
 	dataflowwindow.exec();
 }
 
-std::string MainWindow::OnActionVectorLayerClicked()
+std::string MainWindow::OnActionVector2DLayerClicked()
 {
     QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("Fichier vecteur (*.shp *.geojson)"));
 	std::string path = fileNameVectorLayer.toStdString();
@@ -242,6 +241,14 @@ std::string MainWindow::OnActionVectorLayerClicked()
         }
 	}
 	return path;
+}
+
+std::string MainWindow::OnActionVector3DLayerClicked()
+{
+
+    QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("Fichier vecteur (*.shp *.geojson)"));
+    std::string path = fileNameVectorLayer.toStdString();
+    return path;
 
 }
 
@@ -252,7 +259,6 @@ std::string MainWindow::OnActionRastor2DLayerClicked()
 	std::string path = fileNameRastorLayer.toStdString();
 	this->AddGeotiffFileClicked(path);
 	return path;
-
 }
 
 void MainWindow::OnActionRastor3DLayerClicked()
