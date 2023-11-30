@@ -1,5 +1,5 @@
 INCLUDEPATH ''= $$system(pwd)/include
-DEPENDSPATH''= $$system(pwd)
+DEPENDSPATH ''= $$system(pwd)
 
 QT += core gui
 QT += network core
@@ -21,7 +21,7 @@ LIBS += -lpq
 
 # Indiquez l'emplacement de QuaZip
 INCLUDEPATH += /usr/include/quazip5
-#LIBS += -L/usr/include/quazip5/lib -lquazip
+LIBS += -lquazip5
 
 INCLUDEPATH += /usr/include
 LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx

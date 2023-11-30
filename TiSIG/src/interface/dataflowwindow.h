@@ -52,7 +52,7 @@ private slots:
      *
      * @return which dataflow was choosed
      */
-  const char* OnButtonValidateDataFlowPreSavedlClicked();
+  void OnButtonValidateDataFlowPreSavedlClicked();
 };
 
 #endif // DATAFLOWWINDOW_H
