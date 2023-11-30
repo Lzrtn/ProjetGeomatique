@@ -67,8 +67,8 @@ MainWindow::MainWindow(QWidget *parent)
 	// Connect scene to QGraphicsView
 	ui->graphicsView_window2D->setScene(scene);
     ui->graphicsView_window2D->setDragMode(QGraphicsView::ScrollHandDrag);
-    //View_zoom* z = new View_zoom(ui->graphicsView_window2D);
-    //z->set_modifiers(Qt::NoModifier);
+    View_zoom* z = new View_zoom(ui->graphicsView_window2D);
+    z->set_modifiers(Qt::NoModifier);
 
 	// ip Address
 	ipAdress = ipAdress_d;
@@ -290,8 +290,7 @@ void MainWindow::AddShpFileClicked(std::string path)
 	test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
 	pqxx::result rowbis =test.getResult();
 	QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis,scene, myColor);
-	ui->lineEdit_epsg2D->setText(essai1->getEPSGtoSet());
-
+    ui->lineEdit_epsg2D->setText(essai1->getEPSGtoSet());
     layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
     addLayerToListWidget(layerId, *layerList[layerId]);
     index++;
@@ -380,7 +379,7 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 			// Mettre à jour la largeur du trait
 			QPen pen = pointItem->pen();
 			pen.setWidthF(adjustedWidth);
-			pointItem->setPen(pen);
+            Emploi CirilGroup <emploi@cirilgroup.com>pointItem->setPen(pen);
 		}
 	}
 }

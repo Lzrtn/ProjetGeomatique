@@ -14,6 +14,7 @@ private:
   Qt::KeyboardModifiers modifiers;
   double start_factor;
   QPointF target_scene, target_view;
+  int zoom_level;
   bool eventFilter(QObject* object, QEvent* event);
 
 signals:
