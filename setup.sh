@@ -10,7 +10,7 @@ function exit_with_error {
 PROJET_DIR="ProjetGeomatique"
 
 # Installer les dépendances nécessaires
-#sudo apt-get update || exit_with_error "Échec de la mise à jour des paquets"
+sudo apt-get update || exit_with_error "Échec de la mise à jour des paquets"
 sudo apt-get install -y gdal-bin libgdal-dev libpq-dev libpqxx-dev libgtest-dev xvfb || exit_with_error "Échec de l'installation des dépendances"
 sudo apt-get install build-essential qt5-qmake qtbase5-dev qtchooser qtbase5-dev-tools
 sudo apt-get install postgresql-14-postgis-3
@@ -27,13 +27,15 @@ sudo apt-get install zenity
 wget -P ./TiSIG/src/data/Docker/LYON_5EME_2015 -O LYON_5EME_BATI_2015.gml https://www.dropbox.com/scl/fi/d0sybsln4o483fr5d9j17/LYON_5EME_BATI_2015.gml?rlkey=6m51ytawrfq5l18fiugb2h2ur&dl=0
 wget -P ./TiSIG/src/data/Docker/data -O 3dcitydb.zip https://www.dropbox.com/scl/fi/giksp7fbzvkbxv9zydl9e/3dcitydb.zip?rlkey=uqncjb068s7ct242gpjgc6efw&dl=0
 # Build du docker et création des tables
-docker build -t tisig_database_img ./TiSIG/src/data/Docker/.
-docker run -d --name database-tisig tisig_database_img
+
+sleep 10 
+sudo docker build -t tisig_database_img ./TiSIG/src/data/Docker/.
+sudo docker run -d --name database-tisig tisig_database_img
 sleep 10
-docker exec database-tisig chmod u+x CREATE_DB.sh
-docker exec database-tisig ./CREATE_DB.sh 
-docker exec database-tisig bash -c "psql -h localhost -U postgres -p 5432 -d CityGML -c 'CREATE DATABASE database2D;'"
-docker stop database-tisig
+sudo docker exec database-tisig chmod u+x CREATE_DB.sh
+sudo docker exec database-tisig ./CREATE_DB.sh 
+sudo docker exec database-tisig bash -c "psql -h localhost -U postgres -p 5432 -d CityGML -c 'CREATE DATABASE database2D;'"
+sudo docker stop database-tisig
 # # Se déplacer dans le répertoire du projet
 # cd "$PROJET_DIR" || exit_with_error "Échec du changement de répertoire vers $PROJET_DIR"
 
