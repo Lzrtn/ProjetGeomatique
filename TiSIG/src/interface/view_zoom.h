@@ -8,6 +8,7 @@ public:
   void gentle_zoom(double factor);
   void set_modifiers(Qt::KeyboardModifiers modifiers);
   void set_zoom_factor_base(double value);
+  int getZoomLevel(){return zoom_level; };
 
 private:
   QGraphicsView* view;
