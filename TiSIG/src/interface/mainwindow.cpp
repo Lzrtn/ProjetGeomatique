@@ -624,21 +624,19 @@ void MainWindow::onButtonClickedDeleteLayer()
 
 void MainWindow::mousePressEvent(QMouseEvent *event){
     QPointF mousePos = ui->graphicsView_window2D->mapToScene(event->pos());
+    ui->tableWidget_layerAttributeInformation->clear();
+    ui->tableWidget_layerAttributeInformation->setRowCount(0);
+    QStringList nameCol;
+    nameCol << "Nom" << "Valeur";
+    ui->tableWidget_layerAttributeInformation->setHorizontalHeaderLabels(nameCol);
     double x = mousePos.x();
     double y = -mousePos.y();  // Assurez-vous du sens de l'axe y en fonction de votre scène
-
     std::string x_str = std::to_string(x);
     std::string y_str = std::to_string(y);
     std::replace(x_str.begin(), x_str.end(), ',', '.');
     std::replace(y_str.begin(), y_str.end(), ',', '.');
     std::cout << "Les coordonnées écran : " << x_str << ", " << y_str << std::endl;
     std::string path = "/home/formation/Documents/ProjetGeomatique/TiSIG/src/data/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
-
-
-    /*QGraphicsItem * truc =  scene->itemAt(mousePos.x(),mousePos.y(), QTransform());
-    std::cout<<truc<<std::endl;
-    truc->setPos(50,50);*/
-
     // PostGreSQL Connection to the first database
     DbManager db_manager("database2D", ipAdress);
     pqxx::connection conn(db_manager.getString());
@@ -646,12 +644,41 @@ void MainWindow::mousePressEvent(QMouseEvent *event){
     Shapefile essai = Shapefile(path, db_manager);
     db_manager.Request("SELECT * FROM  Bati_Lyon5eme WHERE ST_Within(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom);");
     pqxx::result rows_shape = db_manager.getResult();
-    if (!rows_shape.empty()) {
-        std::cout<<"dergi"<<std::endl;
-        const pqxx::row& first_row = rows_shape[0];
-        std::cout << first_row.at(0).c_str()<<std::endl;
-    } else
-    {
+
+    if (!rows_shape.empty()){
+        for (pqxx::result::const_iterator row = rows_shape.begin(); row != rows_shape.end(); ++row) {
+            for (int j = 0; j < row.size(); ++j) {
+                std::string name_col = rows_shape.column_name(j);
+                if (!row[j].is_null()) {
+                    std::string value = row[j].as<std::string>();
+                    std::cout << "Nom de la colonne : " << name_col << ", Valeur : " << value << std::endl;
+
+                    // Ajoute une nouvelle ligne pour chaque colonne
+                    ui->tableWidget_layerAttributeInformation->insertRow(j);
+
+                    // Remplit la première colonne avec le nom de la colonne
+                    QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(name_col));
+                    ui->tableWidget_layerAttributeInformation->setItem(j, 0, col_name_item);
+
+                    // Remplit la deuxième colonne avec la valeur
+                    QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString(value));
+                    ui->tableWidget_layerAttributeInformation->setItem(j, 1, value_item);
+                } else {
+                    std::cout << "Nom de la colonne : " << name_col << ", Valeur : NULL" << std::endl;
+                    // Ajoute une nouvelle ligne pour chaque colonne
+                    ui->tableWidget_layerAttributeInformation->insertRow(j);
+
+                    // Remplit la première colonne avec le nom de la colonne
+                    QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(name_col));
+                    ui->tableWidget_layerAttributeInformation->setItem(j, 0, col_name_item);
+
+                    // Remplit la deuxième colonne avec la valeur
+                    QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString("NULL"));
+                    ui->tableWidget_layerAttributeInformation->setItem(j, 1, value_item);
+                }
+            }
+        }
+    } else {
         std::cout << "Aucune ligne trouvée." << std::endl;
     }
     QMainWindow::mousePressEvent(event);
