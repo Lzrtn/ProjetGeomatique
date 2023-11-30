@@ -23,6 +23,9 @@ sudo echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 sudo apt-get install zenity
 
+#Installation des fichiers
+wget -P ./TiSIG/src/data/Docker/LYON_5EME_2015 -O LYON_5EME_BATI_2015.gml https://www.dropbox.com/scl/fi/d0sybsln4o483fr5d9j17/LYON_5EME_BATI_2015.gml?rlkey=6m51ytawrfq5l18fiugb2h2ur&dl=0
+wget -P ./TiSIG/src/data/Docker/data -O 3dcitydb.zip https://www.dropbox.com/scl/fi/giksp7fbzvkbxv9zydl9e/3dcitydb.zip?rlkey=uqncjb068s7ct242gpjgc6efw&dl=0
 # Build du docker et création des tables
 docker build -t tisig_database_img ./TiSIG/src/data/Docker/.
 docker run -d --name database-tisig tisig_database_img
