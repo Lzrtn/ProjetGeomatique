@@ -30,7 +30,7 @@
 
 //Initialisation du Docker
 // Creating container
-std::string pathDockerFile = "../src/data/Docker/docker-compose.yml";
+std::string pathDockerFile = "database-tisig";
 Docker docker(pathDockerFile);
 // Get the Ip Adress
 const std::string ipAdress_d = docker.getIpAdress();
