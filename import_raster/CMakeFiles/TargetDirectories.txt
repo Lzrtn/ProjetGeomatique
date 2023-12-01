@@ -1,3 +1,0 @@
-/home/axel/ProjetGeomatique/import_raster/CMakeFiles/main.dir
-/home/axel/ProjetGeomatique/import_raster/CMakeFiles/edit_cache.dir
-/home/axel/ProjetGeomatique/import_raster/CMakeFiles/rebuild_cache.dir
