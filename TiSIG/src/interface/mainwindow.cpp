@@ -140,35 +140,35 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    // Delete all layers
-
-    {
-        delete pair.second;
-    }
-  
-
-    // Delete all items from 2D window
-    for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
-    {
-        delete item;
-    }
-
-	// Delete scene
-    delete scene;
-
-	// Delete interface
-    delete ui;
-
-	//Delete shapefiles
-    for (std::pair <const int, Shapefile * > truc : ShpList){
-        Shapefile* shp = truc.second;
-		shp->~Shapefile();
+	// Delete all layers
+	for(auto pair: layerList)
+	{
+		delete pair.second;
+		layerList.erase(pair.first);
 	}
 
-    //Empty the symbologie table
-    DbManager test("database2D", ipAdress);
-    std::string request = "TRUNCATE TABLE symbologie";
-    test.Request(request);
+	// Delete all items from 2D window
+	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
+	{
+	delete item;
+	}
+	
+	// Delete scene
+	delete scene;
+	
+	// Delete interface
+	delete ui;
+	
+	//Delete shapefiles
+	for (std::pair <const int, Shapefile * > truc : ShpList){
+	Shapefile* shp = truc.second;
+		shp->~Shapefile();
+	}
+	
+	//Empty the symbologie table
+	DbManager test("database2D", ipAdress);
+	std::string request = "TRUNCATE TABLE symbologie";
+	test.Request(request);
 }
 
 
