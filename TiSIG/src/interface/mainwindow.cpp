@@ -72,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
 	View_zoom* z = new View_zoom(ui->graphicsView_window2D);
 	z->set_modifiers(Qt::NoModifier);
 
+
 	// ip Address
 	ipAdress = ipAdress_d;
 
@@ -119,52 +120,51 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 	// Connecter le bouton "Up" à la fonction de déplacement vers le haut
-	connect(ui->btn_moveLayerUp, &QPushButton::clicked, [=]() {
+    connect(ui->btn_moveLayerUp2D, &QPushButton::clicked, [=]() {
 		moveItemUp();
 	});
 
     // Connecter le bouton "Down" à la fonction de déplacement vers le bas
-    connect(ui->btn_moveLayerDown, &QPushButton::clicked, [=]() {
+    connect(ui->btn_moveLayerDown2D, &QPushButton::clicked, [=]() {
         moveItemDown();
     });
 
     // Connecter le bouton "Poubelle" à la fonction de suppression
-    connect(ui->btn_deleteLayer, &QPushButton::clicked, [=]() {
+    connect(ui->btn_deleteLayer2D, &QPushButton::clicked, [=]() {
         onButtonClickedDeleteLayer();
     });
 
     // Connecter le bouton "Zoom sur la couche" à la fonction de zoom sur la couche
-    connect(ui->btn_zoomOnLayer, &QPushButton::clicked, [=]() {
+    connect(ui->btn_zoomOnLayer2D, &QPushButton::clicked, [=]() {
         onButtonClickedZoomOnLayer();
     });
 }
 
 MainWindow::~MainWindow()
 {
-	// Delete all layers
+    // Delete all layers
 	for(auto pair: layerList)
-	{
-		delete pair.second;
-		layerList.erase(pair.first);
-	}
+    {
+        delete pair.second;
+    }
 
-	// Delete all items from 2D window
-	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
-	{
-		delete item;
-	}
-
+    // Delete all items from 2D window
+    for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
+    {
+        delete item;
+    }
 
 	// Delete scene
-	delete scene;
+    delete scene;
 
 	// Delete interface
-	delete ui;
+    delete ui;
 
-	//Delete shapefiles
-	for (Shapefile* shp : ShpList){
-		shp->~Shapefile();
-	}
+    //Delete shapefiles
+    for (Shapefile* shp : ShpList){
+        shp->~Shapefile();
+    }
+
 }
 
 
@@ -176,9 +176,9 @@ Ui::MainWindow * MainWindow::getUi() const
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
 	mode = !mode;
-	ui->stackedWidget->setCurrentIndex(mode);
+    ui->stackedWidget->setCurrentIndex(mode);
 
-	ui->stackedWidget->setCurrentIndex(mode);
+    ui->stackedWidget_Rightside->setCurrentIndex(mode);
 
 	ui->action_add2DVectorLayer->setEnabled(!mode);
 	ui->action_add2DRastorLayer->setEnabled(!mode);
@@ -187,6 +187,9 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 	ui->action_add3DVectorLayer->setEnabled(mode);
 	ui->action_add3DRastorLayer->setEnabled(mode);
 	ui->action_add3DModel->setEnabled(mode);
+
+    ui->tableWidget_layerAttributeInformation2D->horizontalHeader()->setVisible(1);
+    ui->tableWidget_layerAttributeInformation3D->horizontalHeader()->setVisible(1);
 
 	// when hidden, camera controls are disabled
 	if (!mode)
@@ -197,12 +200,14 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 	this->update();
 
 	ui->stackedWidget->update();
+    ui->stackedWidget_Rightside->update();
     ui->graphicsView_window2D->update();
 	ui->openGLWidget_window3D->update();
 
 	this->repaint();
 
 	ui->stackedWidget->repaint();
+    ui->stackedWidget_Rightside->repaint();
 	ui->graphicsView_window2D->repaint();
 	ui->openGLWidget_window3D->repaint();
 }
@@ -529,7 +534,7 @@ void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 	layer.setZIndex(index);
 
     // Créez un nouvel élément pour la couche
-    layer.layerItem = new QListWidgetItem(ui->listeWidget_layersList);
+    layer.layerItem = new QListWidgetItem(ui->listeWidget_layersList2D);
     layer.layerItem->setData(Qt::UserRole, layerId);
 
 	// Créez un widget personnalisé pour cet élément (contenant un label et une case à cocher)
@@ -560,21 +565,21 @@ void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 
 
 
-	ui->listeWidget_layersList->setItemWidget(layer.layerItem, layer.layerWidget);
+    ui->listeWidget_layersList2D->setItemWidget(layer.layerItem, layer.layerWidget);
 
 	// met à jour l'ordre de superpositions des couches
 	updateLayerOrderInGraphicsView();
 }
 
 void MainWindow::moveItemDown() {
-	QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
-	int currentIndex = ui->listeWidget_layersList->row(item);
+    QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
+    int currentIndex = ui->listeWidget_layersList2D->row(item);
 
-	if (item && currentIndex < ui->listeWidget_layersList->count()-1)
+    if (item && currentIndex < ui->listeWidget_layersList2D->count()-1)
 	{
 		// Change la profondeur des couches
 		int currentId = item->data(Qt::UserRole).toInt();
-		QListWidgetItem *nextItem = ui->listeWidget_layersList->item(currentIndex+1);
+        QListWidgetItem *nextItem = ui->listeWidget_layersList2D->item(currentIndex+1);
 		int nextId = nextItem->data(Qt::UserRole).toInt();
 
 		int currentZIndex = layerList[currentId]->getZIndex();
@@ -586,30 +591,30 @@ void MainWindow::moveItemDown() {
 		updateLayerOrderInGraphicsView();
 
         // Change l'ordre dans la liste des couches
-        QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
+        QWidget *itemWidget = ui->listeWidget_layersList2D->itemWidget(item);
         QWidget *tempWidget = new QWidget();
         QLayout *widgetLayout = itemWidget->layout();
         tempWidget->setLayout(widgetLayout);
 
         layerList[currentId]->layerWidget = tempWidget;
 
-		QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
+        QListWidgetItem *currentItem = ui->listeWidget_layersList2D->takeItem(currentIndex);
 
-		ui->listeWidget_layersList->insertItem(currentIndex+1, currentItem);
-		ui->listeWidget_layersList->setItemWidget(currentItem, tempWidget);
-		ui->listeWidget_layersList->setCurrentRow(currentIndex+1);
+        ui->listeWidget_layersList2D->insertItem(currentIndex+1, currentItem);
+        ui->listeWidget_layersList2D->setItemWidget(currentItem, tempWidget);
+        ui->listeWidget_layersList2D->setCurrentRow(currentIndex+1);
 	}
 }
 
 void MainWindow::moveItemUp() {
-	QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
-	int currentIndex = ui->listeWidget_layersList->row(item);
+    QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
+    int currentIndex = ui->listeWidget_layersList2D->row(item);
 
 	if (item && currentIndex > 0) {
 
 		// Change la profondeur des couches
 		int currentId = item->data(Qt::UserRole).toInt();
-		QListWidgetItem *prevItem = ui->listeWidget_layersList->item(currentIndex-1);
+        QListWidgetItem *prevItem = ui->listeWidget_layersList2D->item(currentIndex-1);
 		int prevId = prevItem->data(Qt::UserRole).toInt();
 
 		int currentZIndex = layerList[currentId]->getZIndex();
@@ -621,18 +626,18 @@ void MainWindow::moveItemUp() {
 		updateLayerOrderInGraphicsView();
 
         // Change l'ordre dans la liste des couches
-        QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
+        QWidget *itemWidget = ui->listeWidget_layersList2D->itemWidget(item);
         QWidget *tempWidget = new QWidget();
         QLayout *widgetLayout = itemWidget->layout();
         tempWidget->setLayout(widgetLayout);
 
         layerList[currentId]->layerWidget = tempWidget;
 
-		QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
+        QListWidgetItem *currentItem = ui->listeWidget_layersList2D->takeItem(currentIndex);
 
-		ui->listeWidget_layersList->insertItem(currentIndex-1, currentItem);
-		ui->listeWidget_layersList->setItemWidget(currentItem, tempWidget);
-		ui->listeWidget_layersList->setCurrentRow(currentIndex-1);
+        ui->listeWidget_layersList2D->insertItem(currentIndex-1, currentItem);
+        ui->listeWidget_layersList2D->setItemWidget(currentItem, tempWidget);
+        ui->listeWidget_layersList2D->setCurrentRow(currentIndex-1);
 	}
 }
 
@@ -646,13 +651,13 @@ void MainWindow::updateLayerOrderInGraphicsView() {
 
 void MainWindow::onButtonClickedDeleteLayer()
 {
-    QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
+    QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
 
 
     if (item)
     {
         int layerId = item->data(Qt::UserRole).toInt();
-        ui->listeWidget_layersList->removeItemWidget(item);
+        ui->listeWidget_layersList2D->removeItemWidget(item);
         delete item;
 
         ui->graphicsView_window2D->scene()->removeItem(layerList[layerId]->getLayerGroup());
@@ -663,7 +668,7 @@ void MainWindow::onButtonClickedDeleteLayer()
 
 void MainWindow::onButtonClickedZoomOnLayer()
 {
-    QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
+    QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
 
     if (item)
     {
