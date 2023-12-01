@@ -26,7 +26,7 @@ void OpenGLcityView::initializeGL()
 	this->InitShaders();
 
 	// ajout d'un batiment de test
-	this->AddBuilding(5, Building3DFactory(0));
+//	this->AddBuilding(5, Building3DFactory(0));
 	this->AddBuilding(156, Building3DFactory(1));
 	this->AddBuilding(4561, Building3DFactory(2));
 	this->AddBuilding(0, Building3DFactory(3));

@@ -16,6 +16,7 @@
 #include "../src/2D/rasteritem.h"
 #include "../src/3D/camera.h"
 #include "../src/2D/shapefile.h"
+#include "../src/3D/openglcityview.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -36,7 +37,7 @@ public:
 	 * @brief Main Window constructor
 	 * @param QWidget parent
 	 */
-	MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr, OpenGLcityView 3Dwindow);
 
 	/**
 	 * @brief Main Window destructor

@@ -33,6 +33,7 @@ public:
 
 private:
     Ui::MntWindow *ui; ///< Ui::MntWindow ui
+
 //    QLineEdit lineEdit_DTMPath; ///< QLineEdit lineEdit_DTMPath
 //    QLineEdit lineEdit_OrthoPath; ///< QLineEdit lineEdit_Path
 //    QPushButton btn_validateDataFlowUrl; ///< QPushButton btn_validateDataFlowUrl
