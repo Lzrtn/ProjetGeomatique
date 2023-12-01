@@ -16,8 +16,17 @@ INCLUDEPATH += /usr/include/gdal
 LIBS += -lgdal
 LIBS += -lpq
 
+#For Curl
+QT += network 
+# Config for Curl
+LIBS += -lcurl
+
+# Config for opencv
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
+
 INCLUDEPATH += /usr/include
-LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
+LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx 
 
 SOURCES += \
     2D/layer.cpp \
@@ -41,3 +50,4 @@ QMAKE_CXXFLAGS += -std=c++17
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+

@@ -48,7 +48,7 @@ WMTS::WMTS(int tilematrix, double west_limit, double north_limit, int width, int
     string version        = "1.0.0";    
     string request        = "GetTile";
     string style          = "normal";
-    string tilematrixset         = "PM";     
+    string tilematrixset  = "PM";     
 
     //Utils (coordinate in different projections)
     int tileSize = 256; //Size of one tile
@@ -103,7 +103,6 @@ WMTS::WMTS(int tilematrix, double west_limit, double north_limit, int width, int
         }
         tablurl.push_back(vecurl);
     }
-
 }
 
 
@@ -154,8 +153,7 @@ void WMTS::getImage(){
             }
         }
         // Cleanup
-        curl_easy_cleanup(curl);
-        
+        curl_easy_cleanup(curl);        
     } 
 }
 
@@ -170,7 +168,7 @@ void WMTS::combine()
     }
 
     // Create grid
-    Mat gridImage(rows * 256, cols * 256, CV_8UC3, Scalar(255, 255, 255)); // Taille de chaque image = 100x100
+    Mat gridImage(rows * 258, cols * 258, CV_8UC3, Scalar(255, 255, 255)); 
 
     // Upload and concatenate images
     for (int i = 0; i < rows; ++i) {
@@ -186,7 +184,7 @@ void WMTS::combine()
             }
 
             // Copy in grid
-            Rect roi(j * 256, i * 256, 256, 256);
+            Rect roi(j * 258+1, i * 258+1, 256, 256);
             image.copyTo(gridImage(roi));
         }
     }
