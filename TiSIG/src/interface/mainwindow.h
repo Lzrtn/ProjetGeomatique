@@ -43,8 +43,6 @@ public:
 	 */
 	~MainWindow();
 
-    void mousePressEvent(QMouseEvent * event) override;
-
 	/**
 	 * @brief Get the mode
 	 * @return bool mode
@@ -66,6 +64,20 @@ public:
 
 	int index = 0; // Temporaire
 	void updateLayerOrderInGraphicsView();
+
+
+    /**
+     * @brief Filter all events
+     * @param obj QObject to be filtered
+     * @param event QEvent to be filtered
+     * @return boolean
+     */
+    bool eventFilter(QObject *obj, QEvent *event) override;
+
+    /**
+     * @brief Function to get mouse pressed event on the scene
+     */
+    void getAttributesLayer(QMouseEvent * event);
 
 
 private:

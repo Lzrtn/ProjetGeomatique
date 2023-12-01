@@ -67,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent)
 	// Connect scene to QGraphicsView
 	ui->graphicsView_window2D->setScene(scene);
 	ui->graphicsView_window2D->setDragMode(QGraphicsView::ScrollHandDrag);
+    ui->graphicsView_window2D->installEventFilter(this);
 	View_zoom* z = new View_zoom(ui->graphicsView_window2D);
 	z->set_modifiers(Qt::NoModifier);
 
@@ -103,15 +104,15 @@ MainWindow::MainWindow(QWidget *parent)
 	// Connecting switch 2D/3D button
 	connect(ui->btn_switchMode2D3D, &QPushButton::clicked, this, &MainWindow::OnButtonSwitchTo2D3DClicked);
 
-    /*// Connecting ZoomIn button
-	connect(ui->btn_zoomIn, &QPushButton::clicked, this, &MainWindow::OnButtonZoomIn);
+    // Connecting ZoomIn button
+    connect(ui->btn_zoomIn, &QPushButton::clicked, this, &MainWindow::OnButtonZoomIn);
 
-	// Connecting ZoomOut button
-	connect(ui->btn_zoomOut, &QPushButton::clicked, this, &MainWindow::OnButtonZoomOut);
+    // Connecting ZoomOut button
+    connect(ui->btn_zoomOut, &QPushButton::clicked, this, &MainWindow::OnButtonZoomOut);
 
-	// Connecting ZoomOut button
-	connect(ui->btn_zoomFull, &QPushButton::clicked, this, &MainWindow::OnButtonZoomFull);
-*/
+    // Connecting ZoomOut button
+    connect(ui->btn_zoomFull, &QPushButton::clicked, this, &MainWindow::OnButtonZoomFull);
+
 
 	/*_______________________________Barre d'outils dans le gestionnaire de couches___________________________________________________________________________________________________*/
 
@@ -724,7 +725,7 @@ void MainWindow::onButtonClickedZoomOnLayer()
     }
 }
 
-void MainWindow::mousePressEvent(QMouseEvent *event){
+void MainWindow::getAttributesLayer(QMouseEvent *event){
     if (ui->listeWidget_layersList2D->currentItem())
     {
         //Get selected shapefile
@@ -797,4 +798,18 @@ void MainWindow::mousePressEvent(QMouseEvent *event){
         }
         QMainWindow::mousePressEvent(event);
     }
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    std::cout << "BEFORE FILTER" << std::endl;
+    if (obj == ui->graphicsView_window2D && event->type() == QEvent::MouseButtonPress)
+    {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+        this->getAttributesLayer(mouseEvent);
+        std::cout << "EVENT FILTER" << std::endl;
+        return true;
+    }
+
+    return QObject::eventFilter(obj, event);
 }
