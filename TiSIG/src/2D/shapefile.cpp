@@ -78,7 +78,6 @@ int Shapefile::import_to_db(const int epsg)
         db_manager.Request(tableExists);
         res = db_manager.getResult();
     }
-    std::cout<<table_name<<std::endl;
 
     // Initialize GDAL
     GDALAllRegister();
@@ -233,7 +232,6 @@ int Shapefile::import_to_db(const int epsg)
                 index = i[0][0].as<int>() +1;
             }
             id=index;
-            std::cout<<index<<std::endl;
             srand(time(NULL));
             int red_random = rand()%255;
             int green_random = rand()%255;
@@ -265,7 +263,7 @@ std::vector<float> Shapefile::getBoundingBox()
     float Xmax = std::stof(X_max);
     float Ymax = std::stof(Y_max);
 
-    std::cout<<Xmin<<","<<Ymin<<","<<Xmax<<","<<Ymax<<std::endl;
+    //std::cout<<Xmin<<","<<Ymin<<","<<Xmax<<","<<Ymax<<std::endl;
 
     std::vector<float> res = {Xmin,Ymin,Xmax,Ymax};
     return res;

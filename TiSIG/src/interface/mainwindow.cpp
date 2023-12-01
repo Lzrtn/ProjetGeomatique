@@ -262,8 +262,10 @@ std::string MainWindow::OnActionRastor2DLayerClicked()
 
 	QString fileNameRastorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données raster"), "../../../", tr("GeoTIFF (*.tif *.TIF *.tiff)"));
 	std::string path = fileNameRastorLayer.toStdString();
-	this->AddGeotiffFileClicked(path);
-	return path;
+    if (path != ""){
+        this->AddGeotiffFileClicked(path);
+    }
+    return path;
 }
 
 void MainWindow::OnActionRastor3DLayerClicked()
@@ -335,7 +337,6 @@ void MainWindow::AddShpFileClicked(std::string path)
     index++;
 
     ShpList.insert(std::pair<const int, Shapefile *>(layerId, essai1));
-    std::cout<<"id_shp : "<<layerId<<std::endl;
 
 
 }
@@ -357,7 +358,7 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 	//Import raster from the file system into the DB
 
 	Geotiff geotiff(path);
-	std::cout << "geotiff ouverte" << std::endl;
+    std::cout << "geotiff ouverte" << std::endl;
 
 	geotiff.WriteGeotiffAndMetadataToPostgis(test);
     std::cout << "geotiff ecrit dans la bdd" << std::endl;
@@ -423,7 +424,7 @@ void MainWindow::OnButtonZoomIn()
 			// Mettre à jour la largeur du trait
 			QPen pen = pointItem->pen();
 			pen.setWidthF(adjustedWidth);
-            Emploi CirilGroup <emploi@cirilgroup.com>pointItem->setPen(pen);
+            pointItem->setPen(pen);
 		}
 	}
 }
@@ -724,74 +725,76 @@ void MainWindow::onButtonClickedZoomOnLayer()
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event){
-    //Get selected shapefile
-    QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
-    int currentId = item->data(Qt::UserRole).toInt();
-    Shapefile * shp = ShpList[currentId];
+    if (ui->listeWidget_layersList2D->currentItem())
+    {
+        //Get selected shapefile
+        QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
+        int currentId = item->data(Qt::UserRole).toInt();
+        Shapefile * shp = ShpList[currentId];
 
-    QPointF mousePos = ui->graphicsView_window2D->mapToScene(event->pos());
-    ui->tableWidget_layerAttributeInformation->clear();
-    ui->tableWidget_layerAttributeInformation->setRowCount(0);
-    QStringList nameCol;
-    nameCol << "Nom" << "Valeur";
-    ui->tableWidget_layerAttributeInformation->setHorizontalHeaderLabels(nameCol);
-    double x = mousePos.x();
-    double y = -mousePos.y();  // Assurez-vous du sens de l'axe y en fonction de votre scène
-    std::string x_str = std::to_string(x);
-    std::string y_str = std::to_string(y);
-    std::replace(x_str.begin(), x_str.end(), ',', '.');
-    std::replace(y_str.begin(), y_str.end(), ',', '.');
-    std::cout << "Les coordonnées écran : " << x_str << ", " << y_str << std::endl;
+        QPointF mousePos = ui->graphicsView_window2D->mapToScene(event->pos());
+        ui->tableWidget_layerAttributeInformation2D->clear();
+        ui->tableWidget_layerAttributeInformation2D->setRowCount(0);
+        QStringList nameCol;
+        nameCol << "Nom" << "Valeur";
+        ui->tableWidget_layerAttributeInformation2D->setHorizontalHeaderLabels(nameCol);
+        double x = mousePos.x();
+        double y = -mousePos.y();  // Assurez-vous du sens de l'axe y en fonction de votre scène
+        std::string x_str = std::to_string(x);
+        std::string y_str = std::to_string(y);
+        std::replace(x_str.begin(), x_str.end(), ',', '.');
+        std::replace(y_str.begin(), y_str.end(), ',', '.');
+        //std::cout << "Les coordonnées écran : " << x_str << ", " << y_str << std::endl;
 
 
 
-    DbManager db_manager = shp->getDbManager();
-    std::string dataType = shp->getDataType();
-    std::string request;
-    if (dataType == "Polygon"){
-        request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Within(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom);";
-    }
-    else if(dataType == "LineString" || dataType == "MultiLineString"){
-        request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Distance(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom) < 3 ORDER BY ST_Distance(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom) LIMIT 1;";
-    }
-    db_manager.Request(request);
-    pqxx::result rows_shape = db_manager.getResult();
+        DbManager db_manager = shp->getDbManager();
+        std::string dataType = shp->getDataType();
+        std::string request;
+        if (dataType == "Polygon"){
+            request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Within(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom);";
+        }
+        else if(dataType == "LineString" || dataType == "MultiLineString"){
+            request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Distance(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom) < 3 ORDER BY ST_Distance(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom) LIMIT 1;";
+        }
+        db_manager.Request(request);
+        pqxx::result rows_shape = db_manager.getResult();
 
-    if (!rows_shape.empty()){
-        for (pqxx::result::const_iterator row = rows_shape.begin(); row != rows_shape.end(); ++row) {
-            for (int j = 0; j < row.size(); ++j) {
-                std::string name_col = rows_shape.column_name(j);
-                if (!row[j].is_null()) {
-                    std::string value = row[j].as<std::string>();
-                    std::cout << "Nom de la colonne : " << name_col << ", Valeur : " << value << std::endl;
+        if (!rows_shape.empty()){
+            for (pqxx::result::const_iterator row = rows_shape.begin(); row != rows_shape.end(); ++row) {
+                for (int j = 0; j < row.size(); ++j) {
+                    std::string name_col = rows_shape.column_name(j);
+                    if (!row[j].is_null()) {
+                        std::string value = row[j].as<std::string>();
 
-                    // Ajoute une nouvelle ligne pour chaque colonne
-                    ui->tableWidget_layerAttributeInformation->insertRow(j);
+                        // Ajoute une nouvelle ligne pour chaque colonne
+                        ui->tableWidget_layerAttributeInformation2D->insertRow(j);
 
-                    // Remplit la première colonne avec le nom de la colonne
-                    QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(name_col));
-                    ui->tableWidget_layerAttributeInformation->setItem(j, 0, col_name_item);
+                        // Remplit la première colonne avec le nom de la colonne
+                        QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(name_col));
+                        ui->tableWidget_layerAttributeInformation2D->setItem(j, 0, col_name_item);
 
-                    // Remplit la deuxième colonne avec la valeur
-                    QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString(value));
-                    ui->tableWidget_layerAttributeInformation->setItem(j, 1, value_item);
-                } else {
-                    std::cout << "Nom de la colonne : " << name_col << ", Valeur : NULL" << std::endl;
-                    // Ajoute une nouvelle ligne pour chaque colonne
-                    ui->tableWidget_layerAttributeInformation->insertRow(j);
+                        // Remplit la deuxième colonne avec la valeur
+                        QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString(value));
+                        ui->tableWidget_layerAttributeInformation2D->setItem(j, 1, value_item);
+                    } else {
+                        //std::cout << "Nom de la colonne : " << name_col << ", Valeur : NULL" << std::endl;
+                        // Ajoute une nouvelle ligne pour chaque colonne
+                        ui->tableWidget_layerAttributeInformation2D->insertRow(j);
 
-                    // Remplit la première colonne avec le nom de la colonne
-                    QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(name_col));
-                    ui->tableWidget_layerAttributeInformation->setItem(j, 0, col_name_item);
+                        // Remplit la première colonne avec le nom de la colonne
+                        QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(name_col));
+                        ui->tableWidget_layerAttributeInformation2D->setItem(j, 0, col_name_item);
 
-                    // Remplit la deuxième colonne avec la valeur
-                    QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString("NULL"));
-                    ui->tableWidget_layerAttributeInformation->setItem(j, 1, value_item);
+                        // Remplit la deuxième colonne avec la valeur
+                        QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString("NULL"));
+                        ui->tableWidget_layerAttributeInformation2D->setItem(j, 1, value_item);
+                    }
                 }
             }
+        } else {
+            std::cerr << "Aucune ligne trouvée." << std::endl;
         }
-    } else {
-        std::cout << "Aucune ligne trouvée." << std::endl;
+        QMainWindow::mousePressEvent(event);
     }
-    QMainWindow::mousePressEvent(event);
 }
