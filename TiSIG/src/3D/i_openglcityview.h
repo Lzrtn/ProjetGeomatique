@@ -5,6 +5,14 @@
 #include "object3d.h"
 #include <map>
 
+/**
+ * @brief The Emprise class
+ * Give the current emprise of a view
+ *
+ * emprise is defined with 8 points: a, b, c, d, e, f, g, h;
+ *
+ * Prologation of point to ground: g_a, g_b, g_c, g_d;
+ */
 class Emprise {
 public:
 	// 3D coordinates for volume
@@ -29,6 +37,12 @@ public:
 
 };
 
+/**
+ * @brief The OpenGLCityView_BuildingStorage class
+ * OBSELETE
+ *
+ * @see Object3DStorage
+ */
 class OpenGLCityView_BuildingStorage {
 public:
 	virtual std::map<int, Building3DFactory> getBuildingsInEmprise(const Emprise &emprise) = 0;
@@ -40,22 +54,46 @@ public:
 			std::vector<int> &forget_objects) = 0;
 };
 
-class OpenGLCityView_Object3DStorageLayer {
+/**
+ * @brief The Object3DStorage class
+ * Strorage systeme that give object3D to layer
+ *
+ * @see Object3D, Object3DFactory
+ * @see Layer3D
+ * @see OpenGLcityView
+ */
+class Object3DStorage {
 public:
+	/**
+	 * @brief GetObjectsInEmprise
+	 * @param emprise :			(input)  current emprise of view
+	 * @param new_objects :		(output) map of new objects
+	 * @param show_objects :	(output) id of visibles objects
+	 * @param forget_objects :	(output) id of objects to remove of memory
+	 */
 	virtual void GetObjectsInEmprise(
 			const Emprise &emprise,
-			std::map<int, Object3DFactory> &new_objects,
+			std::map<int, Object3DFactory*> &new_objects,
 			std::vector<int> &show_objects,
 			std::vector<int> &forget_objects) = 0;
 
+	/**
+	 * @brief getTranslation
+	 *
+	 * Coordinates are defined with a translation. Get this translation.
+	 * @return translation
+	 */
 	QVector3D getTranslation() const { return this->translation; };
+
+protected:
+	/**
+	 * @brief getTranslation
+	 *
+	 * Coordinates are defined with a translation. Set this translation.
+	 */
 	void setTranslation(const QVector3D & translation) { this->translation = translation; }
 
-	bool isVisible() const { return this->visible; }
-	void setVisible(const bool visible) { this->visible = visible; }
-
 private:
-	bool visible = true;
 	QVector3D translation = {0,0,0};
 };
 

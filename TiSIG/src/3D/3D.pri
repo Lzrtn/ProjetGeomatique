@@ -10,6 +10,8 @@ CONFIG += c++11
 
 SOURCES += \
     $$PWD/compass.cpp \
+    $$PWD/exempleobject3dstorage.cpp \
+    $$PWD/layer3d.cpp \
     $$PWD/mnt3d.cpp \
     $$PWD/object3d.cpp \
     $$PWD/building3d.cpp \
@@ -21,7 +23,9 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/compass.h \
+    $$PWD/exempleobject3dstorage.h \
     $$PWD/i_openglcityview.h \
+    $$PWD/layer3d.h \
     $$PWD/mnt3d.h \
     $$PWD/object3d.h \
     $$PWD/building3d.h \
@@ -34,4 +38,4 @@ HEADERS += \
 RESOURCES += \
     $$PWD/shaders.qrc \
     $$PWD/textures.qrc \
-    $$PWD/objects.qrc
+    $$PWD/objects.qrc \

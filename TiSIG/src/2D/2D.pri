@@ -27,7 +27,7 @@ SOURCES += \
     $$PWD/geojson.cpp \
     $$PWD/rasteritem.cpp \
     $$PWD/rasterimport.cpp \
-    $$PWD/geotiff_to_obj.cpp
+    $$PWD/geotiff_to_obj.cpp \
 
 HEADERS += \
     $$PWD/layer.h \
@@ -37,7 +37,7 @@ HEADERS += \
     $$PWD/geojson.h \
     $$PWD/rasteritem.h \
     $$PWD/rasterimport.h \
-     $$PWD/geotiff_to_obj.h
+    $$PWD/geotiff_to_obj.h \
 
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17

@@ -97,6 +97,7 @@ private:
 
 class Object3DFactory {
 public:
+	virtual ~Object3DFactory() = default;
 	virtual Object3D* New() const = 0;
 };
 

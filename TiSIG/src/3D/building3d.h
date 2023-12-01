@@ -45,11 +45,6 @@ public:
 		Object3D(position, textCoord, textPath)
 	{};
 
-	Building3D(const std::string pathObj,
-			const std::string & textPath) :
-		Object3D(pathObj, textPath)
-	{};
-
 private:
 };
 
@@ -80,8 +75,6 @@ public:
 	 */
 	Building3DFactory(const int version = 0);
 
-	Building3DFactory(const QVector3D pt);
-
 	/**
 	 * @brief Genere a building
 	 *
@@ -95,7 +88,6 @@ private:
 	std::vector<QVector3D> normal;
 	std::vector<QVector2D> textCoord;
 	std::string textPath;
-	std::string objPath;
 };
 
 #endif // BUILDING3D_H
