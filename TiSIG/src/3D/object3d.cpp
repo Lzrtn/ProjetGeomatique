@@ -1,5 +1,8 @@
 #include "object3d.h"
 
+#include <glm/vec2.hpp>  // loadOBJ function use glm::vec2 & glm::vec2
+#include <glm/vec3.hpp>
+
 #include <cmath>
 
 struct VertexData
@@ -9,8 +12,110 @@ struct VertexData
 	QVector2D texCoord;
 };
 
-Object3D::Object3D(std::vector<QVector3D> position, std::vector<QVector3D> normal,
-		std::vector<QVector2D> textCoord, std::string textPath) :
+///////////////////////////////  READ OBJ FILES  ////////////////////////////////////
+void loadOBJ(const char *path, std::vector<glm::vec3> &out_vertices, std::vector<glm::vec2> &out_uvs, std::vector<glm::vec3> &out_normals)
+{
+	std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
+	std::vector< glm::vec3 > temp_vertices;
+	std::vector< glm::vec2 > temp_uvs;
+	std::vector< glm::vec3 > temp_normals;
+
+	FILE * file = fopen(path, "r");
+	if( file == NULL )
+		throw std::runtime_error("fail to open file");
+
+	while( 1 ){
+
+		char lineHeader[128];
+		// read the first word of the line
+		int res = fscanf(file, "%s", lineHeader);
+		if (res == EOF)
+			break; // EOF = End Of File. Quit the loop.
+
+		// else : parse lineHeader
+		if ( strcmp( lineHeader, "v" ) == 0 ){
+			glm::vec3 vertex;
+			int matches = fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z );
+			if (matches != 3)
+				throw std::runtime_error("fail to read file (maybe a corrupted file)");
+			temp_vertices.push_back(vertex);
+		}
+		else if ( strcmp( lineHeader, "vt" ) == 0 ){
+			glm::vec2 uv;
+			int matches = fscanf(file, "%f %f\n", &uv.x, &uv.y );
+			if (matches != 2)
+				throw std::runtime_error("fail to read file (maybe a corrupted file)");
+			temp_uvs.push_back(uv);
+		}
+		else if ( strcmp( lineHeader, "vn" ) == 0 ){
+			glm::vec3 normal;
+			int matches = fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z );
+			if (matches != 3)
+				throw std::runtime_error("fail to read file (maybe a corrupted file)");
+			temp_normals.push_back(normal);
+		}
+		else if ( strcmp( lineHeader, "f" ) == 0 ){
+			std::string vertex1, vertex2, vertex3;
+			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+			int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2] );
+			if (matches != 9)
+				throw std::runtime_error("fail to read file (maybe a corrupted file)");
+			vertexIndices.push_back(vertexIndex[0]);
+			vertexIndices.push_back(vertexIndex[1]);
+			vertexIndices.push_back(vertexIndex[2]);
+			uvIndices.push_back(uvIndex[0]);
+			uvIndices.push_back(uvIndex[1]);
+			uvIndices.push_back(uvIndex[2]);
+			normalIndices.push_back(normalIndex[0]);
+			normalIndices.push_back(normalIndex[1]);
+			normalIndices.push_back(normalIndex[2]);
+		}
+	}
+
+	for( unsigned int i=0; i < vertexIndices.size(); i++ ){
+		unsigned int vertexIndex = vertexIndices[i];
+		glm::vec3 vertex = temp_vertices.at(vertexIndex-1);
+		out_vertices.push_back(vertex);
+	}
+	for( unsigned int i=0; i < uvIndices.size(); i++ ){
+		unsigned int uvIndex = uvIndices[i];
+		glm::vec2 uv = temp_uvs.at(uvIndex-1);
+		out_uvs.push_back(uv);
+	}
+	for( unsigned int i=0; i < normalIndices.size(); i++ ){
+		unsigned int normalIndex = normalIndices[i];
+		glm::vec3 normal = temp_normals.at(normalIndex-1);
+		out_normals.push_back(normal);
+	}
+}
+
+void readObj(const std::string & path, std::vector<QVector3D> & vertices, std::vector<QVector3D> & normals, std::vector<QVector2D> & uv) {
+	// reset output
+	vertices = {};
+	normals = {};
+	uv = {};
+
+	// load file
+	std::vector<glm::vec3> v, vn;
+	std::vector<glm::vec2> vt;
+	loadOBJ(path.c_str(), v, vt, vn);
+
+	// convert from glm::vec* to QVector*D
+	for (glm::vec3 vertice: v)
+		vertices.push_back({vertice[0], vertice[1], vertice[2]});
+
+	for (glm::vec2 texture: vt)
+		uv.push_back({texture[0], texture[1]});
+
+	for (glm::vec3 normal: vn)
+		normals.push_back({normal[0], normal[1], normal[2]});
+
+}
+
+///////////////////////////////     OBJECT 3D    ////////////////////////////////////
+
+Object3D::Object3D(const std::vector<QVector3D> &position, const std::vector<QVector3D> &normal,
+		const std::vector<QVector2D> &textCoord, const std::string &textPath) :
 	indexBuffer(QOpenGLBuffer::IndexBuffer)
 {
 	this->initializeOpenGLFunctions();
@@ -24,6 +129,47 @@ Object3D::Object3D(std::vector<QVector3D> position, std::vector<QVector3D> norma
 	this->InitGeometryVectors(position, normal, textCoord);
 }
 
+Object3D::Object3D(const std::vector<QVector3D> &position, const std::vector<QVector2D> &textCoord, const std::string &textPath) :
+	indexBuffer(QOpenGLBuffer::IndexBuffer)
+{
+	this->initializeOpenGLFunctions();
+
+	// Generate 2 VBOs
+	this->arrayBuffer.create();
+	this->indexBuffer.create();
+
+	// Initializes geometry and texture
+	this->initTexture(textPath);
+	std::vector<QVector3D> normal;
+	int size = position.size();
+	for (int i=0; i<size; i+=3) {
+		// compute normal as vectorial product
+		QVector3D norm = QVector3D::crossProduct(position[i+0], position[i+1]);
+		normal.push_back(norm);
+		normal.push_back(norm);
+		normal.push_back(norm);
+	}
+	this->InitGeometryVectors(position, normal, textCoord);
+}
+
+Object3D::Object3D(const std::string &pathObj, const std::string & pathTexture) :
+	indexBuffer(QOpenGLBuffer::IndexBuffer)
+{
+	this->initializeOpenGLFunctions();
+
+	// Generate 2 VBOs
+	this->arrayBuffer.create();
+	this->indexBuffer.create();
+
+	// read obj file
+	std::vector<QVector3D> v, vn;
+	std::vector<QVector2D> vt;
+	readObj(pathObj, v, vn, vt);
+
+	// Initializes geometry and texture
+	this->initTexture(pathTexture);
+	this->InitGeometryVectors(v, vn, vt);
+}
 Object3D::~Object3D()
 {
 	// free memory

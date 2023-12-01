@@ -10,8 +10,8 @@
  */
 TEST(GeotiffTest, TestCalculateNumberBands)
 {
-    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5eme_20m.tif");
-    ASSERT_EQ(geotiff.CalculateNumberBands(), 3);
+    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5e_2m.tif");
+    ASSERT_EQ(geotiff.CalculateNumberBands(), 4);
 }
 
 /**
@@ -22,7 +22,7 @@ TEST(GeotiffTest, TestCalculateNumberBands)
  */
 TEST(GeotiffTest, TestCalculateImageDimensions)
 {
-    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5eme_20m.tif");
+    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5e_2m.tif");
     ASSERT_EQ(geotiff.CalculateImageDimensions(), std::vector<int>({2598, 1744}));
 }
 
@@ -34,7 +34,7 @@ TEST(GeotiffTest, TestCalculateImageDimensions)
  */
 TEST(GeotiffTest, TestCalculateExtent)
 {
-    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5eme_20m.tif");
+    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5e_2m.tif");
     // assert if the extent return a vector of 4 doubles coordinates
     ASSERT_EQ(geotiff.CalculateExtent().size(), 4);
 };
@@ -48,7 +48,7 @@ TEST(GeotiffTest, TestCalculateExtent)
  */
 TEST(GeotiffTest, TestCalculateResolution)
 {
-    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5eme_20m.tif");
+    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5e_2m.tif");
     ASSERT_EQ(geotiff.CalculateResolution(), std::vector<double>({2.0002, -1.9998}));
 }
 
@@ -65,7 +65,7 @@ TEST(GeotiffTest, TestWriteGeotiffAndMetadataToPostgis)
 //     PostGreSQL Connection to the first database
     DbManager test("database2D", ipAdress);
     pqxx::connection conn(test.getString());
-    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5eme_20m.tif");
+    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5e_2m.tif");
     geotiff.CalculateExtent();
     geotiff.CalculateResolution();
     geotiff.WriteGeotiffAndMetadataToPostgis(test);
@@ -87,6 +87,6 @@ TEST(GeotiffTest, TestWriteGeotiffAndMetadataToPostgis)
  */
 TEST(GeotiffTest, TestCalculateOrigin)
 {
-    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5eme_20m.tif");
+    Geotiff geotiff("../src/data/DONNEES_BDORTHO/Lyon5e_2m.tif");
     ASSERT_EQ(geotiff.CalculateOrigin().size(), 2);
 }

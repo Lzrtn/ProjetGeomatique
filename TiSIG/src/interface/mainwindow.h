@@ -9,8 +9,14 @@
 #include <QFileDialog>
 #include <QGraphicsScene>
 
+#include <QVector>
+
 #include <iostream>
-#include "2D/layer.h"
+#include "../src/2D/layer.h"
+#include "../src/2D/rasteritem.h"
+#include "../src/3D/camera.h"
+#include "../src/2D/shapefile.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,7 +27,7 @@ QT_END_NAMESPACE
  *
  * This class represents the main window of TiSIG application.
  */
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public ICameraDisplayInfo
 {
 	Q_OBJECT
 
@@ -43,30 +49,51 @@ public:
 	 */
 	bool getMode() const;
 
-    /**
-     * @brief Get the ui
-     * @return Ui::MainWindow *
-     */
-    Ui::MainWindow * getUi() const;
+	/**
+	 * @brief Get the ui
+	 * @return Ui::MainWindow *
+	 */
+	Ui::MainWindow * getUi() const;
+
+
+	/**
+	 * @brief Function to add Layer to the ListWidget
+	 */
+	void addLayerToListWidget(int, Layer &layer);
+
+
+	int index = 0; // Temporaire
+	void updateLayerOrderInGraphicsView();
 
 
     /**
-     * @brief Function to add Layer to the ListWidget
+     * @brief Filter all events
+     * @param obj QObject to be filtered
+     * @param event QEvent to be filtered
+     * @return boolean
      */
-    void addLayerToListWidget(int, Layer &layer);
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
-    int index = 0; // Temporaire
+    /**
+     * @brief Function to get mouse pressed event on the scene
+     */
+    void getAttributesLayer(QMouseEvent * event);
+
 
 private:
-	Ui::MainWindow *ui; ///< Ui::MainWindow ui
-	bool mode; ///< bool mode
+    Ui::MainWindow *ui; ///< Ui::MainWindow ui
+    bool mode; ///< bool mode
 
-    QGraphicsScene *scene;
-    std::map <int, Layer*> layerList;
-    std::string ipAdress;
+	QGraphicsScene *scene;
+	std::map <int, Layer*> layerList;
+	std::string ipAdress;
+    std::map <int, Shapefile*> ShpList;
+
+
 
 
 private slots:
+
 
     /**
     * @brief Function to zoom in
@@ -77,7 +104,7 @@ private slots:
     /**
     * @brief Function to zoom out
     *
-    *
+    *eturn path
     */
     void OnButtonZoomOut();
 
@@ -88,12 +115,12 @@ private slots:
     */
     void OnButtonZoomFull();
 
-	/**
-	 * @brief Function to switch between 2D and 3D mode
-	 *
-	 *
-	 */
-  void OnButtonSwitchTo2D3DClicked();
+    /**
+     * @brief Function to switch between 2D and 3D mode
+     *
+     *
+     */
+    void OnButtonSwitchTo2D3DClicked();
 
     /**
     * @brief Function to add SHP file
@@ -102,40 +129,84 @@ private slots:
     */
     void AddShpFileClicked(std::string path);
 
-  /**
-   * @brief Function to show help window
-   *
-   *
-   */
-  void OnActionHelpClicked();
+    /**
+    * @brief Function to add Geotiff file
+    *
+    *
+    */
+    void AddGeotiffFileClicked(std::string path);
 
-  /**
-   * @brief Function to show add2DDataflow window
-   *
-   *
-   */
-  void OnAction2DDataFlowClicked();
+    /**
+    * @brief Function to show help window
+    *
+    *
+    */
+    void OnActionHelpClicked();
 
-  /**
-   * @brief Function to show add2DVectorLayer window
-   *
-   *
-   */
-  std::string OnActionVectorLayerClicked();
+    /**
+    * @brief Function to show add2DDataflow window
+    *
+    *
+    */
+    void OnAction2DDataFlowClicked();
 
-  /**
-   * @brief Function to show add2DRastorLayer window
-   *
-   *
-   */
-  std::string OnActionRastorLayerClicked();
+    /**
+     * @brief Function to show add2DVectorLayer window
+     *
+     *
+     */
+    std::string OnActionVector2DLayerClicked();
 
-  /**
-   * @brief Function to show add3DModel window
-   *
-   *
-   */
-  std::string OnAction3DModelClicked();
+    /**
+     * @brief Function to show add3DVectorLayer window
+     *
+     *
+     */
+    std::string OnActionVector3DLayerClicked();
+
+    /**
+     * @brief Function to show add2DRastorLayer window
+     *
+     *
+     */
+    std::string OnActionRastor2DLayerClicked();
+
+    /**
+     * @brief Function to show add3DRastorLayer window
+     *
+     *
+     */
+    void OnActionRastor3DLayerClicked();
+
+
+    /**
+    * @brief Function to show add3DModel window
+    *
+
+    */
+    std::string OnAction3DModelClicked();
+
+
+    void moveItemUp( );
+    void moveItemDown( );
+    void onButtonClickedDeleteLayer();
+    void onButtonClickedZoomOnLayer();
+
+public:
+    /**
+    * @brief Function to display camera coordinates in 3D window
+    * @param camera position
+    *
+    */
+    void Display3DCameraCoordinates(QVector3D camPosition) override;
+
+    /**
+    * @brief Function to display level of zoom in 3D window
+    * @param zoom
+    *
+    */
+    void Display3DZoomLevel(float zoom) override;
+
 
 };
 

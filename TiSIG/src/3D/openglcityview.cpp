@@ -18,7 +18,11 @@ OpenGLcityView::~OpenGLcityView()
 void OpenGLcityView::initializeGL()
 {
 	this->initializeOpenGLFunctions();
-	this->glClearColor(0, 0.05, 0.3, 1);
+//	this->glClearColor(0, 0.05, 0.3, 1);
+//	this->glClearColor(7./256, 31./256, 50./256, 1); // Paris logo color
+//	this->glClearColor(0.012, 0.369, 0.647, 1); // blue logo Lyon
+//	this->glClearColor(0.894, 0.212, 0.176, 1); // red logo Lyon
+	this->glClearColor(0.87, 0.87, 0.92, 1); // blue-gray-light
 	this->InitShaders();
 
 	// ajout d'un batiment de test
@@ -27,6 +31,8 @@ void OpenGLcityView::initializeGL()
 	this->AddBuilding(4561, Building3DFactory(2));
 	this->AddBuilding(0, Building3DFactory(3));
 	this->AddBuilding(1, Building3DFactory(5));
+
+	this->buildings[86] = MNT3DFactory(5).NewBuilding();
 
 	this->compass = CompassFactory().getCompass();
 	this->camera.setAngleV(0);
@@ -94,13 +100,20 @@ void OpenGLcityView::paintGL()
 
 	this->shader.bind();
 
+	if (this->camInfoDisplayer != nullptr) {
+		this->camInfoDisplayer->Display3DCameraCoordinates(this->camera.getPosition());
+		this->camInfoDisplayer->Display3DZoomLevel(this->camera.getZoom());
+	}
+
 	this->camera.ComputeMPV();
 
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVPCompass());
+	this->shader.setUniformValue("power_light", GLfloat(0.5));
 	this->compass->Draw(&this->shader);
 
 	// Set modelview-projection matrix
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVP());
+	this->shader.setUniformValue("power_light", GLfloat(1.0));
 
 
 	// Draw geometry

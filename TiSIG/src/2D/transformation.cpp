@@ -19,6 +19,12 @@ Transformation::~Transformation(){
 
 }
 
+std::string Transformation::whichCRS(std::string data)
+{
+    nlohmann::json dataJSON = nlohmann::json::parse(data);
+    return dataJSON["crs"]["properties"]["name"];
+
+}
 
 std::string Transformation::whatType(std::string data)
 {
@@ -33,13 +39,25 @@ QPolygonF Transformation::JSONtoCoordsPOL(std::string polygone)
     nlohmann::json polygoneJSON = nlohmann::json::parse(polygone);
     std::string type = polygoneJSON["type"];
     QVector <QPointF> polygoneCoordinates;
+    QVector <QPointF> polygoneCoordinatesToSubstract;
+    // Get coordinates of the first polygon
     for (int i=0; i < (int)polygoneJSON["coordinates"][0].size();i++)
     {
         double x = polygoneJSON["coordinates"][0][i][0];
         double y = polygoneJSON["coordinates"][0][i][1];
         polygoneCoordinates.push_back(QPointF(x, -y));
     }
-    QPolygonF polygoneToPlot(polygoneCoordinates);
+    for (int i=0; i < (int)polygoneJSON["coordinates"][1].size();i++)
+    {
+        double xSubstr = polygoneJSON["coordinates"][1][i][0];
+        double ySubstr = polygoneJSON["coordinates"][1][i][1];
+        polygoneCoordinatesToSubstract.push_back(QPointF(xSubstr, -ySubstr));
+    }
+    QPolygonF polygoneFull(polygoneCoordinates);
+
+    QPolygonF polygoneToSubstract(polygoneCoordinatesToSubstract);
+
+    QPolygonF polygoneToPlot = polygoneFull.subtracted(polygoneToSubstract);
 
     return polygoneToPlot;
 

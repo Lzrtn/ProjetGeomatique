@@ -9,8 +9,8 @@ Layer::Layer(const QString& name, bool isVisible, QGraphicsItemGroup* layerGroup
 
 
 Layer::~Layer() {
-    delete layerItem;
     delete layerWidget;
+    delete layerItem;
 }
 
 QString Layer::getLayerName() const {
@@ -23,6 +23,14 @@ bool Layer::isLayerVisible() const {
 
 void Layer::setLayerVisible(bool m_visible) {
     visible = m_visible;
+}
+
+int Layer::getZIndex() const{
+    return zIndex;
+}
+
+void Layer::setZIndex(int index){
+    zIndex = index;
 }
 
 

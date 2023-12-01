@@ -15,9 +15,6 @@ public:
 	 * @brief
 	 * make a building with geometrics properties
 	 *
-	 * @warning currentry, param normal is not used in shader.
-	 * In future version, it will be used
-	 *
 	 * @throw exception if vertices have different sizes
 	 *
 	 * @param position  vertices 3D of points of faces
@@ -25,9 +22,32 @@ public:
 	 * @param textCord  vertices 2D of points in texture
 	 * @param textPath  path of texture image
 	 */
-	Building3D(std::vector<QVector3D> position, std::vector<QVector3D> normal,
-			std::vector<QVector2D> textCoord, std::string textPath) :
+	Building3D(const std::vector<QVector3D> & position, const std::vector<QVector3D> & normal,
+			const std::vector<QVector2D> & textCoord, const std::string & textPath) :
 		Object3D(position, normal, textCoord, textPath)
+	{};
+
+	/**
+	 * @brief
+	 * make a building with geometrics properties
+	 *
+	 * Compute automaticly normals
+	 * @warning need direct-oriented faces to compute normals
+	 *
+	 * @throw exception if vertices have different sizes
+	 *
+	 * @param position  vertices 3D of points of faces
+	 * @param textCord  vertices 2D of points in texture
+	 * @param textPath  path of texture image
+	 */
+	Building3D(const std::vector<QVector3D> & position,
+			const std::vector<QVector2D> & textCoord, const std::string & textPath) :
+		Object3D(position, textCoord, textPath)
+	{};
+
+	Building3D(const std::string pathObj,
+			const std::string & textPath) :
+		Object3D(pathObj, textPath)
 	{};
 
 private:
@@ -60,6 +80,8 @@ public:
 	 */
 	Building3DFactory(const int version = 0);
 
+	Building3DFactory(const QVector3D pt);
+
 	/**
 	 * @brief Genere a building
 	 *
@@ -73,6 +95,7 @@ private:
 	std::vector<QVector3D> normal;
 	std::vector<QVector2D> textCoord;
 	std::string textPath;
+	std::string objPath;
 };
 
 #endif // BUILDING3D_H

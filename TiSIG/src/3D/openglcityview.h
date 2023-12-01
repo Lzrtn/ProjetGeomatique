@@ -11,6 +11,7 @@
 #include <QOpenGLTexture>
 
 #include "building3d.h"
+#include "mnt3d.h"
 #include "camera.h"
 #include "cameracontrols.h"
 #include "compass.h"
@@ -43,7 +44,13 @@ public:
 	 */
 	void DeleteBuilding(const int id);
 
+	void setCamInfoDisplayer(ICameraDisplayInfo * camInfoDisplayer) {
+		this->camInfoDisplayer = camInfoDisplayer;
+	};
+
 protected:
+
+	ICameraDisplayInfo * camInfoDisplayer;
 
 	/**
 	 * @brief these overrided methodes are used by QT to init and display the widget
@@ -69,7 +76,7 @@ protected:
 
 private:
 	QOpenGLShaderProgram shader;
-	std::map<int, Building3D*> buildings;
+	std::map<int, Object3D*> buildings;
 	Object3D * compass = nullptr;
 
 	// TODO: turn this function in a Camera class and add controls

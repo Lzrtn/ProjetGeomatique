@@ -10,26 +10,27 @@ CONFIG += c++11
 
 SOURCES += \
     $$PWD/compass.cpp \
+    $$PWD/mnt3d.cpp \
     $$PWD/object3d.cpp \
-    3D/building3d.cpp \
-    3D/openglcityview.cpp \
-    3D/camera.cpp \
-    3D/cameracontrols.cpp
+    $$PWD/building3d.cpp \
+    $$PWD/openglcityview.cpp \
+    $$PWD/camera.cpp \
+    $$PWD/cameracontrols.cpp \
+    #$$PWD/batiment.cpp \ 
+    #$$PWD/batiments.cpp \
 
 HEADERS += \
     $$PWD/compass.h \
+    $$PWD/mnt3d.h \
     $$PWD/object3d.h \
-    3D/building3d.h \
-    3D/openglcityview.h \
-    3D/camera.h \
-    3D/cameracontrols.h
+    $$PWD/building3d.h \
+    $$PWD/openglcityview.h \
+    $$PWD/camera.h \
+    $$PWD/cameracontrols.h \
+    #$$PWD/batiment.h \ 
+    #$$PWD/batiments.h \
 
 RESOURCES += \
-    3D/shaders.qrc \
-    3D/textures.qrc \
-    3D/objects.qrc
-
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+    $$PWD/shaders.qrc \
+    $$PWD/textures.qrc \
+    $$PWD/objects.qrc

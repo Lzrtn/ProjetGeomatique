@@ -23,20 +23,21 @@ SOURCES += \
     $$PWD/layer.cpp \
     $$PWD/shapefile.cpp \
     $$PWD/transformation.cpp \
-    $$PWD/geotiff.cpp
-
+    $$PWD/geotiff.cpp \
+    $$PWD/geojson.cpp \
+    $$PWD/rasteritem.cpp \
+    $$PWD/rasterimport.cpp \
+    $$PWD/geotiff_to_obj.cpp
 
 HEADERS += \
     $$PWD/layer.h \
     $$PWD/shapefile.h \
     $$PWD/transformation.h \
-    $$PWD/geotiff.h
-
+    $$PWD/geotiff.h \
+    $$PWD/geojson.h \
+    $$PWD/rasteritem.h \
+    $$PWD/rasterimport.h \
+     $$PWD/geotiff_to_obj.h
 
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17
-
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target

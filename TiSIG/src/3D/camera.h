@@ -3,6 +3,19 @@
 
 #include <QMatrix4x4>
 
+
+class Emprise {
+public:
+	// 3D coordinates for volume
+	QVector3D a, b, c, d, e, f, g, h;
+
+	// 3D coordinates for ground plan (z=0)
+	QVector3D g_a, g_b, g_c, g_d;
+
+	void updateGroundCoordinates();
+};
+
+
 /**
  * @brief The Camera class
  * Camera contains all projection informations to compute 4D matrix from 3D real
@@ -193,6 +206,11 @@ public:
 		return this->pxRatio;
 	}
 
+	void Picking3D(const QPoint & posScreen, QVector3D & p1, QVector3D &p2) const;
+	QVector3D ProjToScreen(const QVector3D & pos) const;
+	QVector3D ProjFromScreen(const QVector3D & pos) const;
+
+	Emprise getEmprise() const;
 
 private:
 	/**
@@ -210,6 +228,12 @@ private:
 	QMatrix4x4 matProjection;
 	QMatrix4x4 matMVP;
 	QMatrix4x4 matMVPCompass;
+};
+
+class ICameraDisplayInfo {
+public:
+	virtual void Display3DCameraCoordinates(QVector3D camPosition) = 0;
+	virtual void Display3DZoomLevel(float zoom) = 0;
 };
 
 #endif // CAMERA_H

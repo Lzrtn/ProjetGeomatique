@@ -18,18 +18,23 @@ public:
     bool isLayerVisible() const;
     QGraphicsItemGroup* getLayerGroup() const;
     QString getLayerName() const;
+    int getZIndex() const;
 
     void setLayerVisible(bool m_visible);
+    void setZIndex(int index);
 
     QListWidgetItem *layerItem;
     QWidget *layerWidget;
 
+    QHBoxLayout *layout;
+    QCheckBox *visibilityCheckbox;
+    QLabel *layerLabel;
 
 private:
     const QString name;
     bool visible;
-
     QGraphicsItemGroup *layerGroup;
+    int zIndex;
 
 };
 

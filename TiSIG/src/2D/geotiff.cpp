@@ -1,34 +1,22 @@
 #include "geotiff.h"
-/**
- * The Geotiff constructor initializes the Geotiff object with the provided file name and registers all
- * GDAL drivers.
- *
- * @param fileName The fileName parameter is a string that represents the name or path of the GeoTIFF
- * file that will be opened or processed.
- */
-Geotiff::Geotiff(std::string fileName) : fileName(fileName)
+
+Geotiff::Geotiff(std::string filePath) : filePath(filePath)
 {
     GDALAllRegister();
+    size_t lastSlash = filePath.find_last_of("/\\");
+    fileName = filePath.substr(lastSlash + 1);
+    fileName = fileName.substr(0, fileName.find_last_of("."));
     Read();
 }
 
-/**
- * The Geotiff destructor closes the GDAL dataset.
- */
 Geotiff::~Geotiff()
 {
     GDALClose(poDataset);
 }
 
-/**
- * The function opens a GeoTIFF file for reading and prints a success message if the file is opened
- * successfully.
- *
- * @return nothing (void).
- */
 void Geotiff::Read()
 {
-    poDataset = (GDALDataset *)GDALOpen(fileName.c_str(), GA_ReadOnly);
+    poDataset = (GDALDataset *)GDALOpen(filePath.c_str(), GA_ReadOnly);
     if (!poDataset)
     {
         std::cerr << "Error: Unable to open GeoTIFF file." << std::endl;
@@ -40,9 +28,6 @@ void Geotiff::Read()
     }
 }
 
-/**
- * The function calculates the number of bands in a GeoTIFF file.
- */
 int Geotiff::CalculateNumberBands()
 {
     if (poDataset != nullptr)
@@ -57,9 +42,6 @@ int Geotiff::CalculateNumberBands()
     return bandCount;
 }
 
-/**
- * The function calculates the width and height of a GeoTIFF image.
- */
 std::vector<int> Geotiff::CalculateImageDimensions()
 {
     if (poDataset != nullptr)
@@ -74,9 +56,6 @@ std::vector<int> Geotiff::CalculateImageDimensions()
     return {width, height};
 }
 
-/**
- * The function calculates the extent (minimum and maximum x and y coordinates) of a GeoTIFF file.
- */
 std::vector<double> Geotiff::CalculateExtent()
 {
     if (poDataset != nullptr)
@@ -102,9 +81,6 @@ std::vector<double> Geotiff::CalculateExtent()
     return {minX, minY, maxX, maxY};
 }
 
-/**
- * The function calculates the pixel resolution of a GeoTIFF image.
- */
 std::vector<double> Geotiff::CalculateResolution()
 {
     if (poDataset != nullptr)
@@ -134,12 +110,12 @@ std::vector<double> Geotiff::CalculateResolution()
 
 std::string Geotiff::GetFilePath()
 {
-    if (fileName.empty())
+    if (filePath.empty())
     {
-        throw std::runtime_error("fileName is not initialized");
+        throw std::runtime_error("filePath is not initialized");
     }
 
-    std::filesystem::path path(fileName);
+    std::filesystem::path path(filePath);
     if (!std::filesystem::exists(path))
     {
         throw std::runtime_error("Path does not exist");
@@ -150,21 +126,13 @@ std::string Geotiff::GetFilePath()
     filePath = pathStr;
     return filePath;
 }
+
 std::vector<double> Geotiff::CalculateOrigin()
 {
     CalculateExtent();
     return {minX, maxY};
 }
-/**
- * The function `WriteGeotiffAndMetadataToPostgis` writes a GeoTIFF file and its metadata to a PostGIS
- * database.
- *
- * @param db The "db" parameter is an instance of the "Database" class, which represents a connection
- * to a PostGIS database. It is used to execute queries and interact with the database.
- *
- * @return In this code snippet, the function is not returning any value. It has a void return type,
- * which means it does not return anything.
- */
+
 void Geotiff::WriteGeotiffAndMetadataToPostgis(DbManager &db)
 {
     if (poDataset == nullptr)
@@ -198,10 +166,24 @@ void Geotiff::WriteGeotiffAndMetadataToPostgis(DbManager &db)
         rasterStr += newStr;
         rasterBinary = pqxx::binarystring(rasterStr.c_str(), rasterStr.size());
     }
+
     // Writing to the database
-    db.CreateTable("CREATE TABLE IF NOT EXISTS geotiff_data (raster_data BYTEA ,height INT, width INT, band_count INT, min_x DOUBLE PRECISION, max_x DOUBLE PRECISION, min_y DOUBLE PRECISION, max_y DOUBLE PRECISION, pixel_height_resolution DOUBLE PRECISION, pixel_width_resolution DOUBLE PRECISION, file_path TEXT)");
-    std::string query = "INSERT INTO geotiff_data (raster_data, height, width, band_count, min_x, max_x, min_y, max_y, pixel_height_resolution, pixel_width_resolution, file_path) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)";
-    std::vector<std::variant<int, double, std::string, pqxx::binarystring>> params = {rasterBinary, height, width, bandCount, minX, maxX, minY, maxY, pixelHeightResolution, pixelWidthResolution, filePath};
+    db.CreateTable("CREATE TABLE IF NOT EXISTS geotiff_data (id SERIAL PRIMARY KEY, raster_data BYTEA ,height INT, width INT, band_count INT, min_x DOUBLE PRECISION, max_x DOUBLE PRECISION, min_y DOUBLE PRECISION, max_y DOUBLE PRECISION, pixel_height_resolution DOUBLE PRECISION, pixel_width_resolution DOUBLE PRECISION, file_path TEXT, file_name TEXT)");
+    if (GetNumberOfImagesStored(db) == 0)
+    {
+        // Creating a sequence
+        db.Request("CREATE SEQUENCE IF NOT EXISTS geotiff_data_id_seq");
+
+        // Setting the start value for the sequence
+        db.Request("SELECT setval('geotiff_data_id_seq', 2000, false)");
+
+        // Altering the table to use the sequence as the default value for the id column
+        db.Request("ALTER TABLE geotiff_data ALTER COLUMN id SET DEFAULT nextval('geotiff_data_id_seq')");
+    }
+
+    // Inserting data into the table
+    std::string query = "INSERT INTO geotiff_data (raster_data, height, width, band_count, min_x, max_x, min_y, max_y, pixel_height_resolution, pixel_width_resolution, file_path, file_name) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)";
+    std::vector<std::variant<int, double, std::string, pqxx::binarystring>> params = {rasterBinary, height, width, bandCount, minX, maxX, minY, maxY, pixelHeightResolution, pixelWidthResolution, filePath, fileName};
     // Construct the SQL query string with parameters
     for (size_t i = 0; i < params.size(); ++i)
     {
@@ -252,13 +234,6 @@ void Geotiff::WriteGeotiffAndMetadataToPostgis(DbManager &db)
     db.Request(query);
 }
 
-/**
- * The function converts pixel coordinates to geographical coordinates using the GeoTIFF's geotransform.
- *
- * @param pixelX The x-coordinate in pixel space.
- * @param pixelY The y-coordinate in pixel space.
- * @return A vector containing the corresponding geographical coordinates {longitude, latitude}.
- */
 std::vector<double> Geotiff::PixelToGeoCoordinates(int pixelX, int pixelY)
 {
     if (poDataset != nullptr)
@@ -285,15 +260,6 @@ std::vector<double> Geotiff::PixelToGeoCoordinates(int pixelX, int pixelY)
     return {};
 }
 
-/**
- * The function `GetNumberOfImagesStored` retrieves the number of images stored in a geotiff database
- * using a DbManager object.
- *
- * @param db The parameter `db` is of type `DbManager&`, which is a reference to an object of the
- * `DbManager` class.
- *
- * @return the number of images stored in the geotiff_data table in the database.
- */
 int Geotiff::GetNumberOfImagesStored(DbManager &db)
 {
     db.Request("SELECT Count(*) FROM geotiff_data");
@@ -308,17 +274,6 @@ int Geotiff::GetNumberOfImagesStored(DbManager &db)
     return std::stoi(result);
 }
 
-/**
- * The function "GetPixelValue" retrieves the pixel values at a given coordinate from a geotiff file
- * and returns them as a vector of floats.
- * 
- * @param pixelX The x-coordinate of the pixel you want to retrieve the value for.
- * @param pixelY The parameter `pixelY` represents the y-coordinate of the pixel for which you want to
- * retrieve the value.
- * 
- * @return a vector of floats, which represents the pixel values for the specified pixel coordinates
- * (pixelX, pixelY) in the Geotiff image.
- */
 std::vector<float> Geotiff::GetPixelValue(int pixelX, int pixelY)
 {
     std::vector<float> pixelValue;
@@ -338,17 +293,6 @@ std::vector<float> Geotiff::GetPixelValue(int pixelX, int pixelY)
     return pixelValue;
 }
 
-/**
- * This function converts geographic coordinates to pixel coordinates in a GeoTIFF image.
- * 
- * @param geoX The `geoX` parameter represents the X-coordinate in the geographic coordinate system. It
- * is the longitude or easting value of a point on the Earth's surface.
- * @param geoY The parameter `geoY` represents the geographic Y-coordinate. It is the latitude or
- * northing value of a point on the Earth's surface.
- * 
- * @return a std::vector<int> containing the pixel coordinates corresponding to the given geographic
- * coordinates (geoX, geoY). If there is an error, an empty vector is returned.
- */
 std::vector<int> Geotiff::GeoCoordinatesToPixel(double geoX, double geoY)
 {
     if (poDataset != nullptr)
@@ -374,4 +318,3 @@ std::vector<int> Geotiff::GeoCoordinatesToPixel(double geoX, double geoY)
     // Return an empty vector in case of an error
     return {};
 }
-
