@@ -66,6 +66,20 @@ public:
 	void updateLayerOrderInGraphicsView();
 
 
+    /**
+     * @brief Filter all events
+     * @param obj QObject to be filtered
+     * @param event QEvent to be filtered
+     * @return boolean
+     */
+    bool eventFilter(QObject *obj, QEvent *event) override;
+
+    /**
+     * @brief Function to get mouse pressed event on the scene
+     */
+    void getAttributesLayer(QMouseEvent * event);
+
+
 private:
     Ui::MainWindow *ui; ///< Ui::MainWindow ui
     bool mode; ///< bool mode
@@ -73,7 +87,7 @@ private:
 	QGraphicsScene *scene;
 	std::map <int, Layer*> layerList;
 	std::string ipAdress;
-	std::vector<Shapefile*> ShpList;
+    std::map <int, Shapefile*> ShpList;
 
 
 
@@ -137,11 +151,18 @@ private slots:
     void OnAction2DDataFlowClicked();
 
     /**
-     * @brief Function to show addVectorLayer window
+     * @brief Function to show add2DVectorLayer window
      *
      *
      */
-    std::string OnActionVectorLayerClicked();
+    std::string OnActionVector2DLayerClicked();
+
+    /**
+     * @brief Function to show add3DVectorLayer window
+     *
+     *
+     */
+    std::string OnActionVector3DLayerClicked();
 
     /**
      * @brief Function to show add2DRastorLayer window

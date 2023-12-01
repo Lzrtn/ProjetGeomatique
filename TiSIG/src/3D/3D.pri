@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     $$PWD/compass.cpp \
+    $$PWD/mnt3d.cpp \
     $$PWD/object3d.cpp \
     $$PWD/building3d.cpp \
     $$PWD/openglcityview.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/compass.h \
+    $$PWD/mnt3d.h \
     $$PWD/object3d.h \
     $$PWD/building3d.h \
     $$PWD/openglcityview.h \
