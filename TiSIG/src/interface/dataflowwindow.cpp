@@ -1,6 +1,7 @@
 #include "dataflowwindow.h"
 #include "ui_dataflowwindow.h"
 #include "../src/2D/fluxvector.h"
+#include "../src/interface/mainwindow.h"
 
 #include <iostream>
 #include <string>
@@ -37,25 +38,9 @@ DataFlowWindow::~DataFlowWindow()
     delete ui;
 }
 
-const char* DataFlowWindow::OnButtonValidateDataFlowUrlClicked()
+void DataFlowWindow::OnButtonValidateDataFlowUrlClicked()
 {
-    QString url = ui->lineEdit_dataFlowWindow->text();
-    return url.toLocal8Bit().constData();
-}
-
-void DataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
-{
-    QString flow = ui->comboBox_dataFlowWindow->currentText();
-    std::string url = "0";
-    if(flow == "BDTopo - Bâti"){
-        url = "https://data.geopf.fr/wfs/ows?VERSION=2.0.0&SERVICE=wfs&TYPENAME=BDTOPO_V3:batiment";
-    }
-    if(flow == "BDTopo - Route"){
-        url = "https://data.geopf.fr/wfs/ows?VERSION=2.0.0&SERVICE=wfs&TYPENAME=BDTOPO_V3:troncon_de_route";
-    }
-//    if(flow == "BDOrtho"){
-//        url = "???";
-//    }
+    std::string url = ui->lineEdit_dataFlowWindow->text().toStdString();
 
     // Emprise de la fenêtre à récupérer
     std::string longmin = std::to_string(45.727093);
@@ -71,6 +56,38 @@ void DataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
     std::cout<<wfsDataSource.toStdString()<<std::endl;
     FluxVector *fluxVect = new FluxVector(wfsDataSource);
     fluxVect->downloadZIP();
+}
+
+void DataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
+{
+    QString flow = ui->comboBox_dataFlowWindow->currentText();
+    std::string url = "0";
+    if(flow == "BDTopo - Bâti"){
+        url = "https://data.geopf.fr/wfs/ows?VERSION=2.0.0&SERVICE=wfs&TYPENAME=BDTOPO_V3:batiment";
+    }
+    if(flow == "BDTopo - Route"){
+        url = "https://data.geopf.fr/wfs/ows?VERSION=2.0.0&SERVICE=wfs&TYPENAME=BDTOPO_V3:troncon_de_route";
+    }
+    if(flow == "BDOrtho"){
+        url = "??";
+    }
+
+    // Emprise de la fenêtre à récupérer
+    std::string longmin = std::to_string(45.727093);
+    std::replace(longmin.begin(), longmin.end(), ',', '.');
+    std::string latmin = std::to_string(4.819074);
+    std::replace(latmin.begin(), latmin.end(), ',', '.');
+    std::string longmax = std::to_string(45.746508);
+    std::replace(longmax.begin(), longmax.end(), ',', '.');
+    std::string latmax = std::to_string(4.850961);
+    std::replace(latmax.begin(), latmax.end(), ',', '.');
+
+    QString wfsDataSource = QString::fromStdString(url+"&REQUEST=GetFeature&OUTPUTFORMAT=SHAPE-ZIP&BBOX="+longmin+","+latmin+","+longmax+','+latmax+"&SRSNAME=EPSG:2154");
+    std::cout<<wfsDataSource.toStdString()<<std::endl;
+    FluxVector *fluxVect = new FluxVector(wfsDataSource);
+    fluxVect->downloadZIP();
+//    std::string path = fluxVect->downloadZIP();
+//    AddShpFileClicked(std::string path);
 
 }
 

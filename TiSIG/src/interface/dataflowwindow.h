@@ -45,7 +45,7 @@ private slots:
      *
      * @return Url
      */
-  const char* OnButtonValidateDataFlowUrlClicked();
+  void OnButtonValidateDataFlowUrlClicked();
 
     /**
      * @brief Function to return pre-saved data flow choosed in comboBox
