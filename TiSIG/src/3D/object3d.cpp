@@ -9,6 +9,10 @@ struct VertexData
 	QVector2D texCoord;
 };
 
+void readObj(const std::string & path, std::vector<QVector3D> & vertices, std::vector<QVector3D> & normals, std::vector<QVector2D> & uv) {
+
+}
+
 Object3D::Object3D(std::vector<QVector3D> position, std::vector<QVector3D> normal,
 		std::vector<QVector2D> textCoord, std::string textPath) :
 	indexBuffer(QOpenGLBuffer::IndexBuffer)
