@@ -138,7 +138,7 @@ void WMTS::getImage(){
                 curl_easy_setopt(curl, CURLOPT_URL, tablurl[i][j]);
 
                 // Set up the callback to write the data to a file
-                std::ofstream imageFile("dowloaded_images/wmts_images/downloaded_wmts_image"+to_string(i)+to_string(j)+".jpeg", std::ios::binary);
+                std::ofstream imageFile("../src/2D/dowloaded_images/wmts_images/downloaded_wmts_image"+to_string(i)+to_string(j)+".jpeg", std::ios::binary);
                 curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallbacks);
                 curl_easy_setopt(curl, CURLOPT_WRITEDATA, &imageFile);
 
@@ -174,7 +174,7 @@ void WMTS::combine()
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
             // Build path
-            string imagePath = "dowloaded_images/wmts_images/downloaded_wmts_image"+to_string(i)+to_string(j)+".jpeg";
+            string imagePath = "../src/2D/dowloaded_images/wmts_images/downloaded_wmts_image"+to_string(i)+to_string(j)+".jpeg";
 
             // Upload image
             Mat image = imread(imagePath);
@@ -190,7 +190,7 @@ void WMTS::combine()
     }
 
     // Save output image
-    imwrite("dowloaded_images/wmts_combine/combine.jpeg", gridImage);
+    imwrite("../src/2D/dowloaded_images/wmts_combine/combine.jpeg", gridImage);
 
     cout << "Grille d'images créée avec succès"<< endl;
 }

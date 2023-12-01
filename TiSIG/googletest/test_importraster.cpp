@@ -3,6 +3,30 @@
 #include "../src/2D/wms.h"
 #include <cmath>
 
+/*--------------------------------------------------WMS-----------------------------------------------------------*/
+
+TEST(WMSTest, size_image){
+
+    //Initialize wms
+    WMS wmsInstance(4326,"48.38545104","48.34956960","3.30486151","3.25167353", 256, 256);
+    wmsInstance.getImage();
+    std::string path = wmsInstance.getPath();
+    cv::Mat image = cv::imread(path);    
+
+    //Getting image size
+    int width = image.cols;
+    int height = image.rows;
+
+    std::tuple<int,int> size(width,height);
+    std::tuple<int,int> size_test(256,256);
+
+    // Afficher la taille de l'image
+    std::cout << "Image width : " << width << " pixels\n" << std::endl;
+    std::cout << "Image height : " << height << " pixels\n" << std::endl;
+
+    EXPECT_EQ(size,size_test);
+}
+
 TEST(WMSTest, constructor_Default){
 
     //Initialize wms
@@ -15,6 +39,8 @@ TEST(WMSTest, constructor_Default){
 
     EXPECT_STREQ(url,url_test);
 }
+
+/*--------------------------------------------------WMTS----------------------------------------------------------*/
 
 TEST(WMTSTest, size_tablurl){
 
@@ -42,3 +68,4 @@ TEST(WMTSTest, constructor_Default){
 
     EXPECT_STREQ(url,url_test);
 }
+

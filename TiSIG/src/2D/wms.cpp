@@ -86,6 +86,7 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
 
 void WMS::getImage()
     {
+    std::remove("../src/2D/dowloaded_images/wms_images/downloaded_wms_image.jpeg");
     // Initialize libcurl
     CURL* curl = curl_easy_init();
 
@@ -95,7 +96,7 @@ void WMS::getImage()
         curl_easy_setopt(curl, CURLOPT_URL, url);
 
         // Set up the callback to write the data to a file
-        std::ofstream imageFile("dowloaded_images/wms_images/downloaded_wms_image.jpeg", std::ios::binary);
+        std::ofstream imageFile("../src/2D/dowloaded_images/wms_images/downloaded_wms_image.jpeg", std::ios::binary);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &imageFile);
 
@@ -113,5 +114,5 @@ void WMS::getImage()
     }
 
 string WMS::getPath() {
-        return "dowloaded_images/wms_images/downloaded_wms_image.jpeg";
+        return "../src/2D/dowloaded_images/wms_images/downloaded_wms_image.jpeg";
     }
