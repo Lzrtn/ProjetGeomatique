@@ -8,7 +8,7 @@ Docker::Docker(std::string pathDockerFile)
     // Executor creation
     executor = new Executor();
     // Container creation
-    std::string cmdCreateContainerString = "docker compose -f " + pathDockerFile + " up -d --wait --force-recreate";
+    std::string cmdCreateContainerString = "docker start " + pathDockerFile;
     const char * cmdCreateContainer = cmdCreateContainerString.c_str();
     executor->exec(cmdCreateContainer);
     // Ip adress setting
@@ -17,7 +17,7 @@ Docker::Docker(std::string pathDockerFile)
 
 Docker::~Docker() {
     // Container destruction
-    std::string cmdDeleteContainerString = "docker container stop database-tisig";
+    std::string cmdDeleteContainerString = "docker stop database-tisig";
     const char * cmdDeleteContainerChar = cmdDeleteContainerString.c_str();
     executor->exec(cmdDeleteContainerChar);
     // Executor destruction

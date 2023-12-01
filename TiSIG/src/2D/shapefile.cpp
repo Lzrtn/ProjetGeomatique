@@ -78,7 +78,6 @@ int Shapefile::import_to_db(const int epsg)
         db_manager.Request(tableExists);
         res = db_manager.getResult();
     }
-    std::cout<<table_name<<std::endl;
 
     // Initialize GDAL
     GDALAllRegister();
@@ -264,7 +263,7 @@ std::vector<float> Shapefile::getBoundingBox()
     float Xmax = std::stof(X_max);
     float Ymax = std::stof(Y_max);
 
-    std::cout<<Xmin<<","<<Ymin<<","<<Xmax<<","<<Ymax<<std::endl;
+    //std::cout<<Xmin<<","<<Ymin<<","<<Xmax<<","<<Ymax<<std::endl;
 
     std::vector<float> res = {Xmin,Ymin,Xmax,Ymax};
     return res;
@@ -293,7 +292,7 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
 
         auto geojsongeom = rowbi[0].as<std::string>();
         std::string dataType = t.whatType(geojsongeom);
-
+        data_type=dataType;
         if (dataType == "LineString" || dataType == "MultiLineString")
         {
             std::vector<QVector <QLineF>> segmentsToPlot = t.JSONtoCoordsLIN(geojsongeom);
