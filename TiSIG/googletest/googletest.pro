@@ -7,7 +7,7 @@ SOURCES += \
     $$PWD/test_camera.cpp \
     $$PWD/bddgoogle.cpp \
     $$PWD/executorGoogle.cpp \
-#    $$PWD/test-geotiff.cpp \
+    $$PWD/test-geotiff.cpp \
     $$PWD/test_geojson.cpp \
     $$PWD/main.cpp \
 
