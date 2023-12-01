@@ -114,8 +114,8 @@ void readObj(const std::string & path, std::vector<QVector3D> & vertices, std::v
 
 ///////////////////////////////     OBJECT 3D    ////////////////////////////////////
 
-Object3D::Object3D(std::vector<QVector3D> position, std::vector<QVector3D> normal,
-		std::vector<QVector2D> textCoord, std::string textPath) :
+Object3D::Object3D(const std::vector<QVector3D> &position, const std::vector<QVector3D> &normal,
+		const std::vector<QVector2D> &textCoord, const std::string &textPath) :
 	indexBuffer(QOpenGLBuffer::IndexBuffer)
 {
 	this->initializeOpenGLFunctions();
@@ -129,7 +129,7 @@ Object3D::Object3D(std::vector<QVector3D> position, std::vector<QVector3D> norma
 	this->InitGeometryVectors(position, normal, textCoord);
 }
 
-Object3D::Object3D(std::vector<QVector3D> position, std::vector<QVector2D> textCoord, std::string textPath) :
+Object3D::Object3D(const std::vector<QVector3D> &position, const std::vector<QVector2D> &textCoord, const std::string &textPath) :
 	indexBuffer(QOpenGLBuffer::IndexBuffer)
 {
 	this->initializeOpenGLFunctions();
@@ -152,7 +152,7 @@ Object3D::Object3D(std::vector<QVector3D> position, std::vector<QVector2D> textC
 	this->InitGeometryVectors(position, normal, textCoord);
 }
 
-Object3D::Object3D(std::string pathObj, std::string pathTexture) :
+Object3D::Object3D(const std::string &pathObj, const std::string & pathTexture) :
 	indexBuffer(QOpenGLBuffer::IndexBuffer)
 {
 	this->initializeOpenGLFunctions();
