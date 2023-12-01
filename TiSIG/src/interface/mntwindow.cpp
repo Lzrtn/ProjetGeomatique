@@ -68,8 +68,8 @@ void MntWindow::OnButtonSubmitClicked() {
         std::cout << pathDTM << std::endl;
         GeoTiffToObjConverter converter(pathDTM, pathOrtho, "./data/DONNEES_BDORTHO/");
 
-//        converter.writeObjFileWithTextures();
-        converter.writeCoordWithTextures();
+        converter.writeObjFileWithTextures();
+//        converter.writeCoordWithTextures();
 
 
 //        for (auto vertex : converter.getPosition())
