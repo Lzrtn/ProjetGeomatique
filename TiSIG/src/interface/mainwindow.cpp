@@ -72,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
 	View_zoom* z = new View_zoom(ui->graphicsView_window2D);
 	z->set_modifiers(Qt::NoModifier);
 
+
 	// ip Address
 	ipAdress = ipAdress_d;
 
@@ -178,7 +179,7 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 	mode = !mode;
     ui->stackedWidget->setCurrentIndex(mode);
 
-    ui->stackedWidget_Left->setCurrentIndex(mode);
+    ui->stackedWidget_Rightside->setCurrentIndex(mode);
 
 	ui->action_add2DVectorLayer->setEnabled(!mode);
 	ui->action_add2DRastorLayer->setEnabled(!mode);
@@ -187,6 +188,9 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 	ui->action_add3DVectorLayer->setEnabled(mode);
 	ui->action_add3DRastorLayer->setEnabled(mode);
 	ui->action_add3DModel->setEnabled(mode);
+
+    ui->tableWidget_layerAttributeInformation2D->horizontalHeader()->setVisible(1);
+    ui->tableWidget_layerAttributeInformation3D->horizontalHeader()->setVisible(1);
 
 	// when hidden, camera controls are disabled
 	if (!mode)
@@ -197,14 +201,14 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 	this->update();
 
 	ui->stackedWidget->update();
-    ui->stackedWidget_Left->update();
+    ui->stackedWidget_Rightside->update();
     ui->graphicsView_window2D->update();
 	ui->openGLWidget_window3D->update();
 
 	this->repaint();
 
 	ui->stackedWidget->repaint();
-    ui->stackedWidget_Left->repaint();
+    ui->stackedWidget_Rightside->repaint();
 	ui->graphicsView_window2D->repaint();
 	ui->openGLWidget_window3D->repaint();
 }
