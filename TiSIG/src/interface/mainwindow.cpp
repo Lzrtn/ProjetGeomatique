@@ -145,7 +145,6 @@ MainWindow::~MainWindow()
 	for(auto pair: layerList)
 	{
 		delete pair.second;
-		layerList.erase(pair.first);
 	}
 
 	// Delete all items from 2D window

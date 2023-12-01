@@ -18,25 +18,31 @@ sudo apt-get install postgresql-15-postgis-3
 sudo apt-get install postgresql-16-postgis-3
 sudo apt-get install curl
 sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg -y --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 sudo echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 sudo apt-get install zenity
 
 mkdir ./TiSIG/src/data/Docker/LYON_5EME_2015
-mkdir ./TiSIG/srd/data/Docker/zip
+mkdir ./TiSIG/src/data/Docker/zip
 #Installation des fichiers
-wget -P ./TiSIG/src/data/Docker/LYON_5EME_2015 -O LYON_5EME_BATI_2015.gml https://www.dropbox.com/scl/fi/d0sybsln4o483fr5d9j17/LYON_5EME_BATI_2015.gml?rlkey=6m51ytawrfq5l18fiugb2h2ur&dl=0
-wget -P ./TiSIG/src/data/Docker/data -O 3dcitydb.zip https://www.dropbox.com/scl/fi/giksp7fbzvkbxv9zydl9e/3dcitydb.zip?rlkey=uqncjb068s7ct242gpjgc6efw&dl=0
+cd ./TiSIG/src/data/Docker/LYON_5EME_2015
+wget -O LYON_5EME_BATI_2015.gml https://www.dropbox.com/scl/fi/d0sybsln4o483fr5d9j17/LYON_5EME_BATI_2015.gml?rlkey=6m51ytawrfq5l18fiugb2h2ur&dl=0
+wait
+cd ../zip
+wget -O 3dcitydb.zip https://www.dropbox.com/scl/fi/giksp7fbzvkbxv9zydl9e/3dcitydb.zip?rlkey=uqncjb068s7ct242gpjgc6efw&dl=0
+wait
+cd ../../../../..
 # Build du docker et création des tables
 
-sleep 10 
 sudo docker build -t tisig_database_img ./TiSIG/src/data/Docker/.
 sudo docker run -d --name database-tisig tisig_database_img
-sleep 10
+sleep 30
 sudo docker exec database-tisig chmod u+x CREATE_DB.sh
 sudo docker exec database-tisig ./CREATE_DB.sh 
-sudo docker exec database-tisig bash -c "psql -h localhost -U postgres -p 5432 -d CityGML -c 'CREATE DATABASE database2D;'"
+sudo docker exec database-tisig bash -c "psql -h localhost -U postgres -p 5432 -d CityGML -c 'CREATE DATABASE \"database2D\";'"
+sudo docker exec database-tisig bash -c "psql -h localhost -U postgres -p 5432 -d database2D -c 'CREATE EXTENSION postgis;'"
+sudo docker exec database-tisig bash -c "cd /3DCityDB-Importer-Exporter/bin && ./impexp import -T=postgresql -H=localhost -P=5432 -d=CityGML -u=postgres -p=postgres --no-fail-fast /data/LYON_5EME_BATI_2015.gml"
 sudo docker stop database-tisig
 # # Se déplacer dans le répertoire du projet
 # cd "$PROJET_DIR" || exit_with_error "Échec du changement de répertoire vers $PROJET_DIR"

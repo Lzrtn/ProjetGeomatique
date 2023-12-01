@@ -12,7 +12,7 @@ WORKDIR /3DCityDB-Importer-Exporter/3dcitydb/postgresql/ShellScripts/Unix
 
 COPY setup.sql /docker-entrypoint-initdb.d/
 
-RUN sed -i '2,$d' CONNECTION_DETAILS.sh && echo Provide your database details here ------------------------------------------ >> CONNECTION_DETAILS.sh && echo export PGBIN=/home/share/postgresql-common/pg_wrapper >> CONNECTION_DETAILS.sh && echo export PGHOST=localhost >> CONNECTION_DETAILS.sh && echo export PGPORT=5432 >> CONNECTION_DETAILS.sh && echo export CITYDB=CityGML >> CONNECTION_DETAILS.sh && echo export PGUSER=postgres >> CONNECTION_DETAILS.sh && echo ------------------------------------------------------------------------------ >> CONNECTION_DETAILS.sh 
+RUN sed -i '2,$d' CONNECTION_DETAILS.sh && echo export PGBIN=/home/share/postgresql-common/pg_wrapper >> CONNECTION_DETAILS.sh && echo export PGHOST=localhost >> CONNECTION_DETAILS.sh && echo export PGPORT=5432 >> CONNECTION_DETAILS.sh && echo export CITYDB=CityGML >> CONNECTION_DETAILS.sh && echo export PGUSER=postgres >> CONNECTION_DETAILS.sh 
 
 #&& chmod u+x CREATE_DB.shRUN echo -ne '\n' | bash ./CREATE_DB.sh 
 
