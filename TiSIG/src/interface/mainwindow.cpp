@@ -14,7 +14,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "helpwindow.h"
-#include "WFSdataflowwindow.h"
+#include "wfsdataflowwindow.h"
 #include "view_zoom.h"
 #include "mntwindow.h"
 
@@ -227,7 +227,7 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
     wfsdataflowwindow.setModal(true);
     int result = wfsdataflowwindow.exec();
     if(result==QDialog::Accepted){
-        std::string url = wfsdataflowwindow.getLien();
+        std::cout << wfsdataflowwindow.getLien()<<std::endl;
     }
 }
 

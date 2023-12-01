@@ -14,7 +14,7 @@ class WFSDataFlowWindow : public QDialog
 public:
     explicit WFSDataFlowWindow(QWidget *parent = nullptr);
     ~WFSDataFlowWindow();
-    std::string getLien() const;
+    std::string getLien() { return lien; };
 
 private:
     Ui::WFSDataFlowWindow *ui;
