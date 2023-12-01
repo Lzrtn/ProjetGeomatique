@@ -1,5 +1,5 @@
-#ifndef DATAFLOWWINDOW_H
-#define DATAFLOWWINDOW_H
+#ifndef WFSDATAFLOWWINDOW_H
+#define WFSDATAFLOWWINDOW_H
 
 #include <QDialog>
 #include <QComboBox>
@@ -7,7 +7,7 @@
 #include <QPushButton>
 
 namespace Ui {
-class DataFlowWindow;
+class WFSDataFlowWindow;
 }
 
 /**
@@ -15,7 +15,7 @@ class DataFlowWindow;
  *
  * This class represents the main window of TiSIG application.
  */
-class DataFlowWindow : public QDialog
+class WFSDataFlowWindow : public QDialog
 {
     Q_OBJECT
 
@@ -24,15 +24,15 @@ public:
      * @brief DataFlow Window constructor
      * @param QWidget parent
      */
-    explicit DataFlowWindow(QWidget *parent = nullptr);
+    explicit WFSDataFlowWindow(QWidget *parent = nullptr);
 
     /**
      * @brief DataFlow Window destructor
      */
-    ~DataFlowWindow();
+    ~WFSDataFlowWindow();
 
 private:
-    Ui::DataFlowWindow *ui; ///< Ui::DataFlowWindow ui
+    Ui::WFSDataFlowWindow *ui; ///< Ui::DataFlowWindow ui
     QComboBox comboBox_dataFlowWindow; ///< QComboBox comboBox_dataFlowWindow
     QLineEdit lineEdit_dataFlowWindow; ///< QLineEdit lineEdit_dataFlowWindow
     QPushButton btn_validateDataFlowUrl; ///< QPushButton btn_validateDataFlowUrl
@@ -55,4 +55,4 @@ private slots:
   const char* OnButtonValidateDataFlowPreSavedlClicked();
 };
 
-#endif // DATAFLOWWINDOW_H
+#endif // WFSDATAFLOWWINDOW_H

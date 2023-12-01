@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DataFlowWindow</class>
- <widget class="QDialog" name="DataFlowWindow">
+ <class>WFSDataFlowWindow</class>
+ <widget class="QDialog" name="WFSDataFlowWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -165,3 +165,4 @@
  <resources/>
  <connections/>
 </ui>
+

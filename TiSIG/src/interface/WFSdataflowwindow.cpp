@@ -1,37 +1,37 @@
-#include "dataflowwindow.h"
-#include "ui_dataflowwindow.h"
+#include "WFSdataflowwindow.h"
+#include "ui_WFSdataflowwindow.h"
 #include <iostream>
 #include <string>
 #include <QDebug>
 
-DataFlowWindow::DataFlowWindow(QWidget *parent) :
+WFSDataFlowWindow::WFSDataFlowWindow(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::DataFlowWindow)
+    ui(new Ui::WFSDataFlowWindow)
 {
     ui->setupUi(this);
 
     // Initialisation de la ComboBox //
-    ui->comboBox_dataFlowWindow->addItems({"BDTopo - Bâti", "BDTopo - Route", "BDOrtho"});
+    ui->comboBox_dataFlowWindow->addItems({"BDTopo - Bâti", "BDTopo - Route"});
 
     // Connecting Validate DataFlowUrl button
-    connect(ui->btn_validateDataFlowUrl, &QPushButton::clicked, this, &DataFlowWindow::OnButtonValidateDataFlowUrlClicked);
+    connect(ui->btn_validateDataFlowUrl, &QPushButton::clicked, this, &WFSDataFlowWindow::OnButtonValidateDataFlowUrlClicked);
 
     // Connecting Validate DataFlowPreSaved button
-    connect(ui->btn_validateDataFlowPreSaved, &QPushButton::clicked, this, &DataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked);
+    connect(ui->btn_validateDataFlowPreSaved, &QPushButton::clicked, this, &WFSDataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked);
 }
 
-DataFlowWindow::~DataFlowWindow()
+WFSDataFlowWindow::~WFSDataFlowWindow()
 {
     delete ui;
 }
 
-const char* DataFlowWindow::OnButtonValidateDataFlowUrlClicked()
+const char* WFSDataFlowWindow::OnButtonValidateDataFlowUrlClicked()
 {
     QString url = ui->lineEdit_dataFlowWindow->text();
     return url.toLocal8Bit().constData();
 }
 
-const char* DataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
+const char* WFSDataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
 {
     QString flow = ui->comboBox_dataFlowWindow->currentText();
     const char* lien = "0";

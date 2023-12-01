@@ -130,11 +130,18 @@ private slots:
     void OnActionHelpClicked();
 
     /**
-    * @brief Function to show add2DDataflow window
+    * @brief Function to show add2DWFSDataflow window
     *
     *
     */
-    void OnAction2DDataFlowClicked();
+    void OnAction2DWFSDataFlowClicked();
+
+    /**
+    * @brief Function to show add2DWMSDataflow window
+    *
+    *
+    */
+    //void OnAction2DWMSDataFlowClicked();
 
     /**
      * @brief Function to show add2DVectorLayer window
