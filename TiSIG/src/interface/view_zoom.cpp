@@ -39,7 +39,6 @@ bool View_zoom::eventFilter(QObject *object, QEvent *event) {
       if (wheel_event->orientation() == Qt::Vertical) {
         double angle = wheel_event->angleDelta().y();
 
-        std::cout<<angle<<std::endl;
         if (angle>0 && zoom_level<16){
             //zoom forward
             double factor = qPow(start_factor, angle);
@@ -52,7 +51,6 @@ bool View_zoom::eventFilter(QObject *object, QEvent *event) {
             gentle_zoom(factor);
             zoom_level-=1;
         }
-        std::cout<<zoom_level<<std::endl;
         return true;
       }
     }

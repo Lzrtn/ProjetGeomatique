@@ -154,10 +154,15 @@ MainWindow::~MainWindow()
 	delete ui;
 
 	//Delete shapefiles
-	for (Shapefile* shp : ShpList){
+    for (std::pair <const int, Shapefile * > truc : ShpList){
+        Shapefile* shp = truc.second;
 		shp->~Shapefile();
 	}
 
+    //Empty the symbologie table
+    DbManager test("database2D", ipAdress);
+    std::string request = "TRUNCATE TABLE symbologie";
+    test.Request(request);
 }
 
 
@@ -295,7 +300,8 @@ void MainWindow::AddShpFileClicked(std::string path)
     addLayerToListWidget(layerId, *layerList[layerId]);
     index++;
 
-	ShpList.push_back(essai1);
+    ShpList.insert(std::pair<const int, Shapefile *>(layerId, essai1));
+    std::cout<<"id_shp : "<<layerId<<std::endl;
 
 
 }
@@ -623,6 +629,11 @@ void MainWindow::onButtonClickedDeleteLayer()
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event){
+    //Get selected shapefile
+    QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
+    int currentId = item->data(Qt::UserRole).toInt();
+    Shapefile * shp = ShpList[currentId];
+
     QPointF mousePos = ui->graphicsView_window2D->mapToScene(event->pos());
     double x = mousePos.x();
     double y = -mousePos.y();  // Assurez-vous du sens de l'axe y en fonction de votre scène
@@ -632,19 +643,12 @@ void MainWindow::mousePressEvent(QMouseEvent *event){
     std::replace(x_str.begin(), x_str.end(), ',', '.');
     std::replace(y_str.begin(), y_str.end(), ',', '.');
     std::cout << "Les coordonnées écran : " << x_str << ", " << y_str << std::endl;
-    std::string path = "/home/formation/Documents/ProjetGeomatique/TiSIG/src/data/DONNEES_BDTOPO/Bati/Bati_Lyon5eme.shp";
 
 
-    /*QGraphicsItem * truc =  scene->itemAt(mousePos.x(),mousePos.y(), QTransform());
-    std::cout<<truc<<std::endl;
-    truc->setPos(50,50);*/
 
-    // PostGreSQL Connection to the first database
-    DbManager db_manager("database2D", ipAdress);
-    pqxx::connection conn(db_manager.getString());
-
-    Shapefile essai = Shapefile(path, db_manager);
-    db_manager.Request("SELECT * FROM  Bati_Lyon5eme WHERE ST_Within(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom);");
+    DbManager db_manager = shp->getDbManager();
+    std::string request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Within(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom);";
+    db_manager.Request(request);
     pqxx::result rows_shape = db_manager.getResult();
     if (!rows_shape.empty()) {
         std::cout<<"dergi"<<std::endl;

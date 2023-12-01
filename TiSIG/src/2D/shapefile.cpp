@@ -233,6 +233,7 @@ int Shapefile::import_to_db(const int epsg)
                 index = i[0][0].as<int>() +1;
             }
             id=index;
+            std::cout<<index<<std::endl;
             srand(time(NULL));
             int red_random = rand()%255;
             int green_random = rand()%255;

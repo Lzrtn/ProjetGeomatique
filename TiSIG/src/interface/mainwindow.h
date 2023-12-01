@@ -75,7 +75,7 @@ private:
 	QGraphicsScene *scene;
 	std::map <int, Layer*> layerList;
 	std::string ipAdress;
-	std::vector<Shapefile*> ShpList;
+    std::map <int, Shapefile*> ShpList;
 
 
 
