@@ -142,30 +142,29 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-	// Delete all layers
+    // Delete all layers
 	for(auto pair: layerList)
-	{
-		delete pair.second;
-		layerList.erase(pair.first);
-	}
+    {
+        delete pair.second;
+    }
 
-	// Delete all items from 2D window
-	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
-	{
-		delete item;
-	}
-
+    // Delete all items from 2D window
+    for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
+    {
+        delete item;
+    }
 
 	// Delete scene
-	delete scene;
+    delete scene;
 
 	// Delete interface
-	delete ui;
+    delete ui;
 
-	//Delete shapefiles
-	for (Shapefile* shp : ShpList){
-		shp->~Shapefile();
-	}
+    //Delete shapefiles
+    for (Shapefile* shp : ShpList){
+        shp->~Shapefile();
+    }
+
 }
 
 
