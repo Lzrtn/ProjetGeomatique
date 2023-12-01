@@ -16,8 +16,8 @@ public:
 	 *
 	 * @see Object3D::Object3D
 	 */
-	Compass(std::vector<QVector3D> position, std::vector<QVector3D> normal,
-			std::vector<QVector2D> textCoord, std::string textPath) :
+	Compass(const std::vector<QVector3D> & position, const std::vector<QVector3D> & normal,
+			const std::vector<QVector2D> & textCoord, const std::string & textPath) :
 		Object3D(position, normal, textCoord, textPath)
 	{};
 
