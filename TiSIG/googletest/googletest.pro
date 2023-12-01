@@ -4,11 +4,11 @@ CONFIG += testlib
 SOURCES += \
     $$PWD/test_object3D.cpp \
     $$PWD/test_effets_bords_atof.cpp \
-#    $$PWD/test_camera.cpp \
-#    $$PWD/bddgoogle.cpp \
-#    $$PWD/executorGoogle.cpp \
+    $$PWD/test_camera.cpp \
+    $$PWD/bddgoogle.cpp \
+    $$PWD/executorGoogle.cpp \
 #    $$PWD/test-geotiff.cpp \
-#    $$PWD/test_geojson.cpp \
+    $$PWD/test_geojson.cpp \
     $$PWD/main.cpp \
 
 include($$PWD/../src/2D/2D.pri)
