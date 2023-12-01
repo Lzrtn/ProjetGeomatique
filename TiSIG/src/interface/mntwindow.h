@@ -31,6 +31,7 @@ public:
      */
     ~MntWindow();
 
+
 private:
     Ui::MntWindow *ui; ///< Ui::MntWindow ui
 
@@ -51,6 +52,8 @@ private:
    */
 void OnButtonAddOrthoClicked();
 
+
+private slots:
 /**
  * @brief Function Submit
  *

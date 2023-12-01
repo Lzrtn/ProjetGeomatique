@@ -37,7 +37,7 @@ public:
 	 * @brief Main Window constructor
 	 * @param QWidget parent
 	 */
-    MainWindow(QWidget *parent = nullptr, OpenGLcityView 3Dwindow);
+    MainWindow(QWidget *parent = nullptr);
 
 	/**
 	 * @brief Main Window destructor
@@ -65,7 +65,6 @@ public:
 
 	int index = 0; // Temporaire
 	void updateLayerOrderInGraphicsView();
-
 
 private:
     Ui::MainWindow *ui; ///< Ui::MainWindow ui
