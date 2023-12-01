@@ -1,9 +1,9 @@
-// wms.cpp
+//wms.cpp
 #include "wms.h"
 #include <iostream>
-#include <opencv2/opencv.hpp>
 #include <curl/curl.h>
 #include <fstream>
+#include <opencv2/opencv.hpp>
 
 
 using namespace std;
@@ -72,6 +72,7 @@ WMS::WMS(int crs, double north_limit, double south_limit, double east_limit, dou
 }
 
 const char* WMS::getUrl() {
+    std::cout<<"WMS URL : "<<url<<endl;
     return url;
 }
 

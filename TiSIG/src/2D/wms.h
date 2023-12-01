@@ -2,8 +2,8 @@
 #ifndef WMS_H
 #define WMS_H
 #include <string>
-#include <opencv2/opencv.hpp>
 #include <curl/curl.h>
+#include <opencv2/opencv.hpp>
 #include <fstream>
 
 class WMS {

@@ -74,11 +74,11 @@ WMTS::WMTS(int tilematrix, double west_limit, double north_limit, int width, int
     //Calculate TLC
     double x_tlc = west_limit - x0;
     double y_tlc = y0 - north_limit;
-    double distance_per_tile = 256 * initialResolution/pow(2,tilematrix);
+    double distance_per_tile = tileSize * initialResolution/pow(2,tilematrix);
 
     //Calculate number of tiles
-    int tilecol_lenght = round(width/256) + 1;
-    int tilerow_lenght = round(height/256) + 1;
+    int tilecol_lenght = round(width/tileSize) + 1;
+    int tilerow_lenght = round(height/tileSize) + 1;
 
     //Getting useful tiles
     int tilerow = round(y_tlc/distance_per_tile);
