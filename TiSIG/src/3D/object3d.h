@@ -90,6 +90,14 @@ private:
 	int sizeArray = 0;
 	QOpenGLBuffer arrayBuffer;
 	QOpenGLBuffer indexBuffer;
-	QOpenGLTexture *texture = nullptr;};
+	QOpenGLTexture *texture = nullptr;
+
+};
+
+
+class Object3DFactory {
+public:
+	virtual Object3D* New() const = 0;
+};
 
 #endif // OBJECT3D_H

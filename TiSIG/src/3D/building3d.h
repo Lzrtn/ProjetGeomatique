@@ -53,7 +53,7 @@ public:
 private:
 };
 
-class Building3DFactory
+class Building3DFactory : public Object3DFactory
 {
 public:
 	/**
@@ -88,7 +88,7 @@ public:
 	 * @Warning: risk of memory lost. equivalent to `new Building(...)`
 	 * Remember to delete building after use
 	 */
-	Building3D * NewBuilding() const;
+	Building3D * New() const;
 
 private:
 	std::vector<QVector3D> position;

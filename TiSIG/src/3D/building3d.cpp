@@ -120,7 +120,7 @@ Building3DFactory::Building3DFactory(const QVector3D pt)
 	textPath = ":/rose des vents.png";
 }
 
-Building3D * Building3DFactory::NewBuilding() const
+Building3D * Building3DFactory::New() const
 {
 	if (this->position.size() == 0)
 		return new Building3D(this->objPath, this->textPath);
