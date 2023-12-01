@@ -52,6 +52,13 @@ public:
      */
     DbManager getDbManager();
 
+    /**
+     * @brief Get the id of the shapefile
+     *
+     * @returns int
+     */
+    int getId();
+
      /**
      * @brief Copies the shapefile to a database
      *
@@ -96,6 +103,11 @@ private:
    * @brief DB manager in which the shapefile is stocked
    */
    QString EPSGtoSet;
+
+   /**
+   * @brief id of the shapefile in the table sympologie
+   */
+   int id;
 
 };
 

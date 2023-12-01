@@ -7,19 +7,19 @@ RasterItem::RasterItem(const QPixmap& pixmap, QGraphicsItem* parent)
 
 }
 
-RasterItem::RasterItem(const QString& fileName, QGraphicsItem* parent)
+RasterItem::RasterItem(const QString& filePath, QGraphicsItem* parent)
     : QGraphicsPixmapItem(parent)
 {
 
-    QPixmap pixmap(fileName);
+    QPixmap pixmap(filePath);
     setPixmap(pixmap);
 }
 
-RasterItem::RasterItem(const QString& fileName, const QRectF & extent, QGraphicsItem* parent)
-    : QGraphicsPixmapItem(parent)
+RasterItem::RasterItem(const QString& filePath, const QRectF & extent, const int id, QGraphicsItem* parent)
+    : QGraphicsPixmapItem(parent), id(id)
 {
 
-    QPixmap pixmap(fileName);
+    QPixmap pixmap(filePath);
     setPixmap(pixmap);
 
     FitToExtent(extent);
@@ -40,5 +40,10 @@ void RasterItem::FitToExtent(const QRectF & extent)
 QRectF RasterItem::getExtent()
 {
     return mapRectToScene(boundingRect());
+}
+
+int RasterItem::getId()
+{
+    return id;
 }
 

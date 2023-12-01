@@ -16,6 +16,7 @@
 #include "helpwindow.h"
 #include "dataflowwindow.h"
 #include "view_zoom.h"
+#include "mntwindow.h"
 
 #include "../src/2D/layer.h"
 #include "../src/2D/transformation.h"
@@ -25,6 +26,7 @@
 #include "../src/2D/rasterimport.h"
 #include "../src/outils/dbmanager.h"
 #include "../src/outils/docker.h"
+#include "../src/2D/geojson.h"
 
 //Initialisation du Docker
 // Creating container
@@ -38,8 +40,6 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 	, ui(new Ui::MainWindow)
 {
-
-
 	/*_______________________________Initialisation_________________________________________________________________________________________________*/
 
 	ui->setupUi(this);
@@ -69,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
 	View_zoom* z = new View_zoom(ui->graphicsView_window2D);
 	z->set_modifiers(Qt::NoModifier);
 
+
 	// ip Address
 	ipAdress = ipAdress_d;
 
@@ -83,15 +84,16 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->action_add2DDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DDataFlowClicked);
 
 	// Connecting add2dvectorlayer action and add3dvectorlayer action
-	connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVectorLayerClicked);
-	connect(ui->action_add3DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVectorLayerClicked);
+    connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVector2DLayerClicked);
+    connect(ui->action_add3DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVector3DLayerClicked);
 
 	// Connecting add2drastorlayer action and add3drastorlayer action
-	connect(ui->action_add2DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastorLayerClicked);
-	connect(ui->action_add3DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastorLayerClicked);
+    connect(ui->action_add2DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastor2DLayerClicked);
+    connect(ui->action_add3DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastor3DLayerClicked);
 
 	// Connecting add3dmodel action
 	connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::OnAction3DModelClicked);
+
 
 
 	/*_______________________________Barre d'outils___________________________________________________________________________________________________*/
@@ -114,43 +116,50 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 	// Connecter le bouton "Up" à la fonction de déplacement vers le haut
-	connect(ui->btn_moveLayerUp, &QPushButton::clicked, [=]() {
+    connect(ui->btn_moveLayerUp2D, &QPushButton::clicked, [=]() {
 		moveItemUp();
 	});
 
-	// Connecter le bouton "Down" à la fonction de déplacement vers le bas
-	connect(ui->btn_moveLayerDown, &QPushButton::clicked, [=]() {
-		moveItemDown();
-	});
+    // Connecter le bouton "Down" à la fonction de déplacement vers le bas
+    connect(ui->btn_moveLayerDown2D, &QPushButton::clicked, [=]() {
+        moveItemDown();
+    });
 
+    // Connecter le bouton "Poubelle" à la fonction de suppression
+    connect(ui->btn_deleteLayer2D, &QPushButton::clicked, [=]() {
+        onButtonClickedDeleteLayer();
+    });
+
+    // Connecter le bouton "Zoom sur la couche" à la fonction de zoom sur la couche
+    connect(ui->btn_zoomOnLayer2D, &QPushButton::clicked, [=]() {
+        onButtonClickedZoomOnLayer();
+    });
 }
 
 MainWindow::~MainWindow()
 {
-	// Delete all layers
+    // Delete all layers
 	for(auto pair: layerList)
-	{
-		delete pair.second;
-		layerList.erase(pair.first);
-	}
+    {
+        delete pair.second;
+    }
 
-	// Delete all items from 2D window
-	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
-	{
-		delete item;
-	}
-
+    // Delete all items from 2D window
+    for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
+    {
+        delete item;
+    }
 
 	// Delete scene
-	delete scene;
+    delete scene;
 
 	// Delete interface
-	delete ui;
+    delete ui;
 
-	//Delete shapefiles
-	for (Shapefile* shp : ShpList){
-		shp->~Shapefile();
-	}
+    //Delete shapefiles
+    for (Shapefile* shp : ShpList){
+        shp->~Shapefile();
+    }
 
 }
 
@@ -163,9 +172,9 @@ Ui::MainWindow * MainWindow::getUi() const
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
 	mode = !mode;
-	ui->stackedWidget->setCurrentIndex(mode);
+    ui->stackedWidget->setCurrentIndex(mode);
 
-	ui->stackedWidget->setCurrentIndex(mode);
+    ui->stackedWidget_Rightside->setCurrentIndex(mode);
 
 	ui->action_add2DVectorLayer->setEnabled(!mode);
 	ui->action_add2DRastorLayer->setEnabled(!mode);
@@ -174,6 +183,9 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 	ui->action_add3DVectorLayer->setEnabled(mode);
 	ui->action_add3DRastorLayer->setEnabled(mode);
 	ui->action_add3DModel->setEnabled(mode);
+
+    ui->tableWidget_layerAttributeInformation2D->horizontalHeader()->setVisible(1);
+    ui->tableWidget_layerAttributeInformation3D->horizontalHeader()->setVisible(1);
 
 	// when hidden, camera controls are disabled
 	if (!mode)
@@ -184,12 +196,14 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 	this->update();
 
 	ui->stackedWidget->update();
-	ui->graphicsView_window2D->update();
+    ui->stackedWidget_Rightside->update();
+    ui->graphicsView_window2D->update();
 	ui->openGLWidget_window3D->update();
 
 	this->repaint();
 
 	ui->stackedWidget->repaint();
+    ui->stackedWidget_Rightside->repaint();
 	ui->graphicsView_window2D->repaint();
 	ui->openGLWidget_window3D->repaint();
 }
@@ -208,27 +222,52 @@ void MainWindow::OnAction2DDataFlowClicked()
 	dataflowwindow.exec();
 }
 
-std::string MainWindow::OnActionVectorLayerClicked()
+std::string MainWindow::OnActionVector2DLayerClicked()
 {
-	QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("ShapeFile (*.shp)"));
+    QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("Fichier vecteur (*.shp *.geojson)"));
 	std::string path = fileNameVectorLayer.toStdString();
+    std::string shp = "shp";
+    std::string json = "geojson";
 	if (path != ""){
+        if (path.size() >= shp.size() &&
+                path.compare(path.size() - shp.size(), shp.size(), shp) == 0){
 
-		this->AddShpFileClicked(path);
+            this->AddShpFileClicked(path);
+        }
+        else if (path.size() >= json.size() &&
+                 path.compare(path.size() - json.size(), json.size(), json) == 0){
+            GeoJson file = GeoJson(path);
+            file.ConvertToShp();
+            this->AddShpFileClicked(file.GetShpFilePath());
+        }
 	}
 	return path;
-
 }
 
-std::string MainWindow::OnActionRastorLayerClicked()
+std::string MainWindow::OnActionVector3DLayerClicked()
+{
+    QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("Fichier vecteur (*.shp *.geojson)"));
+    std::string path = fileNameVectorLayer.toStdString();
+    return path;
+}
+
+std::string MainWindow::OnActionRastor2DLayerClicked()
 {
 
 	QString fileNameRastorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données raster"), "../../../", tr("GeoTIFF (*.tif *.TIF *.tiff)"));
 	std::string path = fileNameRastorLayer.toStdString();
 	this->AddGeotiffFileClicked(path);
 	return path;
-
 }
+
+void MainWindow::OnActionRastor3DLayerClicked()
+{
+    MntWindow mntwindow;
+    mntwindow.setModal(true);
+    mntwindow.exec();
+}
+
+
 
 std::string MainWindow::OnAction3DModelClicked()
 {
@@ -275,8 +314,10 @@ void MainWindow::AddShpFileClicked(std::string path)
 	//import du shapefile dans la base de données
 	Shapefile * essai1 = new Shapefile(path, test);
 
-	essai1->import_to_db(2154);
-	QColor myColor = essai1->showColor();
+    essai1->import_to_db(2154);
+    QColor myColor = essai1->showColor();
+
+    int layerId = essai1->getId();
 
 	//affichage des shapefiles importé
 	test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
@@ -284,13 +325,11 @@ void MainWindow::AddShpFileClicked(std::string path)
 	QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis,scene, myColor);
 	ui->lineEdit_epsg2D->setText(essai1->getEPSGtoSet());
 
-	layerList[index] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
-	addLayerToListWidget(index, *layerList[index]);
-	index++;
+    layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
+    addLayerToListWidget(layerId, *layerList[layerId]);
+    index++;
 
 	ShpList.push_back(essai1);
-
-
 }
 
 void MainWindow::AddGeotiffFileClicked(std::string path)
@@ -313,23 +352,28 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 	std::cout << "geotiff ouverte" << std::endl;
 
 	geotiff.WriteGeotiffAndMetadataToPostgis(test);
-	std::cout << "geotiff ecrit dans la bdd" << std::endl;
+    std::cout << "geotiff ecrit dans la bdd" << std::endl;
 
 
 	//Import raster from the DB into a layer
 
-	QString filename = QString::fromStdString(path);
-	RasterItem* rasterItem = RasterImport::CreateRasterItemFromDb(filename,test);
+    QString filePath = QString::fromStdString(path);
+    RasterItem* rasterItem = RasterImport::CreateRasterItemFromDb(filePath,test);
 
-	QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
-	scene->addItem(layerGroup);
+    QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
+    scene->addItem(layerGroup);
+    layerGroup->addToGroup(rasterItem);
 
+    int layerId = rasterItem->getId();
 
-	layerGroup->addToGroup(rasterItem);
+    size_t lastSlash = path.find_last_of("/\\");
+    std::string fileName = path.substr(lastSlash + 1);
+    fileName = fileName.substr(0, fileName.find_last_of("."));
 
-	layerList[index] = new Layer("Layer "+QString::number(index), true, layerGroup);
-	addLayerToListWidget(index, *layerList[index]);
-	index++;
+    layerList[layerId] = new Layer("Layer "+QString::number(index)+" : "+QString::fromStdString(fileName), true, layerGroup);
+
+    addLayerToListWidget(layerId, *layerList[layerId]);
+    index++;
 }
 
 
@@ -353,7 +397,6 @@ void MainWindow::OnButtonZoomIn()
 			pen.setWidthF(adjustedWidth);
 			polyItem->setPen(pen);
 		}
-
 
 		if (lineItem) {
 			// Ajuster la largeur du trait en fonction du facteur de zoom
@@ -417,7 +460,6 @@ qreal currentScale = ui->graphicsView_window2D->transform().m11();
 			pen.setWidthF(adjustedWidth);
 			pointItem->setPen(pen);
 		}
-
 	}
 }
 
@@ -476,15 +518,15 @@ void MainWindow::OnButtonZoomFull()
 	}
 }
 
-void MainWindow::addLayerToListWidget(int index, Layer &layer) {
+void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 
 
 	// Initie le zIndex de la couche
 	layer.setZIndex(index);
 
-	// Créez un nouvel élément pour la couche
-	layer.layerItem = new QListWidgetItem(ui->listeWidget_layersList);
-	layer.layerItem->setData(Qt::UserRole, index);
+    // Créez un nouvel élément pour la couche
+    layer.layerItem = new QListWidgetItem(ui->listeWidget_layersList2D);
+    layer.layerItem->setData(Qt::UserRole, layerId);
 
 	// Créez un widget personnalisé pour cet élément (contenant un label et une case à cocher)
 	layer.layerWidget = new QWidget();
@@ -495,11 +537,11 @@ void MainWindow::addLayerToListWidget(int index, Layer &layer) {
 	layer.visibilityCheckbox->setChecked(layer.isLayerVisible());
 	layer.layerLabel = new QLabel(layer.getLayerName());
 
-	// Connectez le signal clicked de la case à cocher à une fonction pour gérer la visibilité
-	connect(layer.visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
-		layerList[index]->getLayerGroup()->setVisible(checked);
-		layerList[index]->setLayerVisible(checked);
-	});
+    // Connectez le signal clicked de la case à cocher à une fonction pour gérer la visibilité
+    connect(layer.visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
+        layerList[layerId]->getLayerGroup()->setVisible(checked);
+        layerList[layerId]->setLayerVisible(checked);
+    });
 
 
 	layer.layout->addWidget(layer.visibilityCheckbox);
@@ -512,23 +554,21 @@ void MainWindow::addLayerToListWidget(int index, Layer &layer) {
 	layer.layerWidget->setLayout(layer.layout);
 	layer.layerItem->setSizeHint(layer.layerWidget->sizeHint());
 
-
-
-	ui->listeWidget_layersList->setItemWidget(layer.layerItem, layer.layerWidget);
+    ui->listeWidget_layersList2D->setItemWidget(layer.layerItem, layer.layerWidget);
 
 	// met à jour l'ordre de superpositions des couches
 	updateLayerOrderInGraphicsView();
 }
 
 void MainWindow::moveItemDown() {
-	QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
-	int currentIndex = ui->listeWidget_layersList->row(item);
+    QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
+    int currentIndex = ui->listeWidget_layersList2D->row(item);
 
-	if (item && currentIndex < ui->listeWidget_layersList->count()-1)
+    if (item && currentIndex < ui->listeWidget_layersList2D->count()-1)
 	{
 		// Change la profondeur des couches
 		int currentId = item->data(Qt::UserRole).toInt();
-		QListWidgetItem *nextItem = ui->listeWidget_layersList->item(currentIndex+1);
+        QListWidgetItem *nextItem = ui->listeWidget_layersList2D->item(currentIndex+1);
 		int nextId = nextItem->data(Qt::UserRole).toInt();
 
 		int currentZIndex = layerList[currentId]->getZIndex();
@@ -540,30 +580,30 @@ void MainWindow::moveItemDown() {
 		updateLayerOrderInGraphicsView();
 
         // Change l'ordre dans la liste des couches
-        QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
+        QWidget *itemWidget = ui->listeWidget_layersList2D->itemWidget(item);
         QWidget *tempWidget = new QWidget();
         QLayout *widgetLayout = itemWidget->layout();
         tempWidget->setLayout(widgetLayout);
 
         layerList[currentId]->layerWidget = tempWidget;
 
-		QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
+        QListWidgetItem *currentItem = ui->listeWidget_layersList2D->takeItem(currentIndex);
 
-		ui->listeWidget_layersList->insertItem(currentIndex+1, currentItem);
-		ui->listeWidget_layersList->setItemWidget(currentItem, tempWidget);
-		ui->listeWidget_layersList->setCurrentRow(currentIndex+1);
+        ui->listeWidget_layersList2D->insertItem(currentIndex+1, currentItem);
+        ui->listeWidget_layersList2D->setItemWidget(currentItem, tempWidget);
+        ui->listeWidget_layersList2D->setCurrentRow(currentIndex+1);
 	}
 }
 
 void MainWindow::moveItemUp() {
-	QListWidgetItem *item = ui->listeWidget_layersList->currentItem();
-	int currentIndex = ui->listeWidget_layersList->row(item);
+    QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
+    int currentIndex = ui->listeWidget_layersList2D->row(item);
 
 	if (item && currentIndex > 0) {
 
 		// Change la profondeur des couches
 		int currentId = item->data(Qt::UserRole).toInt();
-		QListWidgetItem *prevItem = ui->listeWidget_layersList->item(currentIndex-1);
+        QListWidgetItem *prevItem = ui->listeWidget_layersList2D->item(currentIndex-1);
 		int prevId = prevItem->data(Qt::UserRole).toInt();
 
 		int currentZIndex = layerList[currentId]->getZIndex();
@@ -575,18 +615,18 @@ void MainWindow::moveItemUp() {
 		updateLayerOrderInGraphicsView();
 
         // Change l'ordre dans la liste des couches
-        QWidget *itemWidget = ui->listeWidget_layersList->itemWidget(item);
+        QWidget *itemWidget = ui->listeWidget_layersList2D->itemWidget(item);
         QWidget *tempWidget = new QWidget();
         QLayout *widgetLayout = itemWidget->layout();
         tempWidget->setLayout(widgetLayout);
 
         layerList[currentId]->layerWidget = tempWidget;
 
-		QListWidgetItem *currentItem = ui->listeWidget_layersList->takeItem(currentIndex);
+        QListWidgetItem *currentItem = ui->listeWidget_layersList2D->takeItem(currentIndex);
 
-		ui->listeWidget_layersList->insertItem(currentIndex-1, currentItem);
-		ui->listeWidget_layersList->setItemWidget(currentItem, tempWidget);
-		ui->listeWidget_layersList->setCurrentRow(currentIndex-1);
+        ui->listeWidget_layersList2D->insertItem(currentIndex-1, currentItem);
+        ui->listeWidget_layersList2D->setItemWidget(currentItem, tempWidget);
+        ui->listeWidget_layersList2D->setCurrentRow(currentIndex-1);
 	}
 }
 
@@ -596,4 +636,81 @@ void MainWindow::updateLayerOrderInGraphicsView() {
 		pair.second->getLayerGroup()->setZValue(pair.second->getZIndex());
 	}
 	ui->graphicsView_window2D->repaint();
+}
+
+void MainWindow::onButtonClickedDeleteLayer()
+{
+    QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
+
+
+    if (item)
+    {
+        int layerId = item->data(Qt::UserRole).toInt();
+        ui->listeWidget_layersList2D->removeItemWidget(item);
+        delete item;
+
+        ui->graphicsView_window2D->scene()->removeItem(layerList[layerId]->getLayerGroup());
+        delete layerList[layerId]->getLayerGroup();
+        layerList.erase(layerId);
+    }
+}
+
+void MainWindow::onButtonClickedZoomOnLayer()
+{
+    QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
+
+    if (item)
+    {
+        int layerId = item->data(Qt::UserRole).toInt();
+        QGraphicsItemGroup *layer = layerList[layerId]->getLayerGroup();
+        if (layer->isVisible())
+        {
+            QRectF emprise = layer->sceneBoundingRect();
+            ui->graphicsView_window2D->fitInView(emprise, Qt::KeepAspectRatio);
+
+            qreal currentScale = ui->graphicsView_window2D->transform().m11();
+
+            // Parcourir tous les éléments de la scène
+            for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
+            {
+                QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+                QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+                QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
+
+                if (polyItem)
+                {
+                    // Ajuster la largeur du trait en fonction du facteur de zoom
+                    qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                    // Mettre à jour la largeur du trait
+                    QPen pen = polyItem->pen();
+                    pen.setWidthF(adjustedWidth);
+                    polyItem->setPen(pen);
+                }
+
+
+                if (lineItem)
+                {
+                    // Ajuster la largeur du trait en fonction du facteur de zoom
+                    qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                    // Mettre à jour la largeur du trait
+                    QPen pen = lineItem->pen();
+                    pen.setWidthF(adjustedWidth);
+                    lineItem->setPen(pen);
+                }
+
+                if (pointItem)
+                {
+                    // Ajuster la largeur du trait en fonction du facteur de zoom
+                    qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+                    // Mettre à jour la largeur du trait
+                    QPen pen = pointItem->pen();
+                    pen.setWidthF(adjustedWidth);
+                    pointItem->setPen(pen);
+                }
+            }
+        }
+    }
 }

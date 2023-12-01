@@ -32,6 +32,8 @@ void OpenGLcityView::initializeGL()
 	this->AddBuilding(0, Building3DFactory(3));
 	this->AddBuilding(1, Building3DFactory(5));
 
+	this->buildings[86] = MNT3DFactory(5).NewBuilding();
+
 	this->compass = CompassFactory().getCompass();
 	this->camera.setAngleV(0);
 

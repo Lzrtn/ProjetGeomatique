@@ -9,12 +9,8 @@ Layer::Layer(const QString& name, bool isVisible, QGraphicsItemGroup* layerGroup
 
 
 Layer::~Layer() {
-
     delete layerWidget;
     delete layerItem;
-
-
-    std::cout<<"Destructeur couche"<<std::endl;
 }
 
 QString Layer::getLayerName() const {
