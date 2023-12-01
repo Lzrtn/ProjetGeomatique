@@ -295,17 +295,28 @@ Les noms sont sous format *typeObj_nameObj*.
   - Zone de texte des coordonnées de la caméra : *lineEdit_coords3D*
 
 ## Gestion des couches
-
+- Switch (pour passer d'une vue à l'autre) : *stackedWidget_Rightside*
+### Page 2D
 - Outils de gestion des couches:
-  - Bouton Information : *btn_layerInformation*
-  - Bouton Monter la couche dans la liste : *btn_moveLayerUp*
-  - Bouton Descendre la couche dans la liste : *btn_moveLayerDown*
-  - Bouton Zoom sur l'emprise de la couche : *btn_zoomOnLayer*
-  - Bouton Supprimer la couche : *btn_deleteLayer*
+  - Bouton Information : *btn_layerInformation2D*
+  - Bouton Monter la couche dans la liste : *btn_moveLayerUp2D*
+  - Bouton Descendre la couche dans la liste : *btn_moveLayerDown2D*
+  - Bouton Zoom sur l'emprise de la couche : *btn_zoomOnLayer2D*
+  - Bouton Supprimer la couche : *btn_deleteLayer2D*
 
-- Fenêtre de gestion des couches : *listeWidget_layersList*
+- Fenêtre de gestion des couches : *listeWidget_layersList2D*
+- Fenêtre des informations attributaires : *tableWidget_layerAttributeInformation2D*
 
-- Fenêtre des informations attributaires : *tableWidget_layerAttributeInformation*
+### Page 3D
+- Outils de gestion des couches:
+  - Bouton Information : *btn_layerInformation3D*
+  - Bouton Monter la couche dans la liste : *btn_moveLayerUp3D*
+  - Bouton Descendre la couche dans la liste : *btn_moveLayerDown3D*
+  - Bouton Zoom sur l'emprise de la couche : *btn_zoomOnLayer3D*
+  - Bouton Supprimer la couche : *btn_deleteLayer3D*
+
+- Fenêtre de gestion des couches : *listeWidget_layersList3D*
+- Fenêtre des informations attributaires : *tableWidget_layerAttributeInformation3D*
 
 ## Barre d'actions (menu TiSIG)
 
