@@ -651,7 +651,14 @@ void MainWindow::mousePressEvent(QMouseEvent *event){
 
 
     DbManager db_manager = shp->getDbManager();
-    std::string request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Within(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom);";
+    std::string dataType = shp->getDataType();
+    std::string request;
+    if (dataType == "Polygon"){
+        request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Within(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom);";
+    }
+    else if(dataType == "LineString" || dataType == "MultiLineString"){
+        request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Distance(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom) < 3 ORDER BY ST_Distance(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom) LIMIT 1;";
+    }
     db_manager.Request(request);
     pqxx::result rows_shape = db_manager.getResult();
 

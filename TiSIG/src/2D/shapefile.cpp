@@ -294,7 +294,7 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
 
         auto geojsongeom = rowbi[0].as<std::string>();
         std::string dataType = t.whatType(geojsongeom);
-
+        data_type=dataType;
         if (dataType == "LineString" || dataType == "MultiLineString")
         {
             std::vector<QVector <QLineF>> segmentsToPlot = t.JSONtoCoordsLIN(geojsongeom);
