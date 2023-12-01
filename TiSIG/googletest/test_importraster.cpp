@@ -20,9 +20,8 @@ TEST(WMSTest, size_image){
     std::tuple<int,int> size(width,height);
     std::tuple<int,int> size_test(256,256);
 
-    // Afficher la taille de l'image
-    std::cout << "Image width : " << width << " pixels\n" << std::endl;
-    std::cout << "Image height : " << height << " pixels\n" << std::endl;
+    /*std::cout << "Image width : " << width << " pixels\n" << std::endl;
+    std::cout << "Image height : " << height << " pixels\n" << std::endl;*/
 
     EXPECT_EQ(size,size_test);
 }
