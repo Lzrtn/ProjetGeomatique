@@ -22,8 +22,8 @@ public:
 	 * @param textCord  vertices 2D of points in texture
 	 * @param textPath  path of texture image
 	 */
-	Building3D(std::vector<QVector3D> position, std::vector<QVector3D> normal,
-			std::vector<QVector2D> textCoord, std::string textPath) :
+	Building3D(const std::vector<QVector3D> & position, const std::vector<QVector3D> & normal,
+			const std::vector<QVector2D> & textCoord, const std::string & textPath) :
 		Object3D(position, normal, textCoord, textPath)
 	{};
 
@@ -40,8 +40,8 @@ public:
 	 * @param textCord  vertices 2D of points in texture
 	 * @param textPath  path of texture image
 	 */
-	Building3D(std::vector<QVector3D> position,
-			std::vector<QVector2D> textCoord, std::string textPath) :
+	Building3D(const std::vector<QVector3D> & position,
+			const std::vector<QVector2D> & textCoord, const std::string & textPath) :
 		Object3D(position, textCoord, textPath)
 	{};
 
