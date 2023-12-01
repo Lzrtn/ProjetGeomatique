@@ -107,11 +107,11 @@ WMTS::WMTS(int tilematrix, double west_limit, double north_limit, int width, int
 
 
 vector<vector<const char*>> WMTS::getUrl() {
-    for (size_t i = 0; i <tablurl.size(); ++i) {
+    /*for (size_t i = 0; i <tablurl.size(); ++i) {
             for (size_t j = 0; j < tablurl[i].size(); ++j) {
                 cout << i << " " << j << " : " << tablurl[i][j] << endl;
             }
-        }
+        }*/
     return tablurl;    
 }
 

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-WMS::WMS(int crs, double north_limit, double south_limit, double east_limit, double west_limit,
+WMS::WMS(int crs, string  str_north, string str_south, string str_east, string str_west,
          int width, int height)
 /*
 *
@@ -41,10 +41,10 @@ WMS::WMS(int crs, double north_limit, double south_limit, double east_limit, dou
    
 
     //Convert into string for WMS request
-    string str_north = to_string(north_limit);
+    /*string str_north = to_string(north_limit);
     string str_south = to_string(south_limit);
     string str_east  = to_string(east_limit);
-    string str_west  = to_string(west_limit);
+    string str_west  = to_string(west_limit);*/
     string str_width = to_string(width);
     string str_heigh = to_string(height);
     string str_crs   = to_string(crs);
@@ -65,14 +65,11 @@ WMS::WMS(int crs, double north_limit, double south_limit, double east_limit, dou
     string str_url = link + key_layers + layer + key_exceptions + exception + key_format + format + 
                 key_service + service + key_version + version + key_request + request + key_styles + 
                 key_crs + str_crs + bbox + width_request + height_request;
-
-    std::cout<<url<<"\n";
     
     url = strdup(str_url.c_str());
 }
 
 const char* WMS::getUrl() {
-    std::cout<<"WMS URL : "<<url<<endl;
     return url;
 }
 

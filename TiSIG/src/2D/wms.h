@@ -6,9 +6,11 @@
 #include <opencv2/opencv.hpp>
 #include <fstream>
 
+using namespace std;
+
 class WMS {
 public:
-    WMS(int crs, double north_limit, double south_limit, double east_limit, double west_limit,
+    WMS(int crs, string  str_north, string str_south, string str_east, string str_west,
         int width, int height);
     ~WMS();
     const char* getUrl();
