@@ -152,6 +152,24 @@ Object3D::Object3D(std::vector<QVector3D> position, std::vector<QVector2D> textC
 	this->InitGeometryVectors(position, normal, textCoord);
 }
 
+Object3D::Object3D(std::string pathObj, std::string pathTexture) :
+	indexBuffer(QOpenGLBuffer::IndexBuffer)
+{
+	this->initializeOpenGLFunctions();
+
+	// Generate 2 VBOs
+	this->arrayBuffer.create();
+	this->indexBuffer.create();
+
+	// read obj file
+	std::vector<QVector3D> v, vn;
+	std::vector<QVector2D> vt;
+	readObj(pathObj, v, vn, vt);
+
+	// Initializes geometry and texture
+	this->initTexture(pathTexture);
+	this->InitGeometryVectors(v, vn, vt);
+}
 Object3D::~Object3D()
 {
 	// free memory
