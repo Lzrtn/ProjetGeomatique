@@ -40,8 +40,6 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 	, ui(new Ui::MainWindow)
 {
-
-
 	/*_______________________________Initialisation_________________________________________________________________________________________________*/
 
 	ui->setupUi(this);
@@ -56,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->action_add3DVectorLayer->setEnabled(mode);
 	ui->action_add3DRastorLayer->setEnabled(mode);
 	ui->action_add3DModel->setEnabled(mode);
-    ui->action_add3DDTM->setEnabled(mode);
 
 	ui->openGLWidget_window3D->setCamInfoDisplayer(this);
 
@@ -96,7 +93,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// Connecting add3dmodel action
 	connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::OnAction3DModelClicked);
-
 
 
 
@@ -250,11 +246,9 @@ std::string MainWindow::OnActionVector2DLayerClicked()
 
 std::string MainWindow::OnActionVector3DLayerClicked()
 {
-
     QString fileNameVectorLayer = QFileDialog::getOpenFileName(this, tr("Ouvrir une couche de données vecteur"), "../../../", tr("Fichier vecteur (*.shp *.geojson)"));
     std::string path = fileNameVectorLayer.toStdString();
     return path;
-
 }
 
 std::string MainWindow::OnActionRastor2DLayerClicked()
@@ -336,8 +330,6 @@ void MainWindow::AddShpFileClicked(std::string path)
     index++;
 
 	ShpList.push_back(essai1);
-
-
 }
 
 void MainWindow::AddGeotiffFileClicked(std::string path)
@@ -468,7 +460,6 @@ qreal currentScale = ui->graphicsView_window2D->transform().m11();
 			pen.setWidthF(adjustedWidth);
 			pointItem->setPen(pen);
 		}
-
 	}
 }
 
@@ -562,8 +553,6 @@ void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 
 	layer.layerWidget->setLayout(layer.layout);
 	layer.layerItem->setSizeHint(layer.layerWidget->sizeHint());
-
-
 
     ui->listeWidget_layersList2D->setItemWidget(layer.layerItem, layer.layerWidget);
 
