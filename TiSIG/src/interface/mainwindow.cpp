@@ -64,8 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->graphicsView_window2D->setScene(scene);
 	ui->graphicsView_window2D->setDragMode(QGraphicsView::ScrollHandDrag);
     ui->graphicsView_window2D->installEventFilter(this);
-	View_zoom* z = new View_zoom(ui->graphicsView_window2D);
-	z->set_modifiers(Qt::NoModifier);
+
 
 
     /*_______________________________Variables_________________________________________________________________________________________________*/
