@@ -81,7 +81,7 @@ public:
 
    QString getEPSGtoSet(){return EPSGtoSet;}
 
-
+   std::string getDataType(){return data_type;}
 
 private:
     /**
@@ -108,6 +108,11 @@ private:
    * @brief id of the shapefile in the table sympologie
    */
    int id;
+
+   /**
+   * @brief itype of the geometry
+   */
+   std::string data_type;
 
 };
 
