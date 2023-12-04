@@ -9,8 +9,6 @@ function exit_with_error {
 # Dossier du projet
 current_directory="$PWD"
 
-sudo chmod a+r /usr/share/keyrings/docker-archive-keyring.gpg
-
 # Installer les dépendances nécessaires
 #sudo apt-get update || exit_with_error "Échec de la mise à jour des paquets"
 sudo apt-get install -y gdal-bin libgdal-dev libpq-dev libpqxx-dev libgtest-dev xvfb || exit_with_error "Échec de l'installation des dépendances"
@@ -21,7 +19,7 @@ sudo apt-get install postgresql-16-postgis-3
 
 sudo apt-get install curl
 
-
+sudo apt-get install -y docker.io
 
 sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg -y --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
@@ -52,10 +50,9 @@ sudo docker exec database-tisig bash -c "psql -h localhost -U postgres -p 5432 -
 sudo docker exec database-tisig bash -c "psql -h localhost -U postgres -p 5432 -d database2D -c 'CREATE EXTENSION postgis;'"
 sudo docker exec database-tisig bash -c "cd /3DCityDB-Importer-Exporter/bin && ./impexp import -T=postgresql -H=localhost -P=5432 -d=CityGML -u=postgres -p=postgres --no-fail-fast /data/LYON_5EME_BATI_2015.gml"
 sudo docker stop database-tisig
+
 # # Se déplacer dans le répertoire du projet
 # cd "$PROJET_DIR" || exit_with_error "Échec du changement de répertoire vers $PROJET_DIR"
-
-# Ajouter l'utilisateur au groupe docker
 
 #Build
 mkdir -p build 
@@ -72,38 +69,18 @@ make  || exit_with_error "Échec de la compilation du projet TiSIG/src"
 # Se déplacer dans le répertoire src
 cd src || exit_with_error "Échec du changement de répertoire vers src"
 
-## Créer un fichier .desktop
-#sudo echo "[Desktop Entry]
-#Name=TiSIG
-#Comment=MiniSIG
-#Exec=/home/vittorio/Documents/ProjetGeomatique-main/build/src/exec.sh
-#Icon=/home/vittorio/Documents/ProjetGeomatique-main/logotisig.png
-#Terminal=False
-#Type=Application
-#Categories=Application;" > /usr/share/applications/TiSIG.desktop
-
 # Créer un fichier .desktop directement dans /usr/share/applications
 sudo bash -c 'cat <<EOL > /usr/share/applications/TiSIG.desktop
 [Desktop Entry]
 Name=TiSIG
 Comment=MiniSIG
 Path='$current_directory'/build/src
-Exec='$current_directory'/ProjetGeomatique/build/src/src
-Icon='$current_directory'/ProjetGeomatique/logotisig.png
+Exec='$current_directory'/build/src/src
+Icon='$current_directory'/logotisig.png
 Terminal=False
 Type=Application
 Categories=Application;
 EOL'
-
-# Assurer les permissions d'exécution sur le fichier .desktop
-#chmod +x /home/vittorio/Documents/ProjetGeomatique-main/build/src/src
-#chmod +x /home/vittorio/Documents/ProjetGeomatique-main/exec.sh
-
-
-#sudo cp ~/pwd/TiSIG.desktop /usr/share/applications 
-#sudo chmod +x /usr/share/applications/TiSIG.desktop
-
-#sudo cp /home/vittorio/Documents/ProjetGeomatique-main/exec.sh /home/vittorio/Documents/ProjetGeomatique-main/build/src
 
 # Afficher un message de réussite
 zenity --info --text="Configuration et compilation réussies! Vous pouvez maintenant fermer et rouvrir votre session."
