@@ -141,7 +141,7 @@ private slots:
     *
     *
     */
-    //void OnAction2DWMSDataFlowClicked();
+    void OnAction2DWMSDataFlowClicked();
 
     /**
      * @brief Function to show add2DVectorLayer window

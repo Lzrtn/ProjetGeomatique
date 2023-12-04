@@ -13,17 +13,20 @@ SOURCES += \
     $$PWD/helpwindow.cpp \
     $$PWD/mainwindow.cpp \
     $$PWD/view_zoom.cpp \
-    $$PWD/wfsdataflowwindow.cpp
+    $$PWD/wfsdataflowwindow.cpp \
+    $$PWD/wmsdataflowwindow.cpp
 
 HEADERS += \
     $$PWD/mntwindow.h \
     $$PWD/helpwindow.h \
     $$PWD/mainwindow.h \
     $$PWD/view_zoom.h \
-    $$PWD/wfsdataflowwindow.h
+    $$PWD/wfsdataflowwindow.h \
+    $$PWD/wmsdataflowwindow.h
 
 FORMS += \
     $$PWD/mntwindow.ui \
     $$PWD/helpwindow.ui \
     $$PWD/mainwindow.ui \
-    $$PWD/wfsdataflowwindow.ui
+    $$PWD/wfsdataflowwindow.ui \
+    $$PWD/wmsdataflowwindow.ui

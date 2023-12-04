@@ -15,6 +15,7 @@
 #include "ui_mainwindow.h"
 #include "helpwindow.h"
 #include "wfsdataflowwindow.h"
+#include "wmsdataflowwindow.h"
 #include "view_zoom.h"
 #include "mntwindow.h"
 
@@ -52,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->action_add2DVectorLayer->setEnabled(!mode);
     ui->action_add2DRastorLayer->setEnabled(!mode);
     ui->action_add2DWFSDataFlow->setEnabled(!mode);
+    ui->action_add2DWMSDataFlow->setEnabled(!mode);
         // Actions 3D
     ui->action_add3DVectorLayer->setEnabled(mode);
     ui->action_add3DRastorLayer->setEnabled(mode);
@@ -85,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Connecting add2dWFSdataflow action
     connect(ui->action_add2DWFSDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DWFSDataFlowClicked);
     // Connecting add2dWMSdataflow action
-    //connect(ui->action_add2DWMSDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DWMSDataFlowClicked);
+    connect(ui->action_add2DWMSDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DWMSDataFlowClicked);
 
     // Connecting add2dvectorlayer action and add3dvectorlayer action
     connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVector2DLayerClicked);
@@ -228,6 +230,16 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
     int result = wfsdataflowwindow.exec();
     if(result==QDialog::Accepted){
         std::cout << wfsdataflowwindow.getLien()<<std::endl;
+    }
+}
+
+void MainWindow::OnAction2DWMSDataFlowClicked()
+{
+    WMSDataFlowWindow wmsdataflowwindow;
+    wmsdataflowwindow.setModal(true);
+    int result = wmsdataflowwindow.exec();
+    if(result==QDialog::Accepted){
+        std::cout << wmsdataflowwindow.getLien()<<std::endl;
     }
 }
 
