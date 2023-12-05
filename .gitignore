@@ -4,3 +4,5 @@ build-*
 **/build-*
 doc/
 Doxyfile
+**/data/Docker/zip
+**/data/Docker/LYON*
