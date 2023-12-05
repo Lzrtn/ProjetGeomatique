@@ -1,6 +1,8 @@
 #include <iostream>
 #include <pqxx/pqxx>
 #include <stdlib.h>
+#include <filesystem>
+namespace fs = std::filesystem;
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -11,6 +13,9 @@
 #include <QCheckBox>
 #include <QColor>
 #include <QMouseEvent>
+#include <QFileInfo>
+#include <QCoreApplication>
+#include <QThread>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -29,6 +34,9 @@
 #include "../src/outils/dbmanager.h"
 #include "../src/outils/docker.h"
 #include "../src/2D/geojson.h"
+#include "../src/2D/wfsflow.h"
+
+
 
 //Initialisation du Docker
 // Creating container
@@ -150,6 +158,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    // Empty wfs flow folder
+    for (const auto& entry : fs::directory_iterator("data/wfsFlow/")) {
+        fs::remove_all(entry.path());
+    }
+
     // Delete all layers
     for(auto pair: layerList)
     {
@@ -237,15 +250,40 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
 {
     WFSDataFlowWindow wfsdataflowwindow;
     wfsdataflowwindow.setModal(true);
-//    connect(&wfsdataflowwindow, &WFSDataFlowWindow::processingFinished, this, &MainWindow::AddShpFileClicked);
     int result = wfsdataflowwindow.exec();
     if(result==QDialog::Accepted){
-        std::string PathWfsFlow = wfsdataflowwindow.getPath();
+        std::string url = wfsdataflowwindow.getURL();
+
+        // Emprise de la fenêtre à récupérer
+        std::string longmin = std::to_string(45.727093);
+        std::replace(longmin.begin(), longmin.end(), ',', '.');
+        std::string latmin = std::to_string(4.819074);
+        std::replace(latmin.begin(), latmin.end(), ',', '.');
+        std::string longmax = std::to_string(45.746508);
+        std::replace(longmax.begin(), longmax.end(), ',', '.');
+        std::string latmax = std::to_string(4.850961);
+        std::replace(latmax.begin(), latmax.end(), ',', '.');
+
+        QString wfsDataSource = QString::fromStdString(url+"&REQUEST=GetFeature&OUTPUTFORMAT=SHAPE-ZIP&BBOX="+longmin+","+latmin+","+longmax+','+latmax+"&SRSNAME=EPSG:2154");
+        std::cout<<wfsDataSource.toStdString()<<std::endl;
+        WFSFlow *wfsflow = new WFSFlow(wfsDataSource);
+        wfsflow->downloadZIP();
+        std::string PathWfsFlow = wfsflow->filePath.toStdString();
+        PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
         std::cout << "MAINWINDOW RETURN ========> " << PathWfsFlow<<std::endl;
-        sleep(20);
+        // Boucle tant que le fichier n'existe pas
+        while (!QFileInfo(QString::fromStdString(PathWfsFlow)).exists()) {
+            QThread::msleep(100); // Pause de 100 millisecondes
+            QCoreApplication::processEvents();
+        }
+
+        // Le fichier existe maintenant, vous pouvez appeler AddShpFileClicked
         AddShpFileClicked(PathWfsFlow);
+//        AddShpFileClicked(PathWfsFlow);
     }
 }
+
+
 
 void MainWindow::OnAction2DWMSDataFlowClicked()
 {

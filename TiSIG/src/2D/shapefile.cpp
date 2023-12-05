@@ -97,7 +97,7 @@ int Shapefile::import_to_db(const int epsg)
             db_manager.CreateTable(request);
             std::string request_create = "CREATE TABLE "+table_name+" ();";
             db_manager.CreateTable(request_create);
-            std::cout << "Table created\n" << std::endl;
+            std::cout << "Table created" << std::endl;
 
 
         // Get the layer from the shapefile
@@ -167,7 +167,7 @@ int Shapefile::import_to_db(const int epsg)
             instruction_add += " ADD COLUMN geom geometry;";
             db_manager.CreateTable(instruction_add);
 
-            std::cout << "Columns added\n" << std::endl;
+            std::cout << "Columns added" << std::endl;
 
             // Loop through features and insert them into the database
             OGRFeature *poFeature;
@@ -185,20 +185,43 @@ int Shapefile::import_to_db(const int epsg)
                     std::string value = fieldValue;
                     if (!value.empty() && i !=featureDefn->GetFieldCount()-1){
                         fields += field_name + ",";
-                        if (value.find("'") != std::string::npos){
-                            std::replace(value.begin(), value.end(), '\'', ' ');
-                        }
 
-                        // Vérifiez si le caractère indésirable est présent
-                        if (value.find('\xe9') != std::string::npos ) {
-                            // Remplacez tous les caractères indésirables par 'e'
-                            std::replace(value.begin(), value.end(), '\xe9', 'e');
-                        }
-
-                        // Vérifiez si le caractère indésirable est présent
-                        if (value.find('\xe2') != std::string::npos ) {
-                            // Remplacez tous les caractères indésirables par 'e'
-                            std::replace(value.begin(), value.end(), '\xe2', 'a');
+                        // Replace special characters
+                        std::unordered_map<char, std::string> replacements = {
+                            {'\'', " "},     // Apostrophe
+                            {'\xe9', "e"},   // e accent aigu (é)
+                            {'\xe8', "e"},   // e accent grave (è)
+                            {'\xea', "e"},   // e accent circonflexe (ê)
+                            {'\xeb', "e"},   // e tréma (ë)
+                            {'\xe7', "c"},   // c cédille (ç)
+                            {'\xe0', "a"},   // a accent grave (à)
+                            {'\xe2', "a"},   // a accent circonflexe (â)
+                            {'\xe4', "a"},   // a tréma (ä)
+                            {'\xfb', "u"},   // u accent circonflexe (û)
+                            {'\xfc', "u"},   // u tréma (ü)
+                            {'\xef', "i"},   // i tréma (ï)
+                            {'\xee', "i"},   // i accent circonflexe (î)
+                            {'\xf4', "o"},   // o accent circonflexe (ô)
+                            {'\xf6', "o"},   // o tréma (ö)
+                            {'\xe4', "a"},   // a tréma (ä)
+                            {'\xfb', "u"},   // u accent circonflexe (û)
+                            {'\xfc', "u"},   // u tréma (ü)
+                            {'\xef', "i"},   // i tréma (ï)
+                            {'\xee', "i"},   // i accent circonflexe (î)
+                            {'\xe4', "a"},   // a tréma (ä)
+                            {'\xfb', "u"},   // u accent circonflexe (û)
+                            {'\xfc', "u"},   // u tréma (ü)
+                            {'\xef', "i"},   // i tréma (ï)
+                            {'\xee', "i"},   // i accent circonflexe (î)
+                            {'\xc9', "E"},   // E accent aigu (É)
+                            // Ajoutez d'autres caractères spéciaux et leurs remplacements ici
+                        };
+                        for (const auto& [searchChar, replaceStr] : replacements) {
+                            size_t pos = 0;
+                            while ((pos = value.find(searchChar, pos)) != std::string::npos) {
+                                value.replace(pos, 1, replaceStr);
+                                pos += replaceStr.length(); // Passer au caractère suivant après le remplacement
+                            }
                         }
 
                         values += "'"+ value + "',";

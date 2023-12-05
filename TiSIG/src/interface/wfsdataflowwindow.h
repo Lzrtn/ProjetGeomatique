@@ -31,15 +31,13 @@ public:
      */
     ~WFSDataFlowWindow();
 
-    std::string getPath() { return path; };
-
-    void FlowProcessing(std::string url);
+    std::string getURL() { return url; };
 
 
 private:
     Ui::WFSDataFlowWindow *ui;
 
-    std::string path;
+    std::string url;
 
     QComboBox comboBox_dataFlowWindow; ///< QComboBox comboBox_dataFlowWindow
     QLineEdit lineEdit_dataFlowWindow; ///< QLineEdit lineEdit_dataFlowWindow
