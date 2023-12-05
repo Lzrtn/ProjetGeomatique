@@ -15,10 +15,12 @@ public:
     explicit WMSDataFlowWindow(QWidget *parent = nullptr);
     ~WMSDataFlowWindow();
     std::string getLien() { return lien; };
+    std::string getFilePath() { return filePath; };
 
 private:
     Ui::WMSDataFlowWindow *ui;
     std::string lien;
+    std::string filePath;
 
 private slots:
 

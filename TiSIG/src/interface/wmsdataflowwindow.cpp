@@ -36,10 +36,32 @@ void WMSDataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
     std::string url = "0";
     if(flow == "BDOrtho - WMS"){
         url = "URL vers BDOrtho - WMS";
+
+        lien = url;
+
+        //Default extent in Lambert93
+        double xMin = 837354.3000;
+        double yMin = -6520755.6000;
+        double xMax = 842550.9000;
+        double yMax = -6517267.8723;
+
+        /*------------Axel Back Treatments--------------/
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+        /---------------------------------------------*/
+
+        filePath = "chemin de l'image stockee en sortie";
+
+        accept();
     }
+
     if(flow == "BDOrtho - WMTS"){
         url = "URL vers BDOrtho - WMTS";
     }
-    lien = url;
-    accept();
+
 }

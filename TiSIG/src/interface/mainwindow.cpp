@@ -251,9 +251,16 @@ void MainWindow::OnAction2DWMSDataFlowClicked()
     WMSDataFlowWindow wmsdataflowwindow;
     wmsdataflowwindow.setModal(true);
     int result = wmsdataflowwindow.exec();
+
+
+
     if(result==QDialog::Accepted){
-        std::cout << wmsdataflowwindow.getLien()<<std::endl;
+        std::cout << wmsdataflowwindow.getFilePath()<<std::endl;
+        std::string path = wmsdataflowwindow.getFilePath();
+        AddWMSLayer(path);
     }
+
+
 }
 
 std::string MainWindow::OnActionVector2DLayerClicked()
@@ -413,8 +420,32 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 
     addLayerToListWidget(layerId, *layerList[layerId]);
     index++;
+
+
 }
 
+void MainWindow::AddWMSLayer(std::string path)
+{
+
+    QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
+    scene->addItem(layerGroup);
+
+    int layerId = 4000 + index;
+
+    std::string flowName = path;
+
+
+    layerList[layerId] = new Layer("Layer "+QString::number(index)+" : "+QString::fromStdString(flowName), true, layerGroup);
+
+    addLayerToListWidget(layerId, *layerList[layerId]);
+    index++;
+
+}
+
+void MainWindow::UpdateWMSLayer(Layer & wmsLayer)
+{
+
+}
 
 void MainWindow::OnButtonZoomIn()
 {
@@ -457,6 +488,11 @@ void MainWindow::OnButtonZoomIn()
             pointItem->setPen(pen);
 		}
 	}
+//    std::cout<<"extent "
+//             <<get2DViewExtent().topLeft().x()<<" "
+//                <<get2DViewExtent().topLeft().y()<<" "
+//                <<get2DViewExtent().bottomRight().x()<<" "
+//               <<get2DViewExtent().bottomRight().y()<<" "<<std::endl;
 }
 
 void MainWindow::OnButtonZoomOut()
