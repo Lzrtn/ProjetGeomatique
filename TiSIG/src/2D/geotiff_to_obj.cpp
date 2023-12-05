@@ -43,13 +43,13 @@ GeoTiffToObjConverter::~GeoTiffToObjConverter()
     }
 }
 
-void GeoTiffToObjConverter::writeObjFileWithTextures()
+std::string GeoTiffToObjConverter::writeObjFileWithTextures()
 {
     size_t lastSlash = inputFilePath.find_last_of("/\\");
     std::string fileName = inputFilePath.substr(lastSlash + 1);
-    std::cout << fileName << std::endl;
+//    std::cout << fileName << std::endl;
     std::string baseName = fileName.substr(0, fileName.find_last_of("."));
-    std::cout << baseName << std::endl;
+//    std::cout << baseName << std::endl;
     std::string strOutputObjFilePath = outputObjFilePath + baseName + ".obj";
 
     FILE *objFile = fopen(strOutputObjFilePath.c_str(), "w");
@@ -118,6 +118,8 @@ void GeoTiffToObjConverter::writeObjFileWithTextures()
     }
 
     fclose(objFile);
+
+    return strOutputObjFilePath;
 }
 
 void GeoTiffToObjConverter::writeObjFileWithoutTextures()

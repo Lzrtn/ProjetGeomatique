@@ -31,12 +31,14 @@ public:
      */
     ~MntWindow();
 
-    int getValue() { return value; };
+    std::string getPathObj() { return m_pathObj; };
+    std::string getPathTexture() { return m_pathTexture; };
 
 
 private:
     Ui::MntWindow *ui; ///< Ui::MntWindow ui
-    int value;
+    std::string m_pathObj;
+    std::string m_pathTexture;
 
 //    QLineEdit lineEdit_DTMPath; ///< QLineEdit lineEdit_DTMPath
 //    QLineEdit lineEdit_OrthoPath; ///< QLineEdit lineEdit_Path

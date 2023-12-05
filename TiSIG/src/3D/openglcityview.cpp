@@ -32,7 +32,7 @@ void OpenGLcityView::initializeGL()
 	this->AddBuilding(0, Building3DFactory(3));
 	this->AddBuilding(1, Building3DFactory(5));
 
-	this->buildings[86] = MNT3DFactory(5).NewBuilding();
+//	this->buildings[86] = MNT3DFactory(5).NewBuilding();
 
 	this->compass = CompassFactory().getCompass();
 	this->camera.setAngleV(0);
@@ -77,6 +77,13 @@ void OpenGLcityView::AddBuilding(const int id, const Building3DFactory &building
 		this->DeleteBuilding(id);
 
 	this->buildings[id] = buildingFactory.NewBuilding();
+}
+void OpenGLcityView::AddBuilding(const int id, const MNT3DFactory &buildingFactory)
+{
+    if (this->buildings.find(id) != this->buildings.end())
+        this->DeleteBuilding(id);
+
+    this->buildings[id] = buildingFactory.NewBuilding();
 }
 void OpenGLcityView::DeleteBuilding(const int id)
 {

@@ -296,7 +296,15 @@ void MainWindow::OnActionRastor3DLayerClicked()
 {
     MntWindow mntwindow;
     mntwindow.setModal(true);
-    mntwindow.exec();
+    int result = mntwindow.exec();
+
+    if (result == QDialog::Accepted) {
+        std::cout << mntwindow.getPathTexture()<< std::endl;
+//        MNT3DFactory(const std::string &pathObj, const std::string &pathTexture)
+//                this->buildings[86] = MNT3DFactory(5).NewBuilding();
+        ui->openGLWidget_window3D->AddBuilding(86, MNT3DFactory(mntwindow.getPathObj(), mntwindow.getPathTexture()));
+//        ui->openGLWidget_window3D->AddBuilding(5, Building3DFactory(0));
+    }
 }
 
 

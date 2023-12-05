@@ -37,6 +37,15 @@ public:
 	 */
 	void AddBuilding(const int id, const Building3DFactory &buildingFactory);
 
+    /**
+     * @brief Add a DTM to display it
+     * DTM are stored with their id
+     *
+     * @param id
+     * @param buildingFactory
+     */
+    void AddBuilding(const int id, const MNT3DFactory &buildingFactory);
+
 	/**
 	 * @brief Remove a building and free memory
 	 *
