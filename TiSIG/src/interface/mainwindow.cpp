@@ -852,7 +852,7 @@ void MainWindow::getAttributesLayer(QMouseEvent *event){
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
-	std::cout << "BEFORE FILTER" << std::endl;
+	//std::cout << "BEFORE FILTER" << std::endl;
 	if (obj == ui->graphicsView_window2D && event->type() == QEvent::MouseButtonPress)
 	{
 		QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
