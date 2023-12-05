@@ -57,11 +57,11 @@ public:
 	 */
 	Ui::MainWindow * getUi() const;
 
-    /**
-     * @brief Get the current extent of the 2D graphics view in scene coordinates
-     * @return The extent of the view in scene coordinates
-     */
-    QRectF get2DViewExtent();
+	/**
+	 * @brief Get the current extent of the 2D graphics view in scene coordinates
+	 * @return The extent of the view in scene coordinates
+	 */
+	QRectF get2DViewExtent();
 
 	/**
 	 * @brief Function to add Layer to the ListWidget
@@ -73,18 +73,18 @@ public:
 	void updateLayerOrderInGraphicsView();
 
 
-    /**
-     * @brief Filter all events
-     * @param obj QObject to be filtered
-     * @param event QEvent to be filtered
-     * @return boolean
-     */
-    bool eventFilter(QObject *obj, QEvent *event) override;
+	/**
+	 * @brief Filter all events
+	 * @param obj QObject to be filtered
+	 * @param event QEvent to be filtered
+	 * @return boolean
+	 */
+	bool eventFilter(QObject *obj, QEvent *event) override;
 
-    /**
-     * @brief Function to get mouse pressed event on the scene
-     */
-    void getAttributesLayer(QMouseEvent * event);
+	/**
+	 * @brief Function to get mouse pressed event on the scene
+	 */
+	void getAttributesLayer(QMouseEvent * event);
 
 
 private:
@@ -94,7 +94,7 @@ private:
 	QGraphicsScene *scene;
 	std::map <int, Layer*> layerList;
 	std::string ipAdress;
-    std::map <int, Shapefile*> ShpList;
+	std::map <int, Shapefile*> ShpList;
 
 	Layer3D * layer3D;
 	Object3DStorage * storage3D;
@@ -158,12 +158,19 @@ private slots:
 	*/
 	void OnAction2DDataFlowClicked();
 
-  /**
-   * @brief Function to show add2DWMSDataflow window
-   *
-   *
-   */
-   void OnAction2DWMSDataFlowClicked();
+	/**
+	* @brief Function to show add2DWFSDataflow window
+	*
+	*
+	*/
+	void OnAction2DWFSDataFlowClicked();
+
+	/**
+	* @brief Function to show add2DWMSDataflow window
+	*
+	*
+	*/
+	void OnAction2DWMSDataFlowClicked();
 
 	/**
 	 * @brief Function to show add2DVectorLayer window
