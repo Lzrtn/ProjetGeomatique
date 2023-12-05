@@ -115,8 +115,8 @@ std::string GeoTiffToObjConverter::writeObjFileWithTextures()
             }
 
             fclose(objFile);
-            return baseName;
         }
+        return baseName;
     }
     else
     {
