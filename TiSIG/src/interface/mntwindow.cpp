@@ -68,6 +68,6 @@ void MntWindow::OnButtonSubmitClicked() {
 
         this->m_pathObj = converter.writeObjFileWithTextures();
 
-         accept();
+        accept();
     }
 }
