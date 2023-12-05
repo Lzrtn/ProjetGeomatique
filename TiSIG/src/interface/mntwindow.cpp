@@ -54,29 +54,20 @@ void MntWindow::OnButtonSubmitClicked() {
     QString fileNameDTM = ui->lineEdit_DTMPath->text();
     QByteArray ba = fileNameDTM.toLocal8Bit();
     const char *pathDTM = ba.data();
-//    const char* pathDTM = fileNameDTM.toLocal8Bit().constData();
 
 
     QString fileNameOrtho = ui->lineEdit_OrthoPath->text();
-    QByteArray bb = fileNameDTM.toLocal8Bit();
+    QByteArray bb = fileNameOrtho.toLocal8Bit();
     const char *pathOrtho = bb.data();
-//    const char* pathOrtho = fileNameOrtho.toLocal8Bit().constData();
 
     if(fileNameDTM=="" || fileNameOrtho=="") {
         ui->label_Error->setText("Veuillez renseigner tous les chemins vers les fichiers.");
     } else {
-        std::cout << pathDTM << std::endl;
+
         GeoTiffToObjConverter converter(pathDTM, pathOrtho, "./data/DONNEES_BDORTHO/");
 
-        converter.writeObjFileWithTextures();
-        this->value = 5;
-//        converter.writeCoordWithTextures();
+        this->m_pathObj = converter.writeObjFileWithTextures();
 
-
-//        for (auto vertex : converter.getPosition())
-//         {
-//             std::cout << vertex.x() << ' ' << vertex.y() << ' ' << vertex.z() << std::endl;
-//         }
          accept();
     }
 }
