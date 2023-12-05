@@ -15,7 +15,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "helpwindow.h"
-#include "dataflowwindow.h"
+#include "wfsdataflowwindow.h"
+#include "wmsdataflowwindow.h"
 #include "view_zoom.h"
 #include "mntwindow.h"
 
@@ -43,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 	, ui(new Ui::MainWindow)
 {
+
+
 	/*_______________________________Initialisation_________________________________________________________________________________________________*/
 
 	ui->setupUi(this);
@@ -52,13 +55,14 @@ MainWindow::MainWindow(QWidget *parent)
 		// Action 2D
 	ui->action_add2DVectorLayer->setEnabled(!mode);
 	ui->action_add2DRastorLayer->setEnabled(!mode);
-	ui->action_add2DDataFlow->setEnabled(!mode);
+	ui->action_add2DWFSDataFlow->setEnabled(!mode);
+	ui->action_add2DWMSDataFlow->setEnabled(!mode);
 		// Actions 3D
 	ui->action_add3DVectorLayer->setEnabled(mode);
 	ui->action_add3DRastorLayer->setEnabled(mode);
 	ui->action_add3DModel->setEnabled(mode);
-
 	ui->openGLWidget_window3D->setCamInfoDisplayer(this);
+
 
 
 	/*_______________________________Variables_________________________________________________________________________________________________*/
@@ -84,8 +88,10 @@ MainWindow::MainWindow(QWidget *parent)
 	// Connecting help action
 	connect(ui->action_help, &QAction::triggered, this, &MainWindow::OnActionHelpClicked);
 
-	// Connecting add2ddataflow action
-	connect(ui->action_add2DDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DDataFlowClicked);
+	// Connecting add2dWFSdataflow action
+	connect(ui->action_add2DWFSDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DWFSDataFlowClicked);
+	// Connecting add2dWMSdataflow action
+	connect(ui->action_add2DWMSDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DWMSDataFlowClicked);
 
 	// Connecting add2dvectorlayer action and add3dvectorlayer action
 	connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVector2DLayerClicked);
@@ -99,9 +105,7 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::OnAction3DModelClicked);
 
 
-
 	/*_______________________________Barre d'outils___________________________________________________________________________________________________*/
-
 
 	// Connecting switch 2D/3D button
 	connect(ui->btn_switchMode2D3D, &QPushButton::clicked, this, &MainWindow::OnButtonSwitchTo2D3DClicked);
@@ -117,7 +121,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 	/*_______________________________Barre d'outils dans le gestionnaire de couches___________________________________________________________________________________________________*/
-
 
 	// Connecter le bouton "Up" à la fonction de déplacement vers le haut
 	connect(ui->btn_moveLayerUp2D, &QPushButton::clicked, [=]() {
@@ -151,7 +154,6 @@ MainWindow::~MainWindow()
 	for(auto pair: layerList)
 	{
 		delete pair.second;
-		layerList.erase(pair.first);
 	}
 
 	// Delete all items from 2D window
@@ -190,6 +192,12 @@ Ui::MainWindow * MainWindow::getUi() const
 	return ui;
 }
 
+QRectF MainWindow::get2DViewExtent()
+{
+	QRectF viewSceneRect = ui->graphicsView_window2D->mapToScene(ui->graphicsView_window2D->rect()).boundingRect();
+	return viewSceneRect;
+}
+
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
 	mode = !mode;
@@ -199,7 +207,8 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 
 	ui->action_add2DVectorLayer->setEnabled(!mode);
 	ui->action_add2DRastorLayer->setEnabled(!mode);
-	ui->action_add2DDataFlow->setEnabled(!mode);
+	ui->action_add2DWFSDataFlow->setEnabled(!mode);
+	ui->action_add2DWMSDataFlow->setEnabled(!mode);
 
 	ui->action_add3DVectorLayer->setEnabled(mode);
 	ui->action_add3DRastorLayer->setEnabled(mode);
@@ -236,11 +245,24 @@ void MainWindow::OnActionHelpClicked()
 	helpwindow.exec();
 }
 
-void MainWindow::OnAction2DDataFlowClicked()
+void MainWindow::OnAction2DWFSDataFlowClicked()
 {
-	DataFlowWindow dataflowwindow;
-	dataflowwindow.setModal(true);
-	dataflowwindow.exec();
+	WFSDataFlowWindow wfsdataflowwindow;
+	wfsdataflowwindow.setModal(true);
+	int result = wfsdataflowwindow.exec();
+	if(result==QDialog::Accepted){
+		std::cout << wfsdataflowwindow.getLien()<<std::endl;
+	}
+}
+
+void MainWindow::OnAction2DWMSDataFlowClicked()
+{
+	WMSDataFlowWindow wmsdataflowwindow;
+	wmsdataflowwindow.setModal(true);
+	int result = wmsdataflowwindow.exec();
+	if(result==QDialog::Accepted){
+		std::cout << wmsdataflowwindow.getLien()<<std::endl;
+	}
 }
 
 std::string MainWindow::OnActionVector2DLayerClicked()
@@ -376,7 +398,6 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 	geotiff.WriteGeotiffAndMetadataToPostgis(test);
 	std::cout << "geotiff ecrit dans la bdd" << std::endl;
 
-
 	//Import raster from the DB into a layer
 
 	QString filePath = QString::fromStdString(path);
@@ -401,87 +422,98 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 
 void MainWindow::OnButtonZoomIn()
 {
-	ui->graphicsView_window2D->scale(1.2,1.2);
-	qreal currentScale = ui->graphicsView_window2D->transform().m11();
+	if (!this->mode) {
+		ui->graphicsView_window2D->scale(1.2,1.2);
+		qreal currentScale = ui->graphicsView_window2D->transform().m11();
 
-	// Parcourir tous les éléments de la scène
-	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
-		QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
-		QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
-		QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
+		// Parcourir tous les éléments de la scène
+		for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
+			QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+			QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+			QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
 
-		if (polyItem) {
-			// Ajuster la largeur du trait en fonction du facteur de zoom
-			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+			if (polyItem) {
+				// Ajuster la largeur du trait en fonction du facteur de zoom
+				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-			// Mettre à jour la largeur du trait
-			QPen pen = polyItem->pen();
-			pen.setWidthF(adjustedWidth);
-			polyItem->setPen(pen);
+				// Mettre à jour la largeur du trait
+				QPen pen = polyItem->pen();
+				pen.setWidthF(adjustedWidth);
+				polyItem->setPen(pen);
+			}
+
+			if (lineItem) {
+				// Ajuster la largeur du trait en fonction du facteur de zoom
+				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+				// Mettre à jour la largeur du trait
+				QPen pen = lineItem->pen();
+				pen.setWidthF(adjustedWidth);
+				lineItem->setPen(pen);
+			}
+
+			if (pointItem) {
+				// Ajuster la largeur du trait en fonction du facteur de zoom
+				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+				// Mettre à jour la largeur du trait
+				QPen pen = pointItem->pen();
+				pen.setWidthF(adjustedWidth);
+				pointItem->setPen(pen);
+			}
+
 		}
-
-		if (lineItem) {
-			// Ajuster la largeur du trait en fonction du facteur de zoom
-			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-			// Mettre à jour la largeur du trait
-			QPen pen = lineItem->pen();
-			pen.setWidthF(adjustedWidth);
-			lineItem->setPen(pen);
-		}
-
-		if (pointItem) {
-			// Ajuster la largeur du trait en fonction du facteur de zoom
-			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-			// Mettre à jour la largeur du trait
-			QPen pen = pointItem->pen();
-			pen.setWidthF(adjustedWidth);
-			pointItem->setPen(pen);
-		}
+	} else {
+		this->ui->openGLWidget_window3D->ZoomIn();
+//		std::cout << "Zoom in 3D" << std::endl;
 	}
 }
 
 void MainWindow::OnButtonZoomOut()
 {
-ui->graphicsView_window2D->scale(1/1.2,1/1.2);
-qreal currentScale = ui->graphicsView_window2D->transform().m11();
+	if (!this->mode) {
+		ui->graphicsView_window2D->scale(1/1.2,1/1.2);
+		qreal currentScale = ui->graphicsView_window2D->transform().m11();
 
-	// Parcourir tous les éléments de la scène
-	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
-		QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
-		QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
-		QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
+		// Parcourir tous les éléments de la scène
+		for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
+			QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+			QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+			QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
 
-		if (polyItem) {
-			// Ajuster la largeur du trait en fonction du facteur de zoom
-			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+			if (polyItem) {
+				// Ajuster la largeur du trait en fonction du facteur de zoom
+				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-			// Mettre à jour la largeur du trait
-			QPen pen = polyItem->pen();
-			pen.setWidthF(adjustedWidth);
-			polyItem->setPen(pen);
+				// Mettre à jour la largeur du trait
+				QPen pen = polyItem->pen();
+				pen.setWidthF(adjustedWidth);
+				polyItem->setPen(pen);
+			}
+
+			if (lineItem) {
+				// Ajuster la largeur du trait en fonction du facteur de zoom
+				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+				// Mettre à jour la largeur du trait
+				QPen pen = lineItem->pen();
+				pen.setWidthF(adjustedWidth);
+				lineItem->setPen(pen);
+			}
+
+			if (pointItem) {
+				// Ajuster la largeur du trait en fonction du facteur de zoom
+				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+				// Mettre à jour la largeur du trait
+				QPen pen = pointItem->pen();
+				pen.setWidthF(adjustedWidth);
+				pointItem->setPen(pen);
+			}
+
 		}
-
-		if (lineItem) {
-			// Ajuster la largeur du trait en fonction du facteur de zoom
-			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-			// Mettre à jour la largeur du trait
-			QPen pen = lineItem->pen();
-			pen.setWidthF(adjustedWidth);
-			lineItem->setPen(pen);
-		}
-
-		if (pointItem) {
-			// Ajuster la largeur du trait en fonction du facteur de zoom
-			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-			// Mettre à jour la largeur du trait
-			QPen pen = pointItem->pen();
-			pen.setWidthF(adjustedWidth);
-			pointItem->setPen(pen);
-		}
+	} else {
+		this->ui->openGLWidget_window3D->ZoomOut();
 	}
 }
 
@@ -775,7 +807,8 @@ void MainWindow::getAttributesLayer(QMouseEvent *event){
 
 		if (!rows_shape.empty()){
 			for (pqxx::result::const_iterator row = rows_shape.begin(); row != rows_shape.end(); ++row) {
-				for (int j = 0; j < row.size(); ++j) {
+
+				for (unsigned int j = 0; j < row.size(); ++j) {
 					std::string name_col = rows_shape.column_name(j);
 					if (!row[j].is_null()) {
 						std::string value = row[j].as<std::string>();

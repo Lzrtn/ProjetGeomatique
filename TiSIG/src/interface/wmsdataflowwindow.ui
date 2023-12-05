@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DataFlowWindow</class>
- <widget class="QDialog" name="DataFlowWindow">
+ <class>WMSDataFlowWindow</class>
+ <widget class="QDialog" name="WMSDataFlowWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Ajouter un flux</string>
+   <string>Ajouter un flux WMS</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
@@ -36,7 +36,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_dataFlowPreSaved">
       <attribute name="title">

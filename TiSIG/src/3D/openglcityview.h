@@ -41,6 +41,10 @@ public:
 	Layer3D* getLayer(const int id) const { return this->layers.at(id); }
 	void removeLayer(const int id) { this->layers.erase(id); }
 
+	void ZoomIn() { this->controls.ZoomIn(true); }
+	void ZoomOut() { this->controls.ZoomIn(false); }
+
+
 protected:
 
 	ICameraDisplayInfo * camInfoDisplayer;

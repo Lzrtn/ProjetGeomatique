@@ -57,6 +57,11 @@ public:
 	 */
 	Ui::MainWindow * getUi() const;
 
+    /**
+     * @brief Get the current extent of the 2D graphics view in scene coordinates
+     * @return The extent of the view in scene coordinates
+     */
+    QRectF get2DViewExtent();
 
 	/**
 	 * @brief Function to add Layer to the ListWidget
@@ -152,6 +157,13 @@ private slots:
 	*
 	*/
 	void OnAction2DDataFlowClicked();
+
+  /**
+   * @brief Function to show add2DWMSDataflow window
+   *
+   *
+   */
+   void OnAction2DWMSDataFlowClicked();
 
 	/**
 	 * @brief Function to show add2DVectorLayer window
