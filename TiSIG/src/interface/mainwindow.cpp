@@ -60,10 +60,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->action_add3DRastorLayer->setEnabled(mode);
     ui->action_add3DModel->setEnabled(mode);
     ui->openGLWidget_window3D->setCamInfoDisplayer(this);
-	    // Connect scene to QGraphicsView
-	ui->graphicsView_window2D->setScene(scene);
-	ui->graphicsView_window2D->setDragMode(QGraphicsView::ScrollHandDrag);
-    ui->graphicsView_window2D->installEventFilter(this);
 
 
 
