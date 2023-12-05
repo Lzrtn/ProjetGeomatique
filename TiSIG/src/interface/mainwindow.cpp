@@ -183,6 +183,12 @@ Ui::MainWindow * MainWindow::getUi() const
     return ui;
 }
 
+QRectF MainWindow::get2DViewExtent()
+{
+    QRectF viewSceneRect = ui->graphicsView_window2D->mapToScene(ui->graphicsView_window2D->rect()).boundingRect();
+    return viewSceneRect;
+}
+
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
     mode = !mode;
