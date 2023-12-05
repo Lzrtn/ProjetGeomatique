@@ -142,6 +142,7 @@ MainWindow::MainWindow(QWidget *parent)
 		onButtonClickedZoomOnLayer();
 	});
 
+
 	/*--------------------- example of linking storage to 3D interface --------------------*/
 	this->storage3D = new ExempleObject3DStorage();
 	this->layer3D = new Layer3D(this->storage3D);
@@ -150,6 +151,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+	/* ------------------------------   2D deletion   ----------------------- */
+
 	// Delete all layers
 	for(auto pair: layerList)
 	{
@@ -165,13 +168,6 @@ MainWindow::~MainWindow()
 	// Delete scene
 	delete scene;
 
-	// Delete interface
-	delete ui;
-
-	// Delete 3D objects
-	delete this->storage3D;
-	delete this->layer3D;
-
 	//Delete shapefiles
 	for (std::pair <const int, Shapefile * > truc : ShpList){
 	Shapefile* shp = truc.second;
@@ -182,6 +178,15 @@ MainWindow::~MainWindow()
 	DbManager test("database2D", ipAdress);
 	std::string request = "TRUNCATE TABLE symbologie";
 	test.Request(request);
+
+	/* ------------------------------   3D deletion   ----------------------- */
+	delete this->storage3D;
+	delete this->layer3D;
+
+	/* ------------------------------ other deletions ----------------------- */
+	// Delete interface
+	delete ui;
+
 }
 
 
@@ -372,6 +377,8 @@ void MainWindow::AddShpFileClicked(std::string path)
 	index++;
 
 	ShpList.insert(std::pair<const int, Shapefile *>(layerId, essai1));
+
+
 }
 
 void MainWindow::AddGeotiffFileClicked(std::string path)
@@ -459,7 +466,6 @@ void MainWindow::OnButtonZoomIn()
 				pen.setWidthF(adjustedWidth);
 				pointItem->setPen(pen);
 			}
-
 		}
 	} else {
 		this->ui->openGLWidget_window3D->ZoomIn();
@@ -542,9 +548,9 @@ void MainWindow::OnButtonZoomFull()
 			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
 			// Mettre à jour la largeur du trait
-			QPen pen = polyItem->pen();
-			pen.setWidthF(adjustedWidth);
-			polyItem->setPen(pen);
+			//QPen pen = polyItem->pen();
+			//pen.setWidthF(adjustedWidth);
+			//polyItem->setPen(pen);
 		}
 
 
@@ -605,6 +611,8 @@ void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 
 	layer.layerWidget->setLayout(layer.layout);
 	layer.layerItem->setSizeHint(layer.layerWidget->sizeHint());
+
+
 
 	ui->listeWidget_layersList2D->setItemWidget(layer.layerItem, layer.layerWidget);
 
@@ -805,7 +813,6 @@ void MainWindow::getAttributesLayer(QMouseEvent *event){
 
 		if (!rows_shape.empty()){
 			for (pqxx::result::const_iterator row = rows_shape.begin(); row != rows_shape.end(); ++row) {
-
 				for (unsigned int j = 0; j < row.size(); ++j) {
 					std::string name_col = rows_shape.column_name(j);
 					if (!row[j].is_null()) {

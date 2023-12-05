@@ -99,7 +99,6 @@ private:
 	Layer3D * layer3D;
 	Object3DStorage * storage3D;
 
-
 private slots:
 
 
@@ -150,13 +149,6 @@ private slots:
 	*
 	*/
 	void OnActionHelpClicked();
-
-	/**
-	* @brief Function to show add2DDataflow window
-	*
-	*
-	*/
-	void OnAction2DDataFlowClicked();
 
 	/**
 	* @brief Function to show add2DWFSDataflow window

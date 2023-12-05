@@ -58,7 +58,7 @@ public:
 	 */
 	Object3D(const std::string & pathObj, const std::string &pathTexture);
 
-	virtual ~Object3D() = default;
+	virtual ~Object3D();
 
 	/**
 	 * @brief draw

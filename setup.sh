@@ -92,5 +92,5 @@ Categories=Application;
 EOL'
 
 # Display a message when the installation is completed
-zenity --info --text="Configuration & compilation completed ! Please close and reopen your session to apply some changes."
+zenity --info --text="Configuration and compilation completed ! Please close and reopen your session to apply some changes."
 
