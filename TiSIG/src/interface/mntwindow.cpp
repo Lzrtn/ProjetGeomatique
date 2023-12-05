@@ -21,7 +21,10 @@ MntWindow::MntWindow(QWidget *parent) :
     connect(ui->btn_OrthoFile, &QPushButton::clicked, this, &MntWindow::OnButtonAddOrthoClicked);
 
     // Connecting Validate DataFlowUrl button
-    connect(ui->btn_Submit, &QPushButton::clicked, this, &MntWindow::OnButtonSubmitClicked);
+//    connect(ui->btn_Submit, &QPushButton::clicked, this, &MntWindow::OnButtonSubmitClicked);
+
+    // Connecte le slot du QDialog au signal du bouton du QDialog
+    connect(ui->btn_Submit, SIGNAL(clicked()), this, SLOT(OnButtonSubmitClicked()));
 }
 
 MntWindow::~MntWindow()
@@ -46,6 +49,7 @@ void MntWindow::OnButtonAddOrthoClicked() {
 //    std::cout<< path <<std::endl;
 }
 
+
 void MntWindow::OnButtonSubmitClicked() {
     QString fileNameDTM = ui->lineEdit_DTMPath->text();
     QByteArray ba = fileNameDTM.toLocal8Bit();
@@ -63,7 +67,16 @@ void MntWindow::OnButtonSubmitClicked() {
     } else {
         std::cout << pathDTM << std::endl;
         GeoTiffToObjConverter converter(pathDTM, pathOrtho, "./data/DONNEES_BDORTHO/");
-        converter.writeObjFileWithTextures();
-    }
 
+        converter.writeObjFileWithTextures();
+        this->value = 5;
+//        converter.writeCoordWithTextures();
+
+
+//        for (auto vertex : converter.getPosition())
+//         {
+//             std::cout << vertex.x() << ' ' << vertex.y() << ' ' << vertex.z() << std::endl;
+//         }
+         accept();
+    }
 }
