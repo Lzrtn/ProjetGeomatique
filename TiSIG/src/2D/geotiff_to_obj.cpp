@@ -18,8 +18,6 @@ GeoTiffToObjConverter::GeoTiffToObjConverter(const std::string inputFilePath, co
     }
 }
 
-
-
 GeoTiffToObjConverter::~GeoTiffToObjConverter()
 {
     if (dataset)
@@ -65,6 +63,7 @@ std::string GeoTiffToObjConverter::writeObjFileWithTextures()
 
             int startX = (i % 4) * subWidth;
             int startY = (i / 4) * subHeight;
+
             std::cout << "image " << i << " " << startX << " " << startY << std::endl;
 
             for (int y = startY; y < startY + subHeight; ++y)
@@ -89,38 +88,41 @@ std::string GeoTiffToObjConverter::writeObjFileWithTextures()
                     double y_geo = -(adfGeoTransform[3] + x * adfGeoTransform[4] + y * adfGeoTransform[5]) + y_translate;
                     fprintf(objFile, "v %f %f %f\n", x_geo, y_geo, value);
 
-                    float texCoordX = (float)x * (orthoWidth - 1) / (width - 1);
-                    float texCoordY = (float)y * (orthoHeight - 1) / (height - 1);
+                    // float texCoordX = (float)x * (orthoWidth - 1) / (width - 1);
+                    // float texCoordY = (float)y * (orthoHeight - 1) / (height - 1);
 
-                    fprintf(objFile, "vt %f %f\n", texCoordX / (orthoWidth - 1), texCoordY / (orthoHeight - 1));
+                    // fprintf(objFile, "vt %f %f\n", texCoordX / (orthoWidth - 1), texCoordY / (orthoHeight - 1));
 
-  
+                    float scaleWidth = (float)width / orthoWidth;
+                    float scaleHeight = (float)height / orthoHeight;
+
+                    float texCoordX = (float)x * scaleWidth;
+                    float texCoordY = (float)y * scaleHeight;
+
+                    fprintf(objFile, "vt %f %f\n", texCoordX, texCoordY);
                     fprintf(objFile, "vn 0 0 1\n");
-
                 }
             }
-            for (int y = startY; y < startY + subHeight - 1; ++y)
+            for (int y = startY; y < startY + subHeight; ++y)
             {
-                for (int x = startX; x < startX + subWidth - 1; ++x)
+                for (int x = startX; x < startX + subWidth; ++x)
                 {
-                    // Rest of the code, with x and y adjusted by startX and startY respectively
-                    int v1 = ((y - startY) * subWidth + (x - startX)) + 1; // Adjusted indices
+                    int v1 = ((y - startY) * subWidth + (x - startX)) + 1;
                     int v2 = ((y - startY) * subWidth + (x - startX + 1)) + 1;
                     int v3 = (((y - startY + 1) * subWidth) + (x - startX + 1)) + 1;
                     int v4 = (((y - startY + 1) * subWidth) + (x - startX)) + 1;
 
-                    fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v2, v2, v2, v3, v3, v3);
-                    fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v3, v3, v3, v4, v4, v4);
+                    fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v3, v3, v3, v2, v2, v2);
+                    fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v4, v4, v4, v3, v3, v3);
                 }
             }
 
             fclose(objFile);
-            return baseName;
         }
+        return baseName;
     }
     else
     {
         throw std::runtime_error("Error getting geotransform information");
     }
-    
 }
