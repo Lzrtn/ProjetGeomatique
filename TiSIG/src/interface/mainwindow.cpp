@@ -30,6 +30,8 @@
 #include "../src/outils/docker.h"
 #include "../src/2D/geojson.h"
 
+#include "../src/3D/exempleobject3dstorage.h"
+
 //Initialisation du Docker
 // Creating container
 std::string pathDockerFile = "database-tisig";
@@ -139,10 +141,18 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->btn_zoomOnLayer2D, &QPushButton::clicked, [=]() {
 		onButtonClickedZoomOnLayer();
 	});
+
+
+	/*--------------------- example of linking storage to 3D interface --------------------*/
+	this->storage3D = new ExempleObject3DStorage();
+	this->layer3D = new Layer3D(this->storage3D);
+	this->ui->openGLWidget_window3D->addLayer(0, this->layer3D);
 }
 
 MainWindow::~MainWindow()
 {
+	/* ------------------------------   2D deletion   ----------------------- */
+
 	// Delete all layers
 	for(auto pair: layerList)
 	{
@@ -152,14 +162,11 @@ MainWindow::~MainWindow()
 	// Delete all items from 2D window
 	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
 	{
-	delete item;
+		delete item;
 	}
 
 	// Delete scene
 	delete scene;
-
-	// Delete interface
-	delete ui;
 
 	//Delete shapefiles
 	for (std::pair <const int, Shapefile * > truc : ShpList){
@@ -171,6 +178,15 @@ MainWindow::~MainWindow()
 	DbManager test("database2D", ipAdress);
 	std::string request = "TRUNCATE TABLE symbologie";
 	test.Request(request);
+
+	/* ------------------------------   3D deletion   ----------------------- */
+	delete this->storage3D;
+	delete this->layer3D;
+
+	/* ------------------------------ other deletions ----------------------- */
+	// Delete interface
+	delete ui;
+
 }
 
 
