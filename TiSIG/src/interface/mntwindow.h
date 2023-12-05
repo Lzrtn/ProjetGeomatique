@@ -31,8 +31,13 @@ public:
      */
     ~MntWindow();
 
+    int getValue() { return value; };
+
+
 private:
     Ui::MntWindow *ui; ///< Ui::MntWindow ui
+    int value;
+
 //    QLineEdit lineEdit_DTMPath; ///< QLineEdit lineEdit_DTMPath
 //    QLineEdit lineEdit_OrthoPath; ///< QLineEdit lineEdit_Path
 //    QPushButton btn_validateDataFlowUrl; ///< QPushButton btn_validateDataFlowUrl
@@ -50,6 +55,8 @@ private:
    */
 void OnButtonAddOrthoClicked();
 
+
+private slots:
 /**
  * @brief Function Submit
  *

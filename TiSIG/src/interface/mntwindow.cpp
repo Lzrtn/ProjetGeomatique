@@ -77,6 +77,6 @@ void MntWindow::OnButtonSubmitClicked() {
 //         {
 //             std::cout << vertex.x() << ' ' << vertex.y() << ' ' << vertex.z() << std::endl;
 //         }
-         accept();
+        accept();
     }
 }
