@@ -5,18 +5,15 @@
 
 /////////////////////////////  Building 3D Factory  //////////////////////////////////////
 
-Building3DFactory::Building3DFactory(const std::vector<QVector3D> &vertices,
-									 const std::vector<QVector3D> &normals,
-									 const std::vector<QVector2D> &uv,
-									 const std::string &pathTexture) :
-	vertices(vertices), normals(normals), uv(uv), pathTexture(pathTexture)
-{}
 
 Building3DFactory::Building3DFactory(const int version)
 {
 	/*
-	 * version 0 and version 1 are same with different origin
-	 * regular tetrahedre
+	 * version 0 and version 1 are same with different origin: regular tetrahedre
+	 *
+	 * 2: building seen when camera vangle is 45°
+	 *
+	 * 3: square with compas texture to control axis orientation
 	 */
 	switch (version)
 	{
@@ -99,6 +96,7 @@ Building3DFactory::Building3DFactory(const int version)
 
 Building3D * Building3DFactory::New() const
 {
+	// use constructor depending on if we have normals or not
 	if (this->normals.size() == 0)
 		return new Building3D(this->vertices, this->uv, this->pathTexture);
 	return new Building3D(this->vertices, this->normals, this->uv, this->pathTexture);
