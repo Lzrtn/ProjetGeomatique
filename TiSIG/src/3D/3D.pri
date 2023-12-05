@@ -13,6 +13,7 @@ SOURCES += \
     $$PWD/exempleobject3dstorage.cpp \
     $$PWD/layer3d.cpp \
     $$PWD/mnt3d.cpp \
+    $$PWD/mnt3dstorage.cpp \
     $$PWD/object3d.cpp \
     $$PWD/building3d.cpp \
     $$PWD/openglcityview.cpp \
@@ -27,6 +28,7 @@ HEADERS += \
     $$PWD/i_openglcityview.h \
     $$PWD/layer3d.h \
     $$PWD/mnt3d.h \
+    $$PWD/mnt3dstorage.h \
     $$PWD/object3d.h \
     $$PWD/building3d.h \
     $$PWD/openglcityview.h \

@@ -31,6 +31,7 @@
 #include "../src/2D/geojson.h"
 
 #include "../src/3D/exempleobject3dstorage.h"
+#include "../src/3D/mnt3dstorage.h"
 
 //Initialisation du Docker
 // Creating container
@@ -144,9 +145,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 	/*--------------------- example of linking storage to 3D interface --------------------*/
-	this->storage3D = new ExempleObject3DStorage();
-	this->layer3D = new Layer3D(this->storage3D);
-	this->ui->openGLWidget_window3D->addLayer(0, this->layer3D);
+    this->storage3D = new ExempleObject3DStorage();
+    this->layer3D = new Layer3D(this->storage3D);
+    this->ui->openGLWidget_window3D->addLayer(0, this->layer3D);
+
 }
 
 MainWindow::~MainWindow()
@@ -316,7 +318,10 @@ void MainWindow::OnActionRastor3DLayerClicked()
 
     if (result == QDialog::Accepted) {
         std::cout << mntwindow.getObj()<< std::endl;
-//        ui->openGLWidget_window3D->AddBuilding(5, Building3DFactory(0));
+
+        this->storage3D = new MNT3dstorage(mntwindow.getObj(), mntwindow.getTexture());
+        this->layer3D = new Layer3D(this->storage3D);
+        this->ui->openGLWidget_window3D->addLayer(1, this->layer3D);
     }
 }
 

@@ -103,14 +103,13 @@ std::string GeoTiffToObjConverter::writeObjFileWithTextures()
             {
                 for (int x = startX; x < startX + subWidth - 1; ++x)
                 {
-                    // Rest of the code, with x and y adjusted by startX and startY respectively
-                    int v1 = ((y - startY) * subWidth + (x - startX)) + 1; // Adjusted indices
+                    int v1 = ((y - startY) * subWidth + (x - startX)) + 1; 
                     int v2 = ((y - startY) * subWidth + (x - startX + 1)) + 1;
                     int v3 = (((y - startY + 1) * subWidth) + (x - startX + 1)) + 1;
                     int v4 = (((y - startY + 1) * subWidth) + (x - startX)) + 1;
 
-                    fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v2, v2, v2, v3, v3, v3);
-                    fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v3, v3, v3, v4, v4, v4);
+                    fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v3, v3, v3, v2, v2, v2);
+                    fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v4, v4, v4, v3, v3, v3);
                 }
             }
 

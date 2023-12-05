@@ -67,6 +67,7 @@ void MntWindow::OnButtonSubmitClicked() {
         GeoTiffToObjConverter converter(pathDTM, pathOrtho, "./data/DONNEES_BDORTHO/");
 
         this->m_pathObj = converter.writeObjFileWithTextures();
+        this->m_pathTexture = pathOrtho;
 
         accept();
     }
