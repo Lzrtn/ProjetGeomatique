@@ -162,17 +162,15 @@ MainWindow::~MainWindow()
 		delete item;
 	}
 
-	// Delete all items from 2D window
-	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
-	{
-	delete item;
-	}
-
 	// Delete scene
 	delete scene;
 
 	// Delete interface
 	delete ui;
+
+	// Delete 3D objects
+	delete this->storage3D;
+	delete this->layer3D;
 
 	//Delete shapefiles
 	for (std::pair <const int, Shapefile * > truc : ShpList){

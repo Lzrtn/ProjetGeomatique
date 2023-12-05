@@ -65,6 +65,11 @@ public:
 class Object3DStorage {
 public:
 	/**
+	 * @brief Default destructor
+	 */
+	virtual ~Object3DStorage() = default;
+
+	/**
 	 * @brief GetObjectsInEmprise
 	 * @param emprise :			(input)  current emprise of view
 	 * @param new_objects :		(output) map of new objects
