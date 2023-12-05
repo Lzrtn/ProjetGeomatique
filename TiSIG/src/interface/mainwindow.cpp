@@ -532,9 +532,9 @@ void MainWindow::OnButtonZoomFull()
 			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
 			// Mettre à jour la largeur du trait
-			QPen pen = polyItem->pen();
-			pen.setWidthF(adjustedWidth);
-			polyItem->setPen(pen);
+			//QPen pen = polyItem->pen();
+			//pen.setWidthF(adjustedWidth);
+			//polyItem->setPen(pen);
 		}
 
 
