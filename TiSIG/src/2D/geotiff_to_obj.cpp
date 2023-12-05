@@ -92,6 +92,7 @@ void GeoTiffToObjConverter::writeObjFileWithTextures()
             }
         }
         int a = 0;
+        double x_translate, y_translate;
 
 
         for (int y = 0; y < height; ++y)
@@ -104,8 +105,6 @@ void GeoTiffToObjConverter::writeObjFileWithTextures()
                 {
                     throw std::runtime_error("Error reading raster data");
                 }
-
-                double x_translate, y_translate;
 
 
                 if(a==0) {
@@ -121,7 +120,7 @@ void GeoTiffToObjConverter::writeObjFileWithTextures()
 //                fprintf(objFile, "v %d %f %d\n", x, normalizedValue, y);
 //                fprintf(objFile, "v %d %d %f\n", x, y, normalizedValue);
 //                fprintf(objFile, "v %f %f %f\n", x_geo, y_geo, normalizedValue);
-                 fprintf(objFile, "v %f %f %f\n", x_geo, y_geo, value);
+                fprintf(objFile, "v %f %f %f\n", x_geo, y_geo, value);
 
                 float texCoordX = (float)x * (orthoWidth - 1) / (width - 1);
                 float texCoordY = (float)y * (orthoHeight - 1) / (height - 1);

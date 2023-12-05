@@ -31,12 +31,15 @@ public:
      */
     ~DataFlowWindow();
 
+    std::string getLien() { return lien; };
+
 private:
     Ui::DataFlowWindow *ui; ///< Ui::DataFlowWindow ui
     QComboBox comboBox_dataFlowWindow; ///< QComboBox comboBox_dataFlowWindow
     QLineEdit lineEdit_dataFlowWindow; ///< QLineEdit lineEdit_dataFlowWindow
     QPushButton btn_validateDataFlowUrl; ///< QPushButton btn_validateDataFlowUrl
     QPushButton btn_validateDataFlowPreSaved; ///< QPushButton btn_validateDataFlowPreSaved
+    std::string lien;
 
 private slots:
 
@@ -52,7 +55,7 @@ private slots:
      *
      * @return which dataflow was choosed
      */
-  const char* OnButtonValidateDataFlowPreSavedlClicked();
+  void OnButtonValidateDataFlowPreSavedlClicked();
 };
 
 #endif // DATAFLOWWINDOW_H

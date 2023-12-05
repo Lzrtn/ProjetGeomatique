@@ -216,10 +216,17 @@ void MainWindow::OnActionHelpClicked()
 }
 
 void MainWindow::OnAction2DDataFlowClicked()
-{
-	DataFlowWindow dataflowwindow;
-	dataflowwindow.setModal(true);
-	dataflowwindow.exec();
+{    
+    DataFlowWindow dataflowwindow;
+    dataflowwindow.setModal(true);
+    int result = dataflowwindow.exec();
+
+    if (result == QDialog::Accepted) {
+        // Faites quelque chose après que le QDialog ait été accepté
+        // Par exemple, mettez à jour un élément de la fenêtre principale
+        std::cout << dataflowwindow.getLien()<< std::endl;
+
+    }
 }
 
 std::string MainWindow::OnActionVectorLayerClicked()
@@ -264,7 +271,7 @@ void MainWindow::OnActionRastor3DLayerClicked()
     if (result == QDialog::Accepted) {
         // Faites quelque chose après que le QDialog ait été accepté
         // Par exemple, mettez à jour un élément de la fenêtre principale
-        std::cout << "oui" << std::endl;
+        std::cout << mntwindow.getValue()<< std::endl;
         ui->openGLWidget_window3D->AddBuilding(5, Building3DFactory(0));
     }
 }
