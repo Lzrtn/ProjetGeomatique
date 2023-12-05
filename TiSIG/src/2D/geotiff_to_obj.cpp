@@ -116,7 +116,7 @@ void GeoTiffToObjConverter::writeObjFileWithTextures()
                 double x_geo = (adfGeoTransform[0] + x * adfGeoTransform[1] + y * adfGeoTransform[2]) - x_translate;
                 double y_geo = -(adfGeoTransform[3] + x * adfGeoTransform[4] + y * adfGeoTransform[5]) + y_translate;
 
-                double normalizedValue = ((value - minValue) / (maxValue - minValue));
+//                double normalizedValue = ((value - minValue) / (maxValue - minValue));
 //                fprintf(objFile, "v %d %f %d\n", x, normalizedValue, y);
 //                fprintf(objFile, "v %d %d %f\n", x, y, normalizedValue);
 //                fprintf(objFile, "v %f %f %f\n", x_geo, y_geo, normalizedValue);
