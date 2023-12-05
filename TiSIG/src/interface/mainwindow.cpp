@@ -797,7 +797,7 @@ void MainWindow::getAttributesLayer(QMouseEvent *event){
 
 		if (!rows_shape.empty()){
 			for (pqxx::result::const_iterator row = rows_shape.begin(); row != rows_shape.end(); ++row) {
-				for (int j = 0; j < row.size(); ++j) {
+				for (unsigned int j = 0; j < row.size(); ++j) {
 					std::string name_col = rows_shape.column_name(j);
 					if (!row[j].is_null()) {
 						std::string value = row[j].as<std::string>();
