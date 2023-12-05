@@ -3,7 +3,18 @@
 
 #include <QMatrix4x4>
 
-#include "i_openglcityview.h"
+
+class Emprise {
+public:
+	// 3D coordinates for volume
+	QVector3D a, b, c, d, e, f, g, h;
+
+	// 3D coordinates for ground plan (z=0)
+	QVector3D g_a, g_b, g_c, g_d;
+
+	void updateGroundCoordinates();
+};
+
 
 /**
  * @brief The Camera class
@@ -199,13 +210,7 @@ public:
 	QVector3D ProjToScreen(const QVector3D & pos) const;
 	QVector3D ProjFromScreen(const QVector3D & pos) const;
 
-	Emprise getEmprise() const { return this->emprise; };
-
-	bool consumeChanges() {
-		bool l = this->hasChanged;
-		this->hasChanged = false;
-		return l;
-	}
+	Emprise getEmprise() const;
 
 private:
 	/**
@@ -223,8 +228,6 @@ private:
 	QMatrix4x4 matProjection;
 	QMatrix4x4 matMVP;
 	QMatrix4x4 matMVPCompass;
-	Emprise emprise;
-	bool hasChanged = true;
 };
 
 class ICameraDisplayInfo {
