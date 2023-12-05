@@ -30,6 +30,8 @@
 #include "../src/outils/docker.h"
 #include "../src/2D/geojson.h"
 
+#include "../src/3D/exempleobject3dstorage.h"
+
 //Initialisation du Docker
 // Creating container
 std::string pathDockerFile = "database-tisig";
@@ -139,6 +141,11 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->btn_zoomOnLayer2D, &QPushButton::clicked, [=]() {
 		onButtonClickedZoomOnLayer();
 	});
+
+	/*--------------------- example of linking storage to 3D interface --------------------*/
+	this->storage3D = new ExempleObject3DStorage();
+	this->layer3D = new Layer3D(this->storage3D);
+	this->ui->openGLWidget_window3D->addLayer(0, this->layer3D);
 }
 
 MainWindow::~MainWindow()
@@ -147,6 +154,12 @@ MainWindow::~MainWindow()
 	for(auto pair: layerList)
 	{
 		delete pair.second;
+	}
+
+	// Delete all items from 2D window
+	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
+	{
+		delete item;
 	}
 
 	// Delete all items from 2D window
@@ -361,8 +374,6 @@ void MainWindow::AddShpFileClicked(std::string path)
 	index++;
 
 	ShpList.insert(std::pair<const int, Shapefile *>(layerId, essai1));
-
-
 }
 
 void MainWindow::AddGeotiffFileClicked(std::string path)
@@ -450,6 +461,7 @@ void MainWindow::OnButtonZoomIn()
 				pen.setWidthF(adjustedWidth);
 				pointItem->setPen(pen);
 			}
+
 		}
 	} else {
 		this->ui->openGLWidget_window3D->ZoomIn();
@@ -595,8 +607,6 @@ void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 
 	layer.layerWidget->setLayout(layer.layout);
 	layer.layerItem->setSizeHint(layer.layerWidget->sizeHint());
-
-
 
 	ui->listeWidget_layersList2D->setItemWidget(layer.layerItem, layer.layerWidget);
 
@@ -797,6 +807,7 @@ void MainWindow::getAttributesLayer(QMouseEvent *event){
 
 		if (!rows_shape.empty()){
 			for (pqxx::result::const_iterator row = rows_shape.begin(); row != rows_shape.end(); ++row) {
+
 				for (unsigned int j = 0; j < row.size(); ++j) {
 					std::string name_col = rows_shape.column_name(j);
 					if (!row[j].is_null()) {
