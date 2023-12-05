@@ -112,3 +112,8 @@ void CameraControls::wheelEvent(QWheelEvent *event)
 		this->camera->move({0, 0, -this->speedMouseZ * event->angleDelta().y() / 120});
 	event->accept();
 }
+
+void CameraControls::ZoomIn(bool zoomIn)
+{
+	this->camera->move({0, 0, static_cast<float>((zoomIn ? -1 : 1) * 6.0)});
+}
