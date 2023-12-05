@@ -5,7 +5,10 @@
 
 /**
  * @brief The Building3D class
- * Object that contains building geometry data (vertex, texture, ...)
+ * Object that contains building geometry data (vertex, texture, ...), used in
+ * OpenGLcityView. Do not use directly the constructor
+ *
+ * @see Building3DFactory, Object3DStorage and Layer3D to add objects
  */
 class Building3D : public Object3D
 {
@@ -51,7 +54,7 @@ public:
 	/**
 	 * @brief Building3DFactory produce buildings from this geometry
 	 *
-	 * All faces may have 3 points;
+	 * All faces may have 3 points: give only trianglulated vertices with same size
 	 *
 	 * @param vertices :	3D coordinate of points
 	 * @param normals :		3D vector normal to faces
