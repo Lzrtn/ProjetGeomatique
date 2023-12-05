@@ -48,6 +48,9 @@ public:
 		this->camInfoDisplayer = camInfoDisplayer;
 	};
 
+	void ZoomIn() { this->camInfoDisplayer->zoomIn(); }
+	void ZoomOut() { this->camInfoDisplayer->zoomOut(); }
+
 protected:
 
 	ICameraDisplayInfo * camInfoDisplayer;
