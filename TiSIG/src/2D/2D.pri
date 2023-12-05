@@ -35,7 +35,7 @@ SOURCES += \
     $$PWD/rasteritem.cpp \
     $$PWD/rasterimport.cpp \
     $$PWD/geotiff_to_obj.cpp \
-    $$PWD/fluxvector.cpp \
+    $$PWD/wfsflow.cpp
 
 HEADERS += \
     $$PWD/layer.h \
@@ -46,7 +46,7 @@ HEADERS += \
     $$PWD/rasteritem.h \
     $$PWD/rasterimport.h \
     $$PWD/geotiff_to_obj.h \
-    $$PWD/fluxvector.h \
+    $$PWD/wfsflow.h
 
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17

@@ -92,11 +92,12 @@ int Shapefile::import_to_db(const int epsg)
 
     else{
         // Create the table in the database
+            std::cout << table_name << std::endl;
             std::string request = "DROP TABLE IF EXISTS "+table_name+";";
             db_manager.CreateTable(request);
             std::string request_create = "CREATE TABLE "+table_name+" ();";
             db_manager.CreateTable(request_create);
-            std::cout << "Table created\n";
+            std::cout << "Table created\n" << std::endl;
 
 
         // Get the layer from the shapefile
@@ -166,7 +167,7 @@ int Shapefile::import_to_db(const int epsg)
             instruction_add += " ADD COLUMN geom geometry;";
             db_manager.CreateTable(instruction_add);
 
-            std::cout << "Columns added\n";
+            std::cout << "Columns added\n" << std::endl;
 
             // Loop through features and insert them into the database
             OGRFeature *poFeature;
@@ -187,6 +188,19 @@ int Shapefile::import_to_db(const int epsg)
                         if (value.find("'") != std::string::npos){
                             std::replace(value.begin(), value.end(), '\'', ' ');
                         }
+
+                        // Vérifiez si le caractère indésirable est présent
+                        if (value.find('\xe9') != std::string::npos ) {
+                            // Remplacez tous les caractères indésirables par 'e'
+                            std::replace(value.begin(), value.end(), '\xe9', 'e');
+                        }
+
+                        // Vérifiez si le caractère indésirable est présent
+                        if (value.find('\xe2') != std::string::npos ) {
+                            // Remplacez tous les caractères indésirables par 'e'
+                            std::replace(value.begin(), value.end(), '\xe2', 'a');
+                        }
+
                         values += "'"+ value + "',";
                     }
                 }
@@ -206,6 +220,7 @@ int Shapefile::import_to_db(const int epsg)
                 // Cleanup
                 OGRFeature::DestroyFeature(poFeature);
             }
+
             db_manager.Request(instruction_fill);
 
             // Close the shapefile

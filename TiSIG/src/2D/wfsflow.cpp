@@ -1,4 +1,4 @@
-#include "fluxvector.h"
+#include "wfsflow.h"
 
 #include <QCoreApplication>
 #include <QNetworkAccessManager>
@@ -14,7 +14,7 @@
 
 
 
-FluxVector::FluxVector(const QString &url_)
+WFSFlow::WFSFlow(const QString &url_)
     :url(url_)
 {
     // --- Définir namelayer ---
@@ -30,6 +30,7 @@ FluxVector::FluxVector(const QString &url_)
         size_t endPos = namelayer.find("&");
         if (endPos != std::string::npos) {
             namelayer = namelayer.substr(0, endPos);
+            std::replace(namelayer.begin(), namelayer.end(), ':', '_');
         }
         std::cout << "namelayer: " << namelayer << std::endl;
     } else {
@@ -38,10 +39,10 @@ FluxVector::FluxVector(const QString &url_)
     }
 
     // --- Définir filePath ---
-    filePath = "data/fluxVect/" + QString::fromStdString(namelayer) + ".zip";
+    filePath = "data/wfsFlow/" + QString::fromStdString(namelayer) + ".zip";
 }
 
-int FluxVector::downloadZIP() {
+int WFSFlow::downloadZIP() {
 
     // Creation d'un gestionnaire reseau
     QNetworkAccessManager *manager = new QNetworkAccessManager();
@@ -80,7 +81,7 @@ int FluxVector::downloadZIP() {
 }
 
 
-int FluxVector::unzipFile() {
+int WFSFlow::unzipFile() {
 
     QuaZip zip(filePath);
     if (!zip.open(QuaZip::mdUnzip)) {
@@ -101,7 +102,7 @@ int FluxVector::unzipFile() {
             QString fileName = zip.getCurrentFileName();
             QString extension = fileName.right(4);
             // Traitez le fichier extrait ici
-            QString extractedFilePath = "data/fluxVect/" + QString::fromStdString(namelayer) + extension;  // Chemin de destination où enregistrer le fichier
+            QString extractedFilePath = "data/wfsFlow/" + QString::fromStdString(namelayer) + extension;  // Chemin de destination où enregistrer le fichier
 
             QFile extractedFile(extractedFilePath);
             if (!extractedFile.open(QIODevice::WriteOnly)) {

@@ -77,8 +77,6 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->graphicsView_window2D->setScene(scene);
 	ui->graphicsView_window2D->setDragMode(QGraphicsView::ScrollHandDrag);
     ui->graphicsView_window2D->installEventFilter(this);
-	View_zoom* z = new View_zoom(ui->graphicsView_window2D);
-	z->set_modifiers(Qt::NoModifier);
 
 
     // ip Address
@@ -239,9 +237,13 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
 {
     WFSDataFlowWindow wfsdataflowwindow;
     wfsdataflowwindow.setModal(true);
+//    connect(&wfsdataflowwindow, &WFSDataFlowWindow::processingFinished, this, &MainWindow::AddShpFileClicked);
     int result = wfsdataflowwindow.exec();
     if(result==QDialog::Accepted){
-        std::cout << wfsdataflowwindow.getLien()<<std::endl;
+        std::string PathWfsFlow = wfsdataflowwindow.getPath();
+        std::cout << "MAINWINDOW RETURN ========> " << PathWfsFlow<<std::endl;
+        sleep(20);
+        AddShpFileClicked(PathWfsFlow);
     }
 }
 
@@ -366,9 +368,8 @@ void MainWindow::AddShpFileClicked(std::string path)
     index++;
 
     ShpList.insert(std::pair<const int, Shapefile *>(layerId, essai1));
-
-
 }
+
 
 void MainWindow::AddGeotiffFileClicked(std::string path)
 {
@@ -833,7 +834,6 @@ void MainWindow::getAttributesLayer(QMouseEvent *event){
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
-    std::cout << "BEFORE FILTER" << std::endl;
     if (obj == ui->graphicsView_window2D && event->type() == QEvent::MouseButtonPress)
     {
         QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);

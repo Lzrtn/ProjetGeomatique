@@ -1,5 +1,5 @@
-#ifndef FLUXVECTOR_H
-#define FLUXVECTOR_H
+#ifndef WFSFLOW_H
+#define WFSFLOW_H
 
 #include <QCoreApplication>
 #include <QNetworkAccessManager>
@@ -8,21 +8,21 @@
 #include <QFile>
 
 
-class FluxVector
+class WFSFlow
 {
 public:
-    FluxVector(const QString &url);
+    WFSFlow(const QString &url);
     int downloadZIP(); // fonction de téléchargement
     int unzipFile(); // fonction de décompression
     int resultDownload = 0;
-
+    QString filePath;
 private:
     QString url;
     std::string namelayer;
-    QString filePath;
+
 
 };
 
-#endif // FLUXVECTOR_H
+#endif // WFSFLOW_H
 
 
