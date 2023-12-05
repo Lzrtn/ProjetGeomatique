@@ -48,6 +48,9 @@ public:
 		this->camInfoDisplayer = camInfoDisplayer;
 	};
 
+	void ZoomIn() { this->controls.ZoomIn(true); }
+	void ZoomOut() { this->controls.ZoomIn(false); }
+
 protected:
 
 	ICameraDisplayInfo * camInfoDisplayer;
