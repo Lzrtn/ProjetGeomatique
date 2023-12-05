@@ -411,47 +411,50 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 
 void MainWindow::OnButtonZoomIn()
 {
-	if (!this->mode) {
+    if (!this->mode)
+    {
 		ui->graphicsView_window2D->scale(1.2,1.2);
-		qreal currentScale = ui->graphicsView_window2D->transform().m11();
+//		qreal currentScale = ui->graphicsView_window2D->transform().m11();
 
-		// Parcourir tous les éléments de la scène
-		for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
-			QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
-			QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
-			QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
+//		// Parcourir tous les éléments de la scène
+//		for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
+//			QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+//			QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+//			QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
 
-			if (polyItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+//			if (polyItem) {
+//				// Ajuster la largeur du trait en fonction du facteur de zoom
+//				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-				// Mettre à jour la largeur du trait
-				QPen pen = polyItem->pen();
-				pen.setWidthF(adjustedWidth);
-				polyItem->setPen(pen);
-			}
+//				// Mettre à jour la largeur du trait
+//				QPen pen = polyItem->pen();
+//				pen.setWidthF(adjustedWidth);
+//				polyItem->setPen(pen);
+//			}
 
-			if (lineItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+//			if (lineItem) {
+//				// Ajuster la largeur du trait en fonction du facteur de zoom
+//				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-				// Mettre à jour la largeur du trait
-				QPen pen = lineItem->pen();
-				pen.setWidthF(adjustedWidth);
-				lineItem->setPen(pen);
-			}
+//				// Mettre à jour la largeur du trait
+//				QPen pen = lineItem->pen();
+//				pen.setWidthF(adjustedWidth);
+//				lineItem->setPen(pen);
+//			}
 
-			if (pointItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+//			if (pointItem) {
+//				// Ajuster la largeur du trait en fonction du facteur de zoom
+//				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-				// Mettre à jour la largeur du trait
-				QPen pen = pointItem->pen();
-				pen.setWidthF(adjustedWidth);
-				pointItem->setPen(pen);
-			}
-		}
-	} else {
+//				// Mettre à jour la largeur du trait
+//				QPen pen = pointItem->pen();
+//				pen.setWidthF(adjustedWidth);
+//				pointItem->setPen(pen);
+//			}
+//		}
+    }
+    else
+    {
 		this->ui->openGLWidget_window3D->ZoomIn();
 //		std::cout << "Zoom in 3D" << std::endl;
 	}
@@ -461,46 +464,47 @@ void MainWindow::OnButtonZoomOut()
 {
 	if (!this->mode) {
 		ui->graphicsView_window2D->scale(1/1.2,1/1.2);
-		qreal currentScale = ui->graphicsView_window2D->transform().m11();
+//		qreal currentScale = ui->graphicsView_window2D->transform().m11();
 
-		// Parcourir tous les éléments de la scène
-		for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
-			QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
-			QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
-			QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
+//		// Parcourir tous les éléments de la scène
+//		for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
+//			QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+//			QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+//			QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
 
-			if (polyItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+//			if (polyItem) {
+//				// Ajuster la largeur du trait en fonction du facteur de zoom
+//				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-				// Mettre à jour la largeur du trait
-				QPen pen = polyItem->pen();
-				pen.setWidthF(adjustedWidth);
-				polyItem->setPen(pen);
-			}
+//				// Mettre à jour la largeur du trait
+//				QPen pen = polyItem->pen();
+//				pen.setWidthF(adjustedWidth);
+//				polyItem->setPen(pen);
+//			}
 
-			if (lineItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+//			if (lineItem) {
+//				// Ajuster la largeur du trait en fonction du facteur de zoom
+//				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-				// Mettre à jour la largeur du trait
-				QPen pen = lineItem->pen();
-				pen.setWidthF(adjustedWidth);
-				lineItem->setPen(pen);
-			}
+//				// Mettre à jour la largeur du trait
+//				QPen pen = lineItem->pen();
+//				pen.setWidthF(adjustedWidth);
+//				lineItem->setPen(pen);
+//			}
 
-			if (pointItem) {
-				// Ajuster la largeur du trait en fonction du facteur de zoom
-				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+//			if (pointItem) {
+//				// Ajuster la largeur du trait en fonction du facteur de zoom
+//				qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-				// Mettre à jour la largeur du trait
-				QPen pen = pointItem->pen();
-				pen.setWidthF(adjustedWidth);
-				pointItem->setPen(pen);
-			}
-
-		}
-	} else {
+//				// Mettre à jour la largeur du trait
+//				QPen pen = pointItem->pen();
+//				pen.setWidthF(adjustedWidth);
+//				pointItem->setPen(pen);
+//			}
+//		}
+    }
+    else
+    {
 		this->ui->openGLWidget_window3D->ZoomOut();
 	}
 }
@@ -517,47 +521,45 @@ void MainWindow::OnButtonZoomFull()
 
 	ui->graphicsView_window2D->fitInView(visibleItemsRect,Qt::KeepAspectRatio);
 
+//	qreal currentScale = ui->graphicsView_window2D->transform().m11();
+
+//	// Parcourir tous les éléments de la scène
+//	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
+//		QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
+//		QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
+//		QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
+
+//		if (polyItem) {
+//			// Ajuster la largeur du trait en fonction du facteur de zoom
+//			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+
+//			// Mettre à jour la largeur du trait
+//			//QPen pen = polyItem->pen();
+//			//pen.setWidthF(adjustedWidth);
+//			//polyItem->setPen(pen);
+//		}
 
 
-	qreal currentScale = ui->graphicsView_window2D->transform().m11();
+//		if (lineItem) {
+//			// Ajuster la largeur du trait en fonction du facteur de zoom
+//			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-	// Parcourir tous les éléments de la scène
-	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items()) {
-		QGraphicsPolygonItem* polyItem = dynamic_cast<QGraphicsPolygonItem*>(item);
-		QGraphicsLineItem* lineItem = dynamic_cast<QGraphicsLineItem*>(item);
-		QGraphicsEllipseItem* pointItem = dynamic_cast<QGraphicsEllipseItem*>(item);
+//			// Mettre à jour la largeur du trait
+//			QPen pen = lineItem->pen();
+//			pen.setWidthF(adjustedWidth);
+//			lineItem->setPen(pen);
+//		}
 
-		if (polyItem) {
-			// Ajuster la largeur du trait en fonction du facteur de zoom
-			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
+//		if (pointItem) {
+//			// Ajuster la largeur du trait en fonction du facteur de zoom
+//			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
 
-			// Mettre à jour la largeur du trait
-			//QPen pen = polyItem->pen();
-			//pen.setWidthF(adjustedWidth);
-			//polyItem->setPen(pen);
-		}
-
-
-		if (lineItem) {
-			// Ajuster la largeur du trait en fonction du facteur de zoom
-			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-			// Mettre à jour la largeur du trait
-			QPen pen = lineItem->pen();
-			pen.setWidthF(adjustedWidth);
-			lineItem->setPen(pen);
-		}
-
-		if (pointItem) {
-			// Ajuster la largeur du trait en fonction du facteur de zoom
-			qreal adjustedWidth = 2.0 / currentScale; // Remplacez 2.0 par l'épaisseur de trait de référence
-
-			// Mettre à jour la largeur du trait
-			QPen pen = pointItem->pen();
-			pen.setWidthF(adjustedWidth);
-			pointItem->setPen(pen);
-		}
-	}
+//			// Mettre à jour la largeur du trait
+//			QPen pen = pointItem->pen();
+//			pen.setWidthF(adjustedWidth);
+//			pointItem->setPen(pen);
+//		}
+//	}
 }
 
 void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
