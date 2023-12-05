@@ -93,7 +93,7 @@ CompassFactory::CompassFactory()
 	}
 }
 
-Compass *CompassFactory::New() const
+Compass *CompassFactory::getCompass() const
 {
 	return new Compass(this->position, this->normal, this->textCoord, this->textPath);
 }

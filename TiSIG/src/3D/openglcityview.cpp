@@ -9,13 +9,9 @@ OpenGLcityView::~OpenGLcityView()
 	// building and buffers.
 
 	this->makeCurrent();
-	/*
 	for (auto &pair : this->buildings) {
 		this->DeleteBuilding(pair.first);
 	}
-	*/
-	delete this->compass;
-
 	this->doneCurrent();
 }
 
@@ -29,7 +25,6 @@ void OpenGLcityView::initializeGL()
 	this->glClearColor(0.87, 0.87, 0.92, 1); // blue-gray-light
 	this->InitShaders();
 
-	/*
 	// ajout d'un batiment de test
 	this->AddBuilding(5, Building3DFactory(0));
 	this->AddBuilding(156, Building3DFactory(1));
@@ -37,13 +32,12 @@ void OpenGLcityView::initializeGL()
 	this->AddBuilding(0, Building3DFactory(3));
 	this->AddBuilding(1, Building3DFactory(5));
 
-	this->buildings[86] = MNT3DFactory(5).New();
-	*/
-	this->compass = CompassFactory().New();
+	this->buildings[86] = MNT3DFactory(5).NewBuilding();
+
+	this->compass = CompassFactory().getCompass();
 	this->camera.setAngleV(0);
 
 	this->controls.setCamera(&this->camera);
-	//this->camera.setPosition({0, 0, 400});
 }
 
 void OpenGLcityView::InitShaders()
@@ -72,21 +66,22 @@ void OpenGLcityView::timerEvent(QTimerEvent* /*e*/)
 	lastTimeUpdate = currentTime;
 	// if dt is too hire than timerDuration (stop and restart)
 	if (dt > this->timerDuration * 2)
-		dt = this->timerDuration * 2;
+		dt = 0 * this->timerDuration * 2;
 	if (this->controls.update(dt) && this->isValid())
-		this->camera.ComputeMPV();
-	if (this->camera.consumeChanges()) {
-		this->UpdateBuildings();
 		this->update();
-	}
 }
 
-void OpenGLcityView::UpdateBuildings()
+void OpenGLcityView::AddBuilding(const int id, const Building3DFactory &buildingFactory)
 {
-	Emprise emprise = this->camera.getEmprise();
-	for (auto pair: this->layers) {
-		pair.second->UpdateEmprise(emprise);
-	}
+	if (this->buildings.find(id) != this->buildings.end())
+		this->DeleteBuilding(id);
+
+	this->buildings[id] = buildingFactory.NewBuilding();
+}
+void OpenGLcityView::DeleteBuilding(const int id)
+{
+	delete this->buildings[id];
+	this->buildings.erase(id);
 }
 
 void OpenGLcityView::resizeGL(int w, int h)
@@ -110,22 +105,19 @@ void OpenGLcityView::paintGL()
 		this->camInfoDisplayer->Display3DZoomLevel(this->camera.getZoom());
 	}
 
+	this->camera.ComputeMPV();
+
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVPCompass());
 	this->shader.setUniformValue("power_light", GLfloat(0.5));
-	this->shader.setUniformValue("translation", QVector3D(0,0,0));
 	this->compass->Draw(&this->shader);
 
 	// Set modelview-projection matrix
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVP());
 	this->shader.setUniformValue("power_light", GLfloat(1.0));
 
-	// Draw layers
-	/*
-	for (auto &pair : this->buildings) {
-		pair.second->Draw(&this->shader);
-	}*/
 
-	for (auto &pair : this->layers) {
+	// Draw geometry
+	for (auto &pair : this->buildings) {
 		pair.second->Draw(&this->shader);
 	}
 }

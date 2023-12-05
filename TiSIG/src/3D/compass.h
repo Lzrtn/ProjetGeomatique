@@ -28,12 +28,12 @@ public:
  *
  * @see BuildingFactory
  */
-class CompassFactory : public Object3DFactory
+class CompassFactory
 {
 public:
 	CompassFactory();
 
-	Compass * New() const;
+	Compass* getCompass() const;
 
 private:
 	std::vector<QVector3D> position;

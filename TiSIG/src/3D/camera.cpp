@@ -30,19 +30,6 @@ QMatrix4x4 Camera::ComputeMPV()
 
 	// matModel = identity
 	this->matMVP = this->matProjection * matView;
-
-	Emprise new_emprise;
-	this->Picking3D({0, 0}, new_emprise.a, new_emprise.e);
-	this->Picking3D({0, static_cast<int>(this->wWidth)}, new_emprise.b, new_emprise.f);
-	this->Picking3D({static_cast<int>(this->wHeight), static_cast<int>(this->wWidth)}, new_emprise.c, new_emprise.g);
-	this->Picking3D({static_cast<int>(this->wHeight), 0}, new_emprise.d, new_emprise.h);
-	new_emprise.updateGroundCoordinates();
-
-	if (this->emprise != new_emprise) {
-		this->emprise = new_emprise;
-		this->hasChanged = true;
-	}
-
 	return this->getMVP();
 }
 
@@ -92,4 +79,26 @@ QVector3D Camera::ProjFromScreen(const QVector3D &pos) const
 		0.0
 	};
 	return this->matMVP.inverted() * (pos * scale - delta);
+}
+
+Emprise Camera::getEmprise() const
+{
+	Emprise emprise;
+	this->Picking3D({0, 0}, emprise.a, emprise.e);
+	this->Picking3D({0, static_cast<int>(this->wWidth)}, emprise.b, emprise.f);
+	this->Picking3D({static_cast<int>(this->wHeight), static_cast<int>(this->wWidth)}, emprise.c, emprise.g);
+	this->Picking3D({static_cast<int>(this->wHeight), 0}, emprise.d, emprise.h);
+	emprise.updateGroundCoordinates();
+
+	return emprise;
+}
+
+void Emprise::updateGroundCoordinates()
+{
+	// intersection between line (a,e) [resp. (b,f); (c,g); (e,h)] and plane (z=0)
+	// if no intersect, first point will be chosen
+	g_a = e.z() != a.z() ? a - a.z() * (e-a) / (e.z() - a.z()) : a;
+	g_b = f.z() != b.z() ? b - b.z() * (f-b) / (f.z() - b.z()) : b;
+	g_c = g.z() != c.z() ? c - c.z() * (g-c) / (g.z() - c.z()) : c;
+	g_d = h.z() != d.z() ? d - d.z() * (h-d) / (h.z() - d.z()) : d;
 }

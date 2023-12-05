@@ -18,11 +18,11 @@ public:
 	{};
 };
 
-class MNT3DFactory : public Object3DFactory
+class MNT3DFactory
 {
 public:
 	/**
-	 * @brief MNT3DFactory produce MNT from this geometry
+	 * @brief MNT3DFactory produce buildings from this geometry
 	 *
 	 * All faces may have 3 points;
 	 *
@@ -33,24 +33,19 @@ public:
 		this->pathTexture = pathTexture;
 	}
 
-	MNT3DFactory(int version) {
-		if (version == 0) {
-			this->pathObj = "../src/data/Tests/cube.obj";
-			this->pathTexture = ":/cube.png";
-		} else {
-			//this->pathObj = "../src/data/DONNEES_BDORTHO/MNT.obj";
-			this->pathObj = "../src/data/DONNEES_BDORTHO/decoupe_25m.obj";
-			this->pathTexture = "../src/data/DONNEES_BDORTHO/Lyon5e_2m.png";
-		}
+	MNT3DFactory(int /*version*/) {
+		//this->pathObj = "../src/data/DONNEES_BDORTHO/MNT.obj";
+		this->pathObj = "../src/data/DONNEES_BDORTHO/decoupe_25m.obj";
+		this->pathTexture = "../src/data/DONNEES_BDORTHO/Lyon5e_2m.png";
 	}
 
 	/**
-	 * @brief Genere a mnt
+	 * @brief Genere a building
 	 *
-	 * @warning: risk of memory lost. equivalent to `new ...(...)`
+	 * @Warning: risk of memory lost. equivalent to `new Building(...)`
 	 * Remember to delete building after use
 	 */
-	MNT3D *New() const;
+	MNT3D *NewBuilding() const;
 
 private:
 	std::string pathTexture;

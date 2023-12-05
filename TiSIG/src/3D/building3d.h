@@ -45,10 +45,15 @@ public:
 		Object3D(position, textCoord, textPath)
 	{};
 
+	Building3D(const std::string pathObj,
+			const std::string & textPath) :
+		Object3D(pathObj, textPath)
+	{};
+
 private:
 };
 
-class Building3DFactory : public Object3DFactory
+class Building3DFactory
 {
 public:
 	/**
@@ -75,19 +80,22 @@ public:
 	 */
 	Building3DFactory(const int version = 0);
 
+	Building3DFactory(const QVector3D pt);
+
 	/**
 	 * @brief Genere a building
 	 *
 	 * @Warning: risk of memory lost. equivalent to `new Building(...)`
 	 * Remember to delete building after use
 	 */
-	Building3D * New() const;
+	Building3D * NewBuilding() const;
 
 private:
 	std::vector<QVector3D> position;
 	std::vector<QVector3D> normal;
 	std::vector<QVector2D> textCoord;
 	std::string textPath;
+	std::string objPath;
 };
 
 #endif // BUILDING3D_H
