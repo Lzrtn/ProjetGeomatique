@@ -1,5 +1,8 @@
 #include "geotiff_to_obj.h"
 
+
+
+
 GeoTiffToObjConverter::GeoTiffToObjConverter(const std::string inputFilePath, const std::string inputOrthoFilePath, const std::string outputObjFilePath)
     : inputFilePath(inputFilePath), inputOrthoFilePath(inputOrthoFilePath), outputObjFilePath(outputObjFilePath), dataset(nullptr), orthoDataset(nullptr)
 {
@@ -45,18 +48,130 @@ GeoTiffToObjConverter::~GeoTiffToObjConverter()
 
 std::string GeoTiffToObjConverter::writeObjFileWithTextures()
 {
-    size_t lastSlash = inputFilePath.find_last_of("/\\");
-    std::string fileName = inputFilePath.substr(lastSlash + 1);
-//    std::cout << fileName << std::endl;
-    std::string baseName = fileName.substr(0, fileName.find_last_of("."));
-//    std::cout << baseName << std::endl;
-    std::string strOutputObjFilePath = outputObjFilePath + baseName + ".obj";
+    double adfGeoTransform[6];
+    if (GDALGetGeoTransform(dataset, adfGeoTransform) == CE_None) {
+        size_t lastSlash = inputFilePath.find_last_of("/\\");
+        std::string fileName = inputFilePath.substr(lastSlash + 1);
+        std::cout << fileName << std::endl;
+        std::string baseName = fileName.substr(0, fileName.find_last_of("."));
+        std::cout << baseName << std::endl;
+        std::string strOutputObjFilePath = outputObjFilePath + baseName + ".obj";
 
-    FILE *objFile = fopen(strOutputObjFilePath.c_str(), "w");
-    if (!objFile)
-    {
-        throw std::runtime_error("Unable to create the .obj file");
+        FILE *objFile = fopen(strOutputObjFilePath.c_str(), "w");
+        if (!objFile)
+        {
+            throw std::runtime_error("Unable to create the .obj file");
+        }
+
+        int width = GDALGetRasterXSize(dataset);
+        int height = GDALGetRasterYSize(dataset);
+        int orthoWidth = GDALGetRasterXSize(orthoDataset);
+        int orthoHeight = GDALGetRasterYSize(orthoDataset);
+        double minValue = std::numeric_limits<double>::max();
+        double maxValue = std::numeric_limits<double>::min();
+
+        // Save the current locale
+        const char* currentLocale = setlocale(LC_NUMERIC, nullptr);
+
+        // Set the "C" locale to ensure dots as decimal separators
+        setlocale(LC_NUMERIC, "C");
+
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            {
+                double value;
+                CPLErr err = GDALRasterIO(GDALGetRasterBand(dataset, 1), GF_Read, x, y, 1, 1, &value, 1, 1, GDT_Float64, 0, 0);
+                if (err != CE_None)
+                {
+                    throw std::runtime_error("Error reading raster data");
+                }
+
+                minValue = std::min(minValue, value);
+                maxValue = std::max(maxValue, value);
+            }
+        }
+        int a = 0;
+        double x_translate, y_translate;
+
+
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            {
+                double value;
+                CPLErr err = GDALRasterIO(GDALGetRasterBand(dataset, 1), GF_Read, x, y, 1, 1, &value, 1, 1, GDT_Float64, 0, 0);
+                if (err != CE_None)
+                {
+                    throw std::runtime_error("Error reading raster data");
+                }
+
+
+                if(a==0) {
+                    x_translate = (adfGeoTransform[0] + x * adfGeoTransform[1] + y * adfGeoTransform[2]);
+                    y_translate = (adfGeoTransform[3] + x * adfGeoTransform[4] + y * adfGeoTransform[5]);
+                    a=1;
+                }
+
+                double x_geo = (adfGeoTransform[0] + x * adfGeoTransform[1] + y * adfGeoTransform[2]) - x_translate;
+                double y_geo = -(adfGeoTransform[3] + x * adfGeoTransform[4] + y * adfGeoTransform[5]) + y_translate;
+
+//                double normalizedValue = ((value - minValue) / (maxValue - minValue));
+//                fprintf(objFile, "v %d %f %d\n", x, normalizedValue, y);
+//                fprintf(objFile, "v %d %d %f\n", x, y, normalizedValue);
+//                fprintf(objFile, "v %f %f %f\n", x_geo, y_geo, normalizedValue);
+                fprintf(objFile, "v %f %f %f\n", x_geo, y_geo, value);
+
+                float texCoordX = (float)x * (orthoWidth - 1) / (width - 1);
+                float texCoordY = (float)y * (orthoHeight - 1) / (height - 1);
+
+                fprintf(objFile, "vt %f %f\n", texCoordX / (orthoWidth - 1), texCoordY / (orthoHeight - 1));
+
+                fprintf(objFile, "vn 0 0 1\n");
+            }
+        }
+        // Write faces to the .obj file
+        for (int y = 0; y < height - 1; ++y)
+        {
+            for (int x = 0; x < width - 1; ++x)
+            {
+                int v1 = y * width + x + 1;
+                int v2 = y * width + x + 2;
+                int v3 = (y + 1) * width + x + 2;
+                int v4 = (y + 1) * width + x + 1;
+
+                fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v3, v3, v3, v2, v2, v2);
+                fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v4, v4, v4, v3, v3, v3);
+            }
+        }
+
+        // Restore the original locale
+        setlocale(LC_NUMERIC, currentLocale);
+
+        fclose(objFile);
+        return strOutputObjFilePath;
+    } else {
+        throw std::runtime_error("Error getting geotransform information");
     }
+
+
+}
+
+
+void GeoTiffToObjConverter::writeCoordWithTextures()
+{
+//    size_t lastSlash = inputFilePath.find_last_of("/\\");
+//    std::string fileName = inputFilePath.substr(lastSlash + 1);
+//    std::cout << fileName << std::endl;
+//    std::string baseName = fileName.substr(0, fileName.find_last_of("."));
+//    std::cout << baseName << std::endl;
+//    std::string strOutputObjFilePath = outputObjFilePath + baseName + ".obj";
+
+//    FILE *objFile = fopen(strOutputObjFilePath.c_str(), "w");
+//    if (!objFile)
+//    {
+//        throw std::runtime_error("Unable to create the .obj file");
+//    }
 
     int width = GDALGetRasterXSize(dataset);
     int height = GDALGetRasterYSize(dataset);
@@ -64,6 +179,10 @@ std::string GeoTiffToObjConverter::writeObjFileWithTextures()
     int orthoHeight = GDALGetRasterYSize(orthoDataset);
     double minValue = std::numeric_limits<double>::max();
     double maxValue = std::numeric_limits<double>::min();
+
+    std::vector<QVector3D> position = {};
+    std::vector<QVector3D> normal = {};
+    std::vector<QVector2D> textCoord = {};
 
     for (int y = 0; y < height; ++y)
     {
@@ -92,34 +211,41 @@ std::string GeoTiffToObjConverter::writeObjFileWithTextures()
                 throw std::runtime_error("Error reading raster data");
             }
 
-            double normalizedValue = ((value - minValue) / (maxValue - minValue));
-            fprintf(objFile, "v %d %f %d\n", x, normalizedValue, y);
+            float normalizedValue = ((value - minValue) / (maxValue - minValue));
+//            fprintf(objFile, "v %d %f %d\n", x, normalizedValue, y);
+            float x_f = x;
+            float y_f = y;
+            position.push_back({x_f, normalizedValue, y_f});
+
             float texCoordX = (float)x * (orthoWidth - 1) / (width - 1);
             float texCoordY = (float)y * (orthoHeight - 1) / (height - 1);
 
-            fprintf(objFile, "vt %f %f\n", texCoordX / (orthoWidth - 1), texCoordY / (orthoHeight - 1));
+//            fprintf(objFile, "vt %f %f\n", texCoordX / (orthoWidth - 1), texCoordY / (orthoHeight - 1));
+            textCoord.push_back({ texCoordX / (orthoWidth - 1), texCoordY / (orthoHeight - 1)});
 
-            fprintf(objFile, "vn 0 1 0\n");
+//            fprintf(objFile, "vn 0 1 0\n");
+            normal.push_back({0, 1, 0});
         }
     }
-    // Write faces to the .obj file
-    for (int y = 0; y < height - 1; ++y)
-    {
-        for (int x = 0; x < width - 1; ++x)
-        {
-            int v1 = y * width + x + 1;
-            int v2 = y * width + x + 2;
-            int v3 = (y + 1) * width + x + 2;
-            int v4 = (y + 1) * width + x + 1;
+//    // Write faces to the .obj file
+//    for (int y = 0; y < height - 1; ++y)
+//    {
+//        for (int x = 0; x < width - 1; ++x)
+//        {
+//            int v1 = y * width + x + 1;
+//            int v2 = y * width + x + 2;
+//            int v3 = (y + 1) * width + x + 2;
+//            int v4 = (y + 1) * width + x + 1;
 
-            fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v2, v2, v2, v3, v3, v3);
-            fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v3, v3, v3, v4, v4, v4);
-        }
-    }
+//            fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v2, v2, v2, v3, v3, v3);
+//            fprintf(objFile, "f %d/%d/%d %d/%d/%d %d/%d/%d\n", v1, v1, v1, v3, v3, v3, v4, v4, v4);
+//        }
+//    }
 
-    fclose(objFile);
-
-    return strOutputObjFilePath;
+//    fclose(objFile);
+    m_position = position;
+    m_normal = normal;
+    m_textCoord = textCoord;
 }
 
 void GeoTiffToObjConverter::writeObjFileWithoutTextures()

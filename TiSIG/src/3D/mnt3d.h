@@ -34,8 +34,8 @@ public:
 	}
 
 	MNT3DFactory(int /*version*/) {
-		//this->pathObj = "../src/data/DONNEES_BDORTHO/MNT.obj";
-		this->pathObj = "../src/data/DONNEES_BDORTHO/decoupe_25m.obj";
+        this->pathObj = "../src/data/DONNEES_BDORTHO/MNT.obj";
+//        this->pathObj = "../src/data/DONNEES_BDORTHO/decoupe_25m.obj";
 		this->pathTexture = "../src/data/DONNEES_BDORTHO/Lyon5e_2m.png";
 	}
 
