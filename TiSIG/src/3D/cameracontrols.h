@@ -87,6 +87,8 @@ public:
 	 */
 	void wheelEvent(QWheelEvent *event);
 
+	void ZoomIn(bool zoomIn = true);
+
 private:
 
 	Camera * camera;

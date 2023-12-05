@@ -79,6 +79,7 @@ Building3DFactory::Building3DFactory(const int version)
 		textPath = ":/cube.png";
 		break;
 	case 3:
+	default:
 		position = {
 			{-2, -2, 5}, {-2,  2, 5}, { 2,  2, 5},
 			{-2, -2, 5}, { 2, -2, 5}, { 2,  2, 5},
@@ -93,37 +94,11 @@ Building3DFactory::Building3DFactory(const int version)
 		};
 		textPath = ":/rose des vents.png";
 		break;
-	case 4:
-	default:
-		objPath = "../src/data/Tests/cube.obj";
-		textPath = ":/cube.png";
-		break;
 	}
-
 }
 
-Building3DFactory::Building3DFactory(const QVector3D pt)
+Building3D * Building3DFactory::New() const
 {
-	float x = pt.x(), y = pt.y(), z = pt.z();
-	position = {
-		{x-1, y-1, z}, {x-1, y+1, z}, { x+1, y+1, z},
-		{x-1, y-1, z}, {x+1, y-1, z}, { x+1, y+1, z},
-	};
-	normal = {
-		{0, 0, 1}, {0, 0, 1}, {0, 0, 1},
-		{0, 0, 1}, {0, 0, 1}, {0, 0, 1},
-	};
-	textCoord = {
-		{0, 0}, {0, 1}, {1, 1},
-		{0, 0}, {1, 0}, {1, 1},
-	};
-	textPath = ":/rose des vents.png";
-}
-
-Building3D * Building3DFactory::NewBuilding() const
-{
-	if (this->position.size() == 0)
-		return new Building3D(this->objPath, this->textPath);
 	if (this->normal.size() == 0)
 		return new Building3D(this->position, this->textCoord, this->textPath);
 	return new Building3D(this->position, this->normal, this->textCoord, this->textPath);
