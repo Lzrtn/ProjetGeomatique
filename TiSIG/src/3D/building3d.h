@@ -62,16 +62,9 @@ public:
 			const std::vector<QVector3D> &vertices,
 			const std::vector<QVector3D> &normals,
 			const std::vector<QVector2D> &uv,
-			const std::string &pathTexture);
-
-	/**
-	 * @brief Building3DFactory produce buildings for test
-	 *
-	 * @param version: version of building (between 0 and 1 included)
-	 *
-	 * @warning in futur: move in ExampleObject3DStorage
-	 */
-	Building3DFactory(const int version = 0);
+			const std::string &pathTexture) :
+		vertices(vertices), normals(normals), uv(uv), pathTexture(pathTexture)
+	{};
 
 	/**
 	 * @brief Genere a building

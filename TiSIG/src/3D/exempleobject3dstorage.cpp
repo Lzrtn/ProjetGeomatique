@@ -4,19 +4,82 @@
 
 ExempleObject3DStorage::ExempleObject3DStorage()
 {
-	this->buildings = {
-		{0, new Building3DFactory(0)},
-		{1, new Building3DFactory(1)},
-		{2, new Building3DFactory(2)},
-		{3, new Building3DFactory(3)},
-		{4, new MNT3DFactory(0)},
-	};
+	this->buildings = {};
+	std::vector<QVector3D> vertices, normals;
+	std::vector<QVector2D> uv;
 
+
+	/*------------------------------  add tetrahedres -----------------------------*/
+	vertices = {
+		{ 2, 1,-1}, { 4, 1, 1}, { 4,-1,-1},
+		{ 2, 1,-1}, { 4, 1, 1}, { 2,-1, 1},
+		{ 4,-1,-1}, { 4, 1, 1}, { 2,-1, 1},
+		{ 4,-1,-1}, { 2, 1,-1}, { 2,-1, 1}
+	};
+	normals = {
+		{-1, 1,-1}, { 1, 1, 1}, { 1,-1,-1},
+		{-1, 1,-1}, { 1, 1, 1}, {-1,-1, 1},
+		{ 1,-1,-1}, { 1, 1, 1}, {-1,-1, 1},
+		{ 1,-1,-1}, {-1, 1,-1}, {-1,-1, 1}
+	};
+	uv = {
+		{-1,1}, {1, 1}, {1, -1},
+		{-1,1}, {1, 1}, {1, -1},
+		{-1,1}, {1, 1}, {1, -1},
+		{-1,1}, {1, 1}, {1, -1}
+	};
+	this->buildings[0] = new Building3DFactory(vertices, normals, uv, ":/cube.png");
+
+	vertices = {
+		{ -4, 1,-1}, { -2, 1, 1}, { -2,-1,-1},
+		{ -4, 1,-1}, { -2, 1, 1}, { -4,-1, 1},
+		{ -2,-1,-1}, { -2, 1, 1}, { -4,-1, 1},
+		{ -2,-1,-1}, { -4, 1,-1}, { -4,-1, 1}
+	};
+	// normals same
+	// uv same
+	this->buildings[1] = new Building3DFactory(vertices, normals, uv, ":/cube.png");
+
+	/*------------------------------ add square (45°) -----------------------------*/
+	vertices = {
+		{-2, 18, 5}, {-2, 22, 5}, { 2, 22, 5},
+		{-2, 18, 5}, { 2, 18, 5}, { 2, 22, 5},
+	};
+	normals = {
+		{0, 0, 1}, {0, 0, 1}, {0, 0, 1},
+		{0, 0, 1}, {0, 0, 1}, {0, 0, 1},
+	};
+	uv = {
+		{0, 0}, {0, 1}, {1, 1},
+		{0, 0}, {1, 0}, {1, 1},
+	};
+	this->buildings[2] = new Building3DFactory(vertices, normals, uv, ":/cube.png");
+
+	/*------------------------------ square (compass) -----------------------------*/
+	vertices = {
+		{-2, -2, 5}, {-2,  2, 5}, { 2,  2, 5},
+		{-2, -2, 5}, { 2, -2, 5}, { 2,  2, 5},
+	};
+	normals = {
+		{0, 0, 1}, {0, 0, 1}, {0, 0, 1},
+		{0, 0, 1}, {0, 0, 1}, {0, 0, 1},
+	};
+	uv = {
+		{0, 0}, {0, 1}, {1, 1},
+		{0, 0}, {1, 0}, {1, 1},
+	};
+	this->buildings[3] = new Building3DFactory(vertices, normals, uv, ":/rose des vents.png");
+
+	/*------------------------------    MNT (cube)   ------------------------------*/
+	this->buildings[4] = new MNT3DFactory("../src/data/Tests/cube.obj", ":/cube.png");
+
+	/*------------------------------ Set translation ------------------------------*/
 	this->setTranslation({5, 0, 0});
 }
 
 ExempleObject3DStorage::~ExempleObject3DStorage()
 {
+	/*------------------------------ free memory     ------------------------------*/
 	for (auto pair: this->buildings) {
 		delete pair.second;
 	}
