@@ -15,7 +15,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "helpwindow.h"
-#include "dataflowwindow.h"
+#include "wfsdataflowwindow.h"
+#include "wmsdataflowwindow.h"
 #include "view_zoom.h"
 #include "mntwindow.h"
 
@@ -41,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 	, ui(new Ui::MainWindow)
 {
+
+
 	/*_______________________________Initialisation_________________________________________________________________________________________________*/
 
 	ui->setupUi(this);
@@ -50,13 +53,14 @@ MainWindow::MainWindow(QWidget *parent)
 		// Action 2D
 	ui->action_add2DVectorLayer->setEnabled(!mode);
 	ui->action_add2DRastorLayer->setEnabled(!mode);
-	ui->action_add2DDataFlow->setEnabled(!mode);
+	ui->action_add2DWFSDataFlow->setEnabled(!mode);
+	ui->action_add2DWMSDataFlow->setEnabled(!mode);
 		// Actions 3D
 	ui->action_add3DVectorLayer->setEnabled(mode);
 	ui->action_add3DRastorLayer->setEnabled(mode);
 	ui->action_add3DModel->setEnabled(mode);
-
 	ui->openGLWidget_window3D->setCamInfoDisplayer(this);
+
 
 
 	/*_______________________________Variables_________________________________________________________________________________________________*/
@@ -82,8 +86,10 @@ MainWindow::MainWindow(QWidget *parent)
 	// Connecting help action
 	connect(ui->action_help, &QAction::triggered, this, &MainWindow::OnActionHelpClicked);
 
-	// Connecting add2ddataflow action
-	connect(ui->action_add2DDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DDataFlowClicked);
+	// Connecting add2dWFSdataflow action
+	connect(ui->action_add2DWFSDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DWFSDataFlowClicked);
+	// Connecting add2dWMSdataflow action
+	connect(ui->action_add2DWMSDataFlow, &QAction::triggered, this, &MainWindow::OnAction2DWMSDataFlowClicked);
 
 	// Connecting add2dvectorlayer action and add3dvectorlayer action
 	connect(ui->action_add2DVectorLayer, &QAction::triggered, this, &MainWindow::OnActionVector2DLayerClicked);
@@ -97,9 +103,7 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::OnAction3DModelClicked);
 
 
-
 	/*_______________________________Barre d'outils___________________________________________________________________________________________________*/
-
 
 	// Connecting switch 2D/3D button
 	connect(ui->btn_switchMode2D3D, &QPushButton::clicked, this, &MainWindow::OnButtonSwitchTo2D3DClicked);
@@ -115,7 +119,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 	/*_______________________________Barre d'outils dans le gestionnaire de couches___________________________________________________________________________________________________*/
-
 
 	// Connecter le bouton "Up" à la fonction de déplacement vers le haut
 	connect(ui->btn_moveLayerUp2D, &QPushButton::clicked, [=]() {
@@ -144,7 +147,6 @@ MainWindow::~MainWindow()
 	for(auto pair: layerList)
 	{
 		delete pair.second;
-		layerList.erase(pair.first);
 	}
 
 	// Delete all items from 2D window
@@ -177,6 +179,12 @@ Ui::MainWindow * MainWindow::getUi() const
 	return ui;
 }
 
+QRectF MainWindow::get2DViewExtent()
+{
+	QRectF viewSceneRect = ui->graphicsView_window2D->mapToScene(ui->graphicsView_window2D->rect()).boundingRect();
+	return viewSceneRect;
+}
+
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
 	mode = !mode;
@@ -186,7 +194,8 @@ void MainWindow::OnButtonSwitchTo2D3DClicked()
 
 	ui->action_add2DVectorLayer->setEnabled(!mode);
 	ui->action_add2DRastorLayer->setEnabled(!mode);
-	ui->action_add2DDataFlow->setEnabled(!mode);
+	ui->action_add2DWFSDataFlow->setEnabled(!mode);
+	ui->action_add2DWMSDataFlow->setEnabled(!mode);
 
 	ui->action_add3DVectorLayer->setEnabled(mode);
 	ui->action_add3DRastorLayer->setEnabled(mode);
@@ -223,11 +232,24 @@ void MainWindow::OnActionHelpClicked()
 	helpwindow.exec();
 }
 
-void MainWindow::OnAction2DDataFlowClicked()
+void MainWindow::OnAction2DWFSDataFlowClicked()
 {
-	DataFlowWindow dataflowwindow;
-	dataflowwindow.setModal(true);
-	dataflowwindow.exec();
+	WFSDataFlowWindow wfsdataflowwindow;
+	wfsdataflowwindow.setModal(true);
+	int result = wfsdataflowwindow.exec();
+	if(result==QDialog::Accepted){
+		std::cout << wfsdataflowwindow.getLien()<<std::endl;
+	}
+}
+
+void MainWindow::OnAction2DWMSDataFlowClicked()
+{
+	WMSDataFlowWindow wmsdataflowwindow;
+	wmsdataflowwindow.setModal(true);
+	int result = wmsdataflowwindow.exec();
+	if(result==QDialog::Accepted){
+		std::cout << wmsdataflowwindow.getLien()<<std::endl;
+	}
 }
 
 std::string MainWindow::OnActionVector2DLayerClicked()
@@ -365,7 +387,6 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 	geotiff.WriteGeotiffAndMetadataToPostgis(test);
 	std::cout << "geotiff ecrit dans la bdd" << std::endl;
 
-
 	//Import raster from the DB into a layer
 
 	QString filePath = QString::fromStdString(path);
@@ -477,6 +498,7 @@ void MainWindow::OnButtonZoomOut()
 				pen.setWidthF(adjustedWidth);
 				pointItem->setPen(pen);
 			}
+
 		}
 	} else {
 		this->ui->openGLWidget_window3D->ZoomOut();
@@ -573,6 +595,8 @@ void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 
 	layer.layerWidget->setLayout(layer.layout);
 	layer.layerItem->setSizeHint(layer.layerWidget->sizeHint());
+
+
 
 	ui->listeWidget_layersList2D->setItemWidget(layer.layerItem, layer.layerWidget);
 
