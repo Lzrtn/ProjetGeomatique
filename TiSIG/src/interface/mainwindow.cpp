@@ -185,6 +185,11 @@ Ui::MainWindow * MainWindow::getUi() const
 
 QRectF MainWindow::get2DViewExtent()
 {
+    if (index == 0)
+    {
+        QRectF defaultExtent = QRectF(QPointF(837354.3000,-6520755.6000),QPointF(842550.9000,-6517267.8723));
+        return defaultExtent;
+    }
     QRectF viewSceneRect = ui->graphicsView_window2D->mapToScene(ui->graphicsView_window2D->rect()).boundingRect();
     return viewSceneRect;
 }
@@ -252,12 +257,28 @@ void MainWindow::OnAction2DWMSDataFlowClicked()
     wmsdataflowwindow.setModal(true);
     int result = wmsdataflowwindow.exec();
 
-
-
     if(result==QDialog::Accepted){
-        std::cout << wmsdataflowwindow.getFilePath()<<std::endl;
+
+
         std::string path = wmsdataflowwindow.getFilePath();
-        AddWMSLayer(path);
+        std::string flowName = wmsdataflowwindow.getFlowName();
+
+
+        QRectF viewExtent = get2DViewExtent();
+        QSize viewSize = ui->graphicsView_window2D->size();
+
+        wmsdataflowwindow.setViewProjExtent(viewExtent);
+        wmsdataflowwindow.setViewPxSize(viewSize);
+
+//        std::cout<<wmsdataflowwindow.getViewProjExtent().topLeft().x()<<std::endl;
+
+//        wmsdataflowwindow.setViewProjExtent(get2DViewExtent());
+//        wmsdataflowwindow.setViewPxSize(ui->graphicsView_window2D->size());
+//        std::cout<<viewSize.width()<<" "<<viewSize.height()<<std::endl;
+        std::cout << wmsdataflowwindow.getUrl()<<std::endl;
+        std::cout << wmsdataflowwindow.getFilePath()<<std::endl;
+
+        AddWMSLayer(flowName,path);
     }
 
 
@@ -424,15 +445,23 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 
 }
 
-void MainWindow::AddWMSLayer(std::string path)
+void MainWindow::AddWMSLayer(std::string flowName, std::string path)
 {
 
     QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
     scene->addItem(layerGroup);
-
     int layerId = 4000 + index;
 
-    std::string flowName = path;
+
+    RasterItem* rasterItem = new RasterItem(QString::fromStdString(path),get2DViewExtent());
+//    rasterItem->FitToExtent(get2DViewExtent());
+
+    layerGroup->addToGroup(rasterItem);
+
+    std::cout<<get2DViewExtent().topLeft().x()<<" "
+                <<get2DViewExtent().topLeft().y()<<" "
+                <<get2DViewExtent().bottomRight().x()<<" "
+               <<get2DViewExtent().bottomRight().y()<<" "<<std::endl;
 
 
     layerList[layerId] = new Layer("Layer "+QString::number(index)+" : "+QString::fromStdString(flowName), true, layerGroup);
@@ -488,11 +517,7 @@ void MainWindow::OnButtonZoomIn()
             pointItem->setPen(pen);
 		}
 	}
-//    std::cout<<"extent "
-//             <<get2DViewExtent().topLeft().x()<<" "
-//                <<get2DViewExtent().topLeft().y()<<" "
-//                <<get2DViewExtent().bottomRight().x()<<" "
-//               <<get2DViewExtent().bottomRight().y()<<" "<<std::endl;
+
 }
 
 void MainWindow::OnButtonZoomOut()
@@ -636,6 +661,7 @@ void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 
     // met à jour l'ordre de superpositions des couches
     updateLayerOrderInGraphicsView();
+
 }
 
 void MainWindow::moveItemDown() {

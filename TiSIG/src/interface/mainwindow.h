@@ -146,7 +146,7 @@ private slots:
     *
     *
     */
-    void AddWMSLayer(std::string path);
+    void AddWMSLayer(std::string flowName, std::string path);
 
     /**
     * @brief Function to update the raster content of a WMS layer
