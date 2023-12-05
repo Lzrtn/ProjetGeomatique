@@ -296,7 +296,12 @@ void MainWindow::OnActionRastor3DLayerClicked()
 {
     MntWindow mntwindow;
     mntwindow.setModal(true);
-    mntwindow.exec();
+    int result = mntwindow.exec();
+
+    if (result == QDialog::Accepted) {
+        std::cout << mntwindow.getObj()<< std::endl;
+//        ui->openGLWidget_window3D->AddBuilding(5, Building3DFactory(0));
+    }
 }
 
 
