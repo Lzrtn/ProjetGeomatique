@@ -40,7 +40,7 @@ QMatrix4x4 Camera::ComputeMPV()
 
 	if (this->emprise != new_emprise) {
 		this->emprise = new_emprise;
-		this->hasChanged = true;
+		this->RequestUpdate();
 	}
 
 	return this->getMVP();

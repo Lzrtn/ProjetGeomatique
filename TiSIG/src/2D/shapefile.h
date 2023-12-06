@@ -84,12 +84,14 @@ public:
    * @brief Plots the shapefile in the scene
    *
    * @param rowbis result of the postgresql request
+   * @param rowbisType result of postgresql request giving different natures of features
+   * @param rowTer giving natures
    * @param scene scene in which the shapefile is plot
    * @param myColor color of the layer
    *
    * @returns QgraphicsItemGroup
    */
-   QGraphicsItemGroup * plotShapefile(pqxx::result rowbis, QGraphicsScene *scene, QColor myColor);
+   QGraphicsItemGroup * plotShapefile(pqxx::result rowbis, pqxx::result rowbistype,pqxx::result rowTer, QGraphicsScene *scene, QColor myColor);
 
    /**
    * @brief Gets the color stocked in the database

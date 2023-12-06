@@ -116,7 +116,15 @@ void readObj(const std::string & path, std::vector<QVector3D> & vertices, std::v
 
 Object3D::Object3D(const std::vector<QVector3D> &position, const std::vector<QVector3D> &normal,
 		const std::vector<QVector2D> &textCoord, const std::string &textPath) :
-	indexBuffer(QOpenGLBuffer::IndexBuffer)
+	Object3D(position, normal, textCoord, textPath, {.5, .5, .5})
+{}
+
+Object3D::Object3D(const std::vector<QVector3D> &position,
+				   const std::vector<QVector3D> &normal,
+				   const std::vector<QVector2D> &textCoord,
+				   const std::string &textPath,
+				   const QVector3D &symbo):
+	indexBuffer(QOpenGLBuffer::IndexBuffer), symbo(symbo)
 {
 	this->initializeOpenGLFunctions();
 
@@ -126,34 +134,36 @@ Object3D::Object3D(const std::vector<QVector3D> &position, const std::vector<QVe
 
 	// Initializes geometry and texture
 	this->initTexture(textPath);
-	this->InitGeometryVectors(position, normal, textCoord);
+	if (normal.size() == 0) {
+		std::vector<QVector3D> new_normal;
+		int size = position.size();
+		for (int i=0; i<size; i+=3) {
+			// compute normal as vectorial product
+			QVector3D norm = QVector3D::crossProduct(position[i+0], position[i+1]);
+			new_normal.push_back(norm);
+			new_normal.push_back(norm);
+			new_normal.push_back(norm);
+		}
+		this->InitGeometryVectors(position, new_normal, textCoord);
+	}
+	else
+		this->InitGeometryVectors(position, normal, textCoord);
 }
 
 Object3D::Object3D(const std::vector<QVector3D> &position, const std::vector<QVector2D> &textCoord, const std::string &textPath) :
-	indexBuffer(QOpenGLBuffer::IndexBuffer)
-{
-	this->initializeOpenGLFunctions();
+	Object3D(position, textCoord, textPath, {.5, .5, .5})
+{}
 
-	// Generate 2 VBOs
-	this->arrayBuffer.create();
-	this->indexBuffer.create();
-
-	// Initializes geometry and texture
-	this->initTexture(textPath);
-	std::vector<QVector3D> normal;
-	int size = position.size();
-	for (int i=0; i<size; i+=3) {
-		// compute normal as vectorial product
-		QVector3D norm = QVector3D::crossProduct(position[i+0], position[i+1]);
-		normal.push_back(norm);
-		normal.push_back(norm);
-		normal.push_back(norm);
-	}
-	this->InitGeometryVectors(position, normal, textCoord);
-}
+Object3D::Object3D(const std::vector<QVector3D> &position, const std::vector<QVector2D> &textCoord, const std::string &textPath, const QVector3D &symbo):
+	Object3D(position, {}, textCoord, textPath, symbo)
+{}
 
 Object3D::Object3D(const std::string &pathObj, const std::string & pathTexture) :
-	indexBuffer(QOpenGLBuffer::IndexBuffer)
+	Object3D(pathObj, pathTexture, {.5, .5, .5})
+{}
+
+Object3D::Object3D(const std::string &pathObj, const std::string &pathTexture, const QVector3D &symbo) :
+	indexBuffer(QOpenGLBuffer::IndexBuffer), symbo(symbo)
 {
 	this->initializeOpenGLFunctions();
 
@@ -170,6 +180,8 @@ Object3D::Object3D(const std::string &pathObj, const std::string & pathTexture) 
 	this->initTexture(pathTexture);
 	this->InitGeometryVectors(v, vn, vt);
 }
+
+
 Object3D::~Object3D()
 {
 	// free memory
@@ -215,7 +227,7 @@ bool Object3D::InitGeometryVectors(const std::vector<QVector3D> &position, const
 	return true;
 }
 
-void Object3D::Draw(QOpenGLShaderProgram *program)
+void Object3D::Draw(QOpenGLShaderProgram *shader)
 {
 	// Tell OpenGL which VBOs to use
 	this->arrayBuffer.bind();
@@ -226,25 +238,28 @@ void Object3D::Draw(QOpenGLShaderProgram *program)
 	quintptr offset = 0;
 
 	// Tell OpenGL programmable pipeline how to locate vertex position data
-	int vertexLocation = program->attributeLocation("a_position");
-	program->enableAttributeArray(vertexLocation);
-	program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+	int vertexLocation = shader->attributeLocation("a_position");
+	shader->enableAttributeArray(vertexLocation);
+	shader->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
 
 	// Offset for texture coordinate
 	offset += sizeof(QVector3D);
 
 	// Tell OpenGL programmable pipeline how to locate normal position data
-	int normalLocation = program->attributeLocation("a_normal");
-	program->enableAttributeArray(normalLocation);
-	program->setAttributeBuffer(normalLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+	int normalLocation = shader->attributeLocation("a_normal");
+	shader->enableAttributeArray(normalLocation);
+	shader->setAttributeBuffer(normalLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
 
 	// Offset for texture coordinate
 	offset += sizeof(QVector3D);
 
 	// Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
-	int texcoordLocation = program->attributeLocation("a_texcoord");
-	program->enableAttributeArray(texcoordLocation);
-	program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+	int texcoordLocation = shader->attributeLocation("a_texcoord");
+	shader->enableAttributeArray(texcoordLocation);
+	shader->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+
+
+	shader->setUniformValue("symbology_color", this->symbo);
 
 	// Draw cube geometry using indices from VBO 1
 	this->glDrawElements(GL_TRIANGLE_STRIP, this->sizeArray, GL_UNSIGNED_SHORT, nullptr);

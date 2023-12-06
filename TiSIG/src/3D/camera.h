@@ -10,7 +10,7 @@
  * Camera contains all projection informations to compute 4D matrix from 3D real
  * coordinates to 3D screen coordinates.
  */
-class Camera
+class Camera : public Updatable
 {
 public:
 
@@ -195,23 +195,55 @@ public:
 		return this->pxRatio;
 	}
 
+	/**
+	 * @brief Picking3D convert a 2D position in screen to a 3D segment in real coordinates
+	 * @param posScreen: position of point in screen (px coordinates)
+	 * @param p1 [out], p2 [out]: points that define the segment. First point is the
+	 *	closest to camera
+	 *
+	 * @see ProjToScreen, ProjFromScreen
+	 */
 	void Picking3D(const QPoint & posScreen, QVector3D & p1, QVector3D &p2) const;
+
+	/**
+	 * @brief ProjToScreen convert 3D real coordinates into 3D screen coordinates
+	 *
+	 * z screen coordinate corresponds to background (z=-1) / foreground (z=+1) level
+	 *
+	 * @param pos: real position (in dataset unit [meters])
+	 * @return screen position (in px)
+	 *
+	 * @see ProjFromScreen, Picking3D
+	 */
 	QVector3D ProjToScreen(const QVector3D & pos) const;
+	/**
+	 * @brief ProjFromScreen convert 3D screen coordinates into 3D real coordinates
+	 *
+	 * z screen coordinate corresponds to background (z=-1) / foreground (z=+1) level
+	 *
+	 * @param pos: screen position (in px)
+	 * @return real position (in dataset unit [meters])
+	 *
+	 * @see ProjToScreen, Picking3D
+	 */
 	QVector3D ProjFromScreen(const QVector3D & pos) const;
 
+	/**
+	 * @brief getEmprise give the 3D box of the view of the camera
+	 *
+	 * @see Emprise
+	 *
+	 * @return camera's emprise
+	 */
 	Emprise getEmprise() const { return this->emprise; };
-
-	bool consumeChanges() {
-		bool l = this->hasChanged;
-		this->hasChanged = false;
-		return l;
-	}
 
 private:
 	/**
 	 * @brief angles (in degrees !)
-	 * angleH: angle entre le nord et la projection de la directions de la caméra sur le plan sol (entre -pi et pi)
-	 * angleV: angle entre le nadir et le vecteur direction (entre 0 et pi, contraint entre 0 et pi/4)
+	 * angleH: angle between north and the projection of the camera direction on the
+	 *  ground plane (between -pi and pi)
+	 * angleV: angle between the nadir and the direction vector (between 0 and pi,
+	 * constrained between 0 and pi/4)
 	 */
 	float angleH;
 	float angleV;
@@ -224,12 +256,29 @@ private:
 	QMatrix4x4 matMVP;
 	QMatrix4x4 matMVPCompass;
 	Emprise emprise;
-	bool hasChanged = true;
 };
 
+/**
+ * @brief The ICameraDisplayInfo class give function to display camera values
+ * like position, orientation and zoom
+ */
 class ICameraDisplayInfo {
 public:
+
+	/**
+	 * @brief Display3DCameraCoordinates is called when camera position has changed
+	 * Override then do action with this new value
+	 *
+	 * @param camPosition:	new position
+	 */
 	virtual void Display3DCameraCoordinates(QVector3D camPosition) = 0;
+
+	/**
+	 * @brief Display3DZoomLevel is called when camera zoom level has changed
+	 * Override then do action with this new value
+	 *
+	 * @param zoom:	new zoom
+	 */
 	virtual void Display3DZoomLevel(float zoom) = 0;
 };
 
