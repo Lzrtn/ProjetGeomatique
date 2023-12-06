@@ -1,7 +1,7 @@
 #include "layer3d.h"
 
-Layer3D::Layer3D(Object3DStorage *objectsStorage):
-	objectsStorage(objectsStorage), show_objects({})
+Layer3D::Layer3D(Object3DStorage *objectsStorage, int layerId, QString layerName):
+    objectsStorage(objectsStorage), layerId(layerId), layerName(layerName), show_objects({})
 {
 
 }
@@ -10,6 +10,9 @@ Layer3D::~Layer3D()
 {
 	for (auto pair: this->objects)
 		delete pair.second;
+
+    delete layerWidget;
+    delete layerItem;
 }
 
 void Layer3D::UpdateEmprise(const Emprise &emprise)
@@ -47,4 +50,14 @@ void Layer3D::Draw(QOpenGLShaderProgram *shader)
 	for (int id_obj: this->show_objects) {
 		this->objects[id_obj]->Draw(shader);
 	}
+}
+
+int Layer3D::getLayerId()
+{
+    return layerId;
+}
+
+QString Layer3D::getLayerName()
+{
+    return layerName;
 }

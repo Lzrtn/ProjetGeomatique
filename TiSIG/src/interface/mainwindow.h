@@ -12,6 +12,9 @@
 #include <QVector>
 
 #include <iostream>
+
+#include "layermanager3d.h"
+
 #include "../src/2D/layer.h"
 #include "../src/2D/rasteritem.h"
 #include "../src/3D/camera.h"
@@ -98,6 +101,7 @@ private:
 
 	Layer3D * layer3D;
 	Object3DStorage * storage3D;
+    LayerManager3D *layerList3D;
 
 private slots:
 
@@ -205,6 +209,7 @@ private slots:
 	void moveItemDown( );
 	void onButtonClickedDeleteLayer();
 	void onButtonClickedZoomOnLayer();
+    void testAdd3DModel();
 
 public:
 	/**
