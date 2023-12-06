@@ -50,7 +50,7 @@ void WMSDataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
 //        double width = 618;
 //        double height = 448;
 
-        std::cout<<"test "<<getViewProjExtent().topLeft().x()<<std::endl;
+        std::cout<<"test wms "<<getViewProjExtent().topLeft().x()<<std::endl;
         double xMin = viewProjExtent.topLeft().x();
         double yMin = viewProjExtent.topLeft().y();
         double xMax = viewProjExtent.bottomRight().x();

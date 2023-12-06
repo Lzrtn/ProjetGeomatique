@@ -254,8 +254,17 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
 void MainWindow::OnAction2DWMSDataFlowClicked()
 {
     WMSDataFlowWindow wmsdataflowwindow;
+
+    QRectF viewExtent = get2DViewExtent();
+    QSize viewSize = ui->graphicsView_window2D->size();
+
+    wmsdataflowwindow.setViewProjExtent(viewExtent);
+    wmsdataflowwindow.setViewPxSize(viewSize);
+
     wmsdataflowwindow.setModal(true);
     int result = wmsdataflowwindow.exec();
+
+
 
     if(result==QDialog::Accepted){
 
@@ -264,13 +273,13 @@ void MainWindow::OnAction2DWMSDataFlowClicked()
         std::string flowName = wmsdataflowwindow.getFlowName();
 
 
-        QRectF viewExtent = get2DViewExtent();
-        QSize viewSize = ui->graphicsView_window2D->size();
+//        QRectF viewExtent = get2DViewExtent();
+//        QSize viewSize = ui->graphicsView_window2D->size();
 
-        wmsdataflowwindow.setViewProjExtent(viewExtent);
-        wmsdataflowwindow.setViewPxSize(viewSize);
+//        wmsdataflowwindow.setViewProjExtent(viewExtent);
+//        wmsdataflowwindow.setViewPxSize(viewSize);
 
-//        std::cout<<wmsdataflowwindow.getViewProjExtent().topLeft().x()<<std::endl;
+        std::cout<<"test main"<<wmsdataflowwindow.getViewProjExtent().topLeft().x()<<std::endl;
 
 //        wmsdataflowwindow.setViewProjExtent(get2DViewExtent());
 //        wmsdataflowwindow.setViewPxSize(ui->graphicsView_window2D->size());
