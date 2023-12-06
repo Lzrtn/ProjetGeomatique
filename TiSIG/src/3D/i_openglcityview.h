@@ -82,6 +82,12 @@ public:
 			std::vector<int> &show_objects,
 			std::vector<int> &forget_objects) = 0;
 
+	virtual bool PickingObjectInfo(
+			const QVector3D &p1,
+			const QVector3D &p2,
+			int &idObject,
+			std::map<std::string, std::string> &data) = 0;
+
 	/**
 	 * @brief getTranslation
 	 *

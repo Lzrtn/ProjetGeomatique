@@ -41,3 +41,17 @@ void ExempleObject3DStorage::GetObjectsInEmprise(
 	// building id to forget
 	forget_objects={};
 }
+
+bool ExempleObject3DStorage::PickingObjectInfo(const QVector3D &p1, const QVector3D &p2, int &idObject, std::map<std::string, std::string> &data)
+{
+	if (p1.x() > p2.x()) {
+		idObject = 2;
+		data = {
+			{"name", "bas timan"},
+			{"type", "as sans soeur"},
+			{"adresse", "1 rue du premier lieu"}
+		};
+		return true;
+	} else
+		return false;
+}
