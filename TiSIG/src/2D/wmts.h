@@ -11,7 +11,7 @@ using namespace std;
 
 class WMTS {
 public:
-    WMTS(int tilematrix, double north_limit, double west_limit, int width, int height);
+    WMTS(int tilematrix, double north_limit, double west_limit, int width, int height, int epsg);
     ~WMTS();
     void setURL(const char* newurl);
     vector<vector<const char*>> getUrl();

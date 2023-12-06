@@ -6,12 +6,13 @@
 #include <cmath>
 #include <curl/curl.h>
 #include <fstream>
+#include "crs_converter.hpp"
 
 
 using namespace std;
 using namespace cv;
 
-WMTS::WMTS(int tilematrix, double west_limit, double north_limit, int width, int height)
+WMTS::WMTS(int tilematrix, double west_limit, double north_limit, int width, int height, int epsg)
 /*
 *
 *   WMTS Class Constructor
@@ -72,8 +73,9 @@ WMTS::WMTS(int tilematrix, double west_limit, double north_limit, int width, int
     6.4, 3.2, 1.6, 0.8, 0.4, 0.2, 0.1, 0.05};    
 
     //Calculate TLC
-    double x_tlc = west_limit - x0;
-    double y_tlc = y0 - north_limit;
+    vector<double> coordinates = crs_converter(epsg,north_limit,west_limit,3857);
+    double x_tlc = coordinates[1] - x0;
+    double y_tlc = y0 - coordinates[0];
     double distance_per_tile = tileSize * initialResolution/pow(2,tilematrix);
 
     //Calculate number of tiles
@@ -106,7 +108,7 @@ WMTS::WMTS(int tilematrix, double west_limit, double north_limit, int width, int
 }
 
 void WMTS::setURL(const char* newurl){
-    this.url = newurl;
+    url = newurl;
 }
 
 vector<vector<const char*>> WMTS::getUrl() {

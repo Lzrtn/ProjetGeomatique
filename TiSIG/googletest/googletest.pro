@@ -38,4 +38,10 @@ INCLUDEPATH += /usr/include/opencv4/
 CONFIG += link_pkgconfig
 PKGCONFIG += opencv4
 
+# Specify additional include directories
+INCLUDEPATH += /usr/include/proj
+
+# Specify the library to link against
+LIBS += -lproj
+
 testlib.commands = ./googletest

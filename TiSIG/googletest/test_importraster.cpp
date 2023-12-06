@@ -2,7 +2,8 @@
 #include "../src/2D/wmts.h"
 #include "../src/2D/wms.h"
 #include <cmath>
-
+#include <opencv2/opencv.hpp>
+ 
 /*--------------------------------------------------WMS-----------------------------------------------------------*/
 
 TEST(WMSTest, size_image){
@@ -44,7 +45,7 @@ TEST(WMSTest, constructor_Default){
 TEST(WMTSTest, size_tablurl){
 
     //Initialize WMTS   
-    WMTS wmtsInstance(14, 536227.222852, 5739265.686868, 1080, 1080);
+    WMTS wmtsInstance(14, 536227.222852, 5739265.686868, 1080, 1080,2154);
     //Getting table_size
     int table_size = wmtsInstance.getUrl().size();
     //Calculating size of table for 1080x1080 pixel image 
@@ -58,11 +59,13 @@ TEST(WMTSTest, size_tablurl){
 TEST(WMTSTest, constructor_Default){
 
     //Initialize wms
-    WMTS wmtsInstance(14, 536227.222852, 5739265.686868, 1080, 1080);
+    WMTS wmtsInstance(14, 6513806.114923, 840344.476183, 1080, 1080,2154);
+    wmtsInstance.getImage();
+    wmtsInstance.combine();
     //Getting url
     const char* url = wmtsInstance.getUrl()[0][2];
     //Initialize other url for equivalence test
-    const char* url_test = "https://wxs.ign.fr/essentiels/geoportail/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&STYLE=normal&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&EXCEPTIONS=text/xml&FORMAT=image/jpeg&TILEMATRIXSET=PM&TILEMATRIX=14&TILECOL=8414&TILEROW=5847";
+    const char* url_test = "https://wxs.ign.fr/essentiels/geoportail/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&STYLE=normal&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&EXCEPTIONS=text/xml&FORMAT=image/jpeg&TILEMATRIXSET=PM&TILEMATRIX=14&TILECOL=8414&TILEROW=5849";
     //std::cout<<url<<"\n"<<url_test<<"\n-------------------------------\n";
 
     EXPECT_STREQ(url,url_test);

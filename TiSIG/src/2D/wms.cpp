@@ -12,7 +12,7 @@ WMS::WMS(int crs, string  str_north, string str_south, string str_east, string s
          int width, int height)
 /*
 *
-*   WMTS Class Constructor
+*   WMS Class Constructor
 *
 *   crs : coordinate reference systeme of north,south,est and west coordinate limit
 *   north_limit : north coordinate limit of the bounding box
@@ -69,8 +69,8 @@ WMS::WMS(int crs, string  str_north, string str_south, string str_east, string s
     url = strdup(str_url.c_str());
 }
 
-void WMTS::setURL(const char* newurl){
-    this.url = newurl;
+void WMS::setURL(const char* newurl){
+    url = newurl;
 }
 
 const char* WMS::getUrl() {
