@@ -57,7 +57,7 @@ private:
   Qt::KeyboardModifiers modifiers; ///< wheel
   double start_factor; ///< initial level of Zoom
   QPointF target_scene, target_view; ///< Points functions are going to target to zoom on
-  int zoom_level; ///< Level of zoom
+  qreal zoom_level; ///< Level of zoom
   bool eventFilter(QObject* object, QEvent* event); ///< mouse events
   
 

@@ -69,6 +69,9 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->action_add3DModel->setEnabled(mode);
 	ui->openGLWidget_window3D->setCamInfoDisplayer(this);
 
+    ui->tableWidget_layerAttributeInformation2D->horizontalHeader()->setVisible(1);
+    ui->tableWidget_layerAttributeInformation3D->horizontalHeader()->setVisible(1);
+
 
 
 	/*_______________________________Variables_________________________________________________________________________________________________*/
@@ -705,6 +708,15 @@ void MainWindow::onButtonClickedDeleteLayer()
 		ui->graphicsView_window2D->scene()->removeItem(layerList[layerId]->getLayerGroup());
 		delete layerList[layerId]->getLayerGroup();
 		layerList.erase(layerId);
+
+
+        // Clear Attribute table
+        ui->tableWidget_layerAttributeInformation2D->clear();
+        ui->tableWidget_layerAttributeInformation2D->setRowCount(0);
+
+        QStringList nameCol;
+        nameCol << "Nom" << "Valeur";
+        ui->tableWidget_layerAttributeInformation2D->setHorizontalHeaderLabels(nameCol);
 	}
 }
 
