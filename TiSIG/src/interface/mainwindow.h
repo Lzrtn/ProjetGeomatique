@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
 #include <map>
 #include <QMainWindow>
 #include <QPushButton>
@@ -12,6 +11,9 @@
 #include <QVector>
 
 #include <iostream>
+
+#include "layermanager3d.h"
+
 #include "../src/2D/layer.h"
 #include "../src/2D/rasteritem.h"
 #include "../src/3D/camera.h"
@@ -83,6 +85,7 @@ public:
 
 	/**
 	 * @brief Function to get mouse pressed event on the scene
+     * @param event QEvent to be filtered
 	 */
 	void getAttributesLayer(QMouseEvent * event);
 
@@ -98,6 +101,7 @@ private:
 
 	Layer3D * layer3D;
 	Object3DStorage * storage3D;
+    LayerManager3D *layerList3D;
 
 private slots:
 
@@ -212,6 +216,7 @@ private slots:
 	void moveItemDown( );
 	void onButtonClickedDeleteLayer();
 	void onButtonClickedZoomOnLayer();
+    void testAdd3DModel();
 
 public:
 	/**
