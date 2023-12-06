@@ -313,23 +313,85 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
         PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
         std::cout << "Chemin du shp : " << PathWfsFlow<<std::endl;
 
-        // Parcourir le répertoire et supprimer tous les fichiers correspondant au nom
-        for (const auto& entry : fs::directory_iterator("data/wfsFlow/")) {
-            if (entry.path().filename().stem().string() == fs::path(PathWfsFlow).filename().stem().string()) {
-                fs::remove(entry.path());
-            }
+        if (fs::exists(PathWfsFlow)) {
+            std::cerr << "Ce flux est déjà disponible." << std::endl;
+            return;
         }
 
-        wfsflow->downloadZIP();
-        // Boucle tant que le fichier n'existe pas
-        while (!QFileInfo(QString::fromStdString(PathWfsFlow)).exists()) {
-            QThread::msleep(100); // Pause de 100 millisecondes
-            QCoreApplication::processEvents();
+        else {
+            wfsflow->downloadZIP();
+            // Boucle tant que le fichier n'existe pas
+            while (!QFileInfo(QString::fromStdString(PathWfsFlow)).exists()) {
+                QThread::msleep(100); // Pause de 100 millisecondes
+                QCoreApplication::processEvents();
+            }
+            // Le fichier existe maintenant, vous pouvez appeler AddShpFileClicked
+            AddshpWFS(wfsflow);
         }
-        // Le fichier existe maintenant, vous pouvez appeler AddShpFileClicked
-        AddShpFileClicked(PathWfsFlow);
+
     }
 }
+
+
+//fonction update avec des listenners :
+//    // Parcourir le répertoire et supprimer tous les fichiers correspondant à la couche
+//    for (const auto& entry : fs::directory_iterator("data/wfsFlow/")) {
+//        if (entry.path().filename().stem().string() == fs::path(PathWfsFlow).filename().stem().string()) {
+//            fs::remove(entry.path());
+//        }
+//    }
+
+
+
+void MainWindow::AddshpWFS(WFSFlow *wfsflow)
+{
+    // PostGreSQL Connection to the first database
+    DbManager test("database2D", ipAdress);
+    pqxx::connection conn(test.getString());
+
+    if (conn.is_open()) {
+        std::cout << "Connexion réussie à PostgreSQL" << std::endl;
+
+    } else {
+        std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
+        exit(1);
+    }
+
+    std::string PathWfsFlow = wfsflow->GetfilePath();
+    PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
+    std::cout << PathWfsFlow << std::endl;
+    //import du shapefile dans la base de données
+    wfsflow->shpfile = new Shapefile(PathWfsFlow, test);
+
+    wfsflow->shpfile->import_to_db(2154);
+    QColor myColor = wfsflow->shpfile->showColor();
+
+    int layerId = wfsflow->shpfile->getId();
+
+    //affichage des shapefiles importé
+    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+wfsflow->shpfile->getTableName()+";");
+    pqxx::result rowbis =test.getResult();
+    QGraphicsItemGroup *layerGroup = wfsflow->shpfile->plotShapefile(rowbis,scene, myColor);
+    ui->lineEdit_epsg2D->setText(wfsflow->shpfile->getEPSGtoSet());
+    layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(wfsflow->shpfile->getTableName().c_str()), true, layerGroup);
+    addLayerToListWidget(layerId, *layerList[layerId]);
+    index++;
+
+    ShpList.insert(std::pair<const int, Shapefile *>(layerId, wfsflow->shpfile));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void MainWindow::OnAction2DWMSDataFlowClicked()
@@ -366,6 +428,7 @@ std::string MainWindow::OnActionVector2DLayerClicked()
     }
     return path;
 }
+
 
 std::string MainWindow::OnActionVector3DLayerClicked()
 {

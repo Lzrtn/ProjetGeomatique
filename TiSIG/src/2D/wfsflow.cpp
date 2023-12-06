@@ -38,6 +38,11 @@ WFSFlow::WFSFlow(const std::string &url_, const std::string &longmin_, const std
     std::cout << "Chemin de cette couche : " << filePath<<std::endl;
 }
 
+WFSFlow::~WFSFlow() {
+    std::cout << "destrcuteur WFSFlow" << std::endl;
+    if (shpfile) delete shpfile;
+}
+
 int WFSFlow::downloadZIP() {
 
     // Creation d'un gestionnaire reseau

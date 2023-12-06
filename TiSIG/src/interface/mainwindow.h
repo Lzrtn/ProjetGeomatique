@@ -16,6 +16,8 @@
 #include "../src/2D/rasteritem.h"
 #include "../src/3D/camera.h"
 #include "../src/2D/shapefile.h"
+#include "../src/2D/wfsflow.h"
+
 
 
 QT_BEGIN_NAMESPACE
@@ -86,6 +88,8 @@ public:
     QRectF get2DViewExtent();
 
     std::vector<std::string> getExtentWMS();
+
+    void AddshpWFS(WFSFlow *wfsflow);
 
 
 private:
