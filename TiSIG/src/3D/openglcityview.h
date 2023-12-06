@@ -34,6 +34,10 @@ public:
 		this->camInfoDisplayer = camInfoDisplayer;
 	};
 
+	void setPickingInfoDisplayer(IPicking3DDisplayInfo * pickingInfoDisplayer) {
+		this->pickingInfoDisplayer = pickingInfoDisplayer;
+	};
+
 	void addLayer(const int id, Layer3D * layer) {
 		this->layers[id] = layer;
 	}
@@ -53,7 +57,8 @@ public:
 
 protected:
 
-	ICameraDisplayInfo * camInfoDisplayer;
+	ICameraDisplayInfo * camInfoDisplayer = nullptr;
+	IPicking3DDisplayInfo * pickingInfoDisplayer = nullptr;
 
 	/**
 	 * @brief these overrided methodes are used by QT to init and display the widget
@@ -84,6 +89,8 @@ private:
 	 * Load buildings from buildingsStorage
 	 */
 	void UpdateBuildings();
+
+	Layer3D* getSelectedLayer() const;
 
 	QOpenGLShaderProgram shader;
 	std::map<int, Layer3D*> layers;

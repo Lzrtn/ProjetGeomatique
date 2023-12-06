@@ -17,7 +17,7 @@
  */
 /**
  * @brief The Layer3D class represents a 3D layer in the application.
- * 
+ *
  * This class inherits from the Updatable class and provides functionality for managing 3D objects in the layer.
  */
 class Layer3D : public Updatable
@@ -26,7 +26,7 @@ private:
 	Object3DStorage * objectsStorage; 	/**< Pointer to the storage of 3D objects. */
 	bool visible = true; 				/**< Flag indicating whether the layer is visible or not. */
 	int layerId; 						/**< The ID of the layer. */
-    QString layerName; 					/**< The name of the layer. */
+	QString layerName; 					/**< The name of the layer. */
 
 	std::map<int, Object3D*> objects; 	/**< Map of 3D objects in the layer. */
 
@@ -48,13 +48,13 @@ public:
 		this->RequestUpdate();
 	}
 
-    /**
-     * @brief Construct a new Layer3D object.
-     * @param objectsStorage Pointer to the storage of 3D objects.
-     * @param layerId The ID of the layer.
-     * @param layerName The name of the layer.
-     */
-    Layer3D(Object3DStorage * objectsStorage, int layerId, QString layerName);
+	/**
+	 * @brief Construct a new Layer3D object.
+	 * @param objectsStorage Pointer to the storage of 3D objects.
+	 * @param layerId The ID of the layer.
+	 * @param layerName The name of the layer.
+	 */
+	Layer3D(Object3DStorage * objectsStorage, int layerId, QString layerName);
 
 	/**
 	 * @brief Destroy the Layer3D object.
@@ -67,29 +67,37 @@ public:
 	 */
 	void UpdateEmprise(const Emprise & emprise);
 
+	bool PickingObjectInfo(
+			const QVector3D &p1,
+			const QVector3D &p2,
+			int &idObject,
+			std::map<std::string, std::string> &data) {
+		return this->objectsStorage->PickingObjectInfo(p1, p2, idObject, data);
+	}
+
 	/**
 	 * @brief Draw the layer using the specified shader program.
 	 * @param shader The shader program to use for drawing.
 	 */
 	void Draw(QOpenGLShaderProgram *shader);
 
-    /**
-     * @brief Get the ID of the layer.
-     * @return The ID of the layer.
-     */
-    int getLayerId() const { return layerId; }
+	/**
+	 * @brief Get the ID of the layer.
+	 * @return The ID of the layer.
+	 */
+	int getLayerId() const { return layerId; }
 
-    /**
-     * @brief Get the name of the layer.
-     * @return The name of the layer.
-     */
-    QString getLayerName() const { return layerName; }
+	/**
+	 * @brief Get the name of the layer.
+	 * @return The name of the layer.
+	 */
+	QString getLayerName() const { return layerName; }
 
-    QListWidgetItem *layerItem; 	/**< Pointer to the list widget item representing the layer. */
-    QWidget *layerWidget; 			/**< Pointer to the widget representing the layer. 			 */
-    QHBoxLayout *layout; 			/**< Pointer to the layout of the layer widget. 			 */
-    QCheckBox *visibilityCheckbox; 	/**< Pointer to the checkbox for toggling layer visibility.  */
-    QLabel *layerLabel; 			/**< Pointer to the label displaying the layer name. 		 */
+	QListWidgetItem *layerItem; 	/**< Pointer to the list widget item representing the layer. */
+	QWidget *layerWidget; 			/**< Pointer to the widget representing the layer. 			 */
+	QHBoxLayout *layout; 			/**< Pointer to the layout of the layer widget. 			 */
+	QCheckBox *visibilityCheckbox; 	/**< Pointer to the checkbox for toggling layer visibility.  */
+	QLabel *layerLabel; 			/**< Pointer to the label displaying the layer name. 		 */
 };
 
 #endif // LAYER3D_H

@@ -95,6 +95,16 @@ void OpenGLcityView::UpdateBuildings()
 	}
 }
 
+Layer3D *OpenGLcityView::getSelectedLayer() const
+{
+	//#########################################################################
+	// a refaire en utilisant le layerManager
+	for (auto &pair : this->layers) {
+		return pair.second;
+	}
+	return nullptr;
+}
+
 void OpenGLcityView::resizeGL(int w, int h)
 {
 	this->camera.ResizeView(w, h);
@@ -167,11 +177,34 @@ void OpenGLcityView::keyReleaseEvent(QKeyEvent *event)
 }
 void OpenGLcityView::mousePressEvent(QMouseEvent *event)
 {
+	//if (event->button() & Qt::LeftButton)
 	this->controls.mousePressEvent(event, true);
+	if (event->button() & Qt::RightButton) {
+		Layer3D* selLayer = this->getSelectedLayer();
+		if (selLayer) {
+			QVector3D p1, p2;
+			this->camera.Picking3D(event->pos(), p1, p2);
+			int idObj;
+			std::map<std::string, std::string> data;
+			if (selLayer->PickingObjectInfo(p1, p2, idObj, data)) {
+				if (this->pickingInfoDisplayer)
+					this->pickingInfoDisplayer->Display3DPickingResult(data);
+				for (auto &pair: data) {
+					std::cout << pair.first << " : " << pair.second << "\n";
+				}
+				std::cout << "(id object : " << idObj << " )" << std::endl;
+			} else {
+				if (this->pickingInfoDisplayer)
+					this->pickingInfoDisplayer->Display3DPickingResult({});
+			}
+		}
+	}
 }
 void OpenGLcityView::mouseReleaseEvent(QMouseEvent *event)
 {
+	//if (event->button() & Qt::LeftButton)
 	this->controls.mousePressEvent(event, false);
+	//if (event->button() & Qt::RightButton);
 }
 void OpenGLcityView::mouseMoveEvent(QMouseEvent *event)
 {

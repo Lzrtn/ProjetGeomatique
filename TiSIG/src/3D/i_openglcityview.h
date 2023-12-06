@@ -5,6 +5,38 @@
 #include "object3d.h"
 #include <map>
 
+
+/**
+ * @brief The ICameraDisplayInfo class give function to display camera values
+ * like position, orientation and zoom
+ */
+class ICameraDisplayInfo {
+public:
+
+	/**
+	 * @brief Display3DCameraCoordinates is called when camera position has changed
+	 * Override then do action with this new value
+	 *
+	 * @param camPosition:	new position
+	 */
+	virtual void Display3DCameraCoordinates(QVector3D camPosition) = 0;
+
+	/**
+	 * @brief Display3DZoomLevel is called when camera zoom level has changed
+	 * Override then do action with this new value
+	 *
+	 * @param zoom:	new zoom
+	 */
+	virtual void Display3DZoomLevel(float zoom) = 0;
+};
+
+
+class IPicking3DDisplayInfo {
+public:
+	virtual void Display3DPickingResult(const std::map<std::string, std::string> &data) = 0;
+};
+
+
 /**
  * @brief The Emprise class
  * Give the current emprise of a view
@@ -81,6 +113,12 @@ public:
 			std::map<int, Object3DFactory*> &new_objects,
 			std::vector<int> &show_objects,
 			std::vector<int> &forget_objects) = 0;
+
+	virtual bool PickingObjectInfo(
+			const QVector3D &p1,
+			const QVector3D &p2,
+			int &idObject,
+			std::map<std::string, std::string> &data) = 0;
 
 	/**
 	 * @brief getTranslation

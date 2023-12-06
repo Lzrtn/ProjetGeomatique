@@ -258,28 +258,4 @@ private:
 	Emprise emprise;
 };
 
-/**
- * @brief The ICameraDisplayInfo class give function to display camera values
- * like position, orientation and zoom
- */
-class ICameraDisplayInfo {
-public:
-
-	/**
-	 * @brief Display3DCameraCoordinates is called when camera position has changed
-	 * Override then do action with this new value
-	 *
-	 * @param camPosition:	new position
-	 */
-	virtual void Display3DCameraCoordinates(QVector3D camPosition) = 0;
-
-	/**
-	 * @brief Display3DZoomLevel is called when camera zoom level has changed
-	 * Override then do action with this new value
-	 *
-	 * @param zoom:	new zoom
-	 */
-	virtual void Display3DZoomLevel(float zoom) = 0;
-};
-
 #endif // CAMERA_H
