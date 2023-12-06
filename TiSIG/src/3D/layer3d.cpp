@@ -1,9 +1,9 @@
 #include "layer3d.h"
 
 Layer3D::Layer3D(Object3DStorage *objectsStorage, int layerId, QString layerName):
-    objectsStorage(objectsStorage), layerId(layerId), layerName(layerName), show_objects({})
+	objectsStorage(objectsStorage), layerId(layerId), layerName(layerName), show_objects({})
 {
-
+	this->RequestUpdate();
 }
 
 Layer3D::~Layer3D()
@@ -11,8 +11,8 @@ Layer3D::~Layer3D()
 	for (auto pair: this->objects)
 		delete pair.second;
 
-    delete layerWidget;
-    delete layerItem;
+	delete layerWidget;
+	delete layerItem;
 }
 
 void Layer3D::UpdateEmprise(const Emprise &emprise)
