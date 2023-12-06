@@ -8,14 +8,15 @@ public:
   void gentle_zoom(double factor);
   void set_modifiers(Qt::KeyboardModifiers modifiers);
   void set_zoom_factor_base(double value);
-  int getZoomLevel(){return zoom_level; };
+  qreal getZoomLevel(){return zoom_level; };
+  void setZoomLevel(qreal zl){zoom_level=zl;};
 
 private:
   QGraphicsView* view;
   Qt::KeyboardModifiers modifiers;
   double start_factor;
   QPointF target_scene, target_view;
-  int zoom_level;
+  qreal zoom_level;
   bool eventFilter(QObject* object, QEvent* event);
 
 signals:

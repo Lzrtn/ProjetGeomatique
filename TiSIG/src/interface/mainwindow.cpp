@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->graphicsView_window2D->setScene(scene);
 	ui->graphicsView_window2D->setDragMode(QGraphicsView::ScrollHandDrag);
 	ui->graphicsView_window2D->installEventFilter(this);
-	View_zoom* z = new View_zoom(ui->graphicsView_window2D);
+    View_zoom* z = new View_zoom(ui->graphicsView_window2D);
 	z->set_modifiers(Qt::NoModifier);
 
 
@@ -448,7 +448,10 @@ void MainWindow::OnButtonZoomIn()
 {
     if (!this->mode)
     {
-		ui->graphicsView_window2D->scale(1.2,1.2);
+        qreal currentScale = ui->graphicsView_window2D->transform().m11();
+        if (currentScale<250){
+            ui->graphicsView_window2D->scale(1.2,1.2);
+        }
     }
     else
     {
@@ -478,6 +481,8 @@ void MainWindow::OnButtonZoomFull()
 	}
 
 	ui->graphicsView_window2D->fitInView(visibleItemsRect,Qt::KeepAspectRatio);
+    qreal currentScale = ui->graphicsView_window2D->transform().m11();
+    std::cout<<currentScale<<std::endl;
 }
 
 void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
