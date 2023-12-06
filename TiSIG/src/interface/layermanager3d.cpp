@@ -45,6 +45,7 @@ void LayerManager3D::addLayer3DtoOpenGLWidgetAndListWidget(Object3DStorage *stor
 
         QObject::connect(layer3D->visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
             layer3D->setVisible(checked); //Idem index -> ID
+            ui->openGLWidget_window3D->update();
         });
 
         layer3D->layout->addWidget(layer3D->visibilityCheckbox);
@@ -56,7 +57,6 @@ void LayerManager3D::addLayer3DtoOpenGLWidgetAndListWidget(Object3DStorage *stor
 
         layer3D->layerWidget->setLayout(layer3D->layout);
         layer3D->layerItem->setSizeHint(layer3D->layerWidget->sizeHint());
-
 
         ui->listeWidget_layersList3D->insertItem(0, layer3D->layerItem);
         ui->listeWidget_layersList3D->setItemWidget(layer3D->layerItem, layer3D->layerWidget);
