@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    $$PWD/layermanager3d.cpp \
     $$PWD/mntwindow.cpp \
     $$PWD/helpwindow.cpp \
     $$PWD/mainwindow.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
     $$PWD/wmsdataflowwindow.cpp
 
 HEADERS += \
+    $$PWD/layermanager3d.h \
     $$PWD/mntwindow.h \
     $$PWD/helpwindow.h \
     $$PWD/mainwindow.h \

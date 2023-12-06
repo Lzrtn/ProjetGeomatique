@@ -22,6 +22,8 @@
 #include "view_zoom.h"
 #include "mntwindow.h"
 
+#include "layermanager3d.h"
+
 #include "../src/2D/layer.h"
 #include "../src/2D/transformation.h"
 #include "../src/2D/shapefile.h"
@@ -33,6 +35,7 @@
 #include "../src/2D/geojson.h"
 
 #include "../src/3D/exempleobject3dstorage.h"
+
 
 //Initialisation du Docker
 // Creating container
@@ -104,7 +107,7 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->action_add3DRastorLayer, &QAction::triggered, this, &MainWindow::OnActionRastor3DLayerClicked);
 
 	// Connecting add3dmodel action
-	connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::OnAction3DModelClicked);
+//	connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::OnAction3DModelClicked);
 
 
 	/*_______________________________Barre d'outils___________________________________________________________________________________________________*/
@@ -144,13 +147,28 @@ MainWindow::MainWindow(QWidget *parent)
 		onButtonClickedZoomOnLayer();
 	});
 
+    // Connecter le bouton "Up" à la fonction de déplacement vers le haut
+    connect(ui->btn_moveLayerUp3D, &QPushButton::clicked, [=]() {
+        moveItemUp();
+    });
+
+    // Connecter le bouton "Down" à la fonction de déplacement vers le bas
+    connect(ui->btn_moveLayerDown3D, &QPushButton::clicked, [=]() {
+        moveItemDown();
+    });
+
 	connect(ui->slider3D, &QSlider::valueChanged, this, &MainWindow::getValueFromSlider);
 	this->getValueFromSlider();
 
 	/*--------------------- example of linking storage to 3D interface --------------------*/
-	this->storage3D = new ExempleObject3DStorage();
-	this->layer3D = new Layer3D(this->storage3D);
-	this->ui->openGLWidget_window3D->addLayer(0, this->layer3D);
+    //Création du gestionnaire de liste 3D
+    this->layerList3D = new LayerManager3D(this->getUi());
+    connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::testAdd3DModel); // à modifier ligne 108
+
+
+//	this->storage3D = new ExempleObject3DStorage();
+//	this->layer3D = new Layer3D(this->storage3D);
+//	this->ui->openGLWidget_window3D->addLayer(0, this->layer3D);
 }
 
 MainWindow::~MainWindow()
@@ -409,7 +427,6 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 
 	if (conn.is_open()) {
 		std::cout << "Connexion réussie à PostgreSQL" << std::endl;
-
 	} else {
 		std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
 		exit(1);
@@ -532,73 +549,130 @@ void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 }
 
 void MainWindow::moveItemDown() {
-	QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
-	int currentIndex = ui->listeWidget_layersList2D->row(item);
 
-	if (item && currentIndex < ui->listeWidget_layersList2D->count()-1)
-	{
-		// Change la profondeur des couches
-		int currentId = item->data(Qt::UserRole).toInt();
-		QListWidgetItem *nextItem = ui->listeWidget_layersList2D->item(currentIndex+1);
-		int nextId = nextItem->data(Qt::UserRole).toInt();
+    if (!this->mode)
+    {
+        QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
+        int currentIndex = ui->listeWidget_layersList2D->row(item);
 
-		int currentZIndex = layerList[currentId]->getZIndex();
-		int prevZIndex = layerList[nextId]->getZIndex();
+        if (item && currentIndex < ui->listeWidget_layersList2D->count()-1)
+        {
+            // Change la profondeur des couches
+            int currentId = item->data(Qt::UserRole).toInt();
+            QListWidgetItem *nextItem = ui->listeWidget_layersList2D->item(currentIndex+1);
+            int nextId = nextItem->data(Qt::UserRole).toInt();
 
-		layerList[currentId]->setZIndex(prevZIndex);
-		layerList[nextId]->setZIndex(currentZIndex);
+            int currentZIndex = layerList[currentId]->getZIndex();
+            int prevZIndex = layerList[nextId]->getZIndex();
 
-		updateLayerOrderInGraphicsView();
+            layerList[currentId]->setZIndex(prevZIndex);
+            layerList[nextId]->setZIndex(currentZIndex);
 
-		// Change l'ordre dans la liste des couches
-		QWidget *itemWidget = ui->listeWidget_layersList2D->itemWidget(item);
-		QWidget *tempWidget = new QWidget();
-		QLayout *widgetLayout = itemWidget->layout();
-		tempWidget->setLayout(widgetLayout);
+            updateLayerOrderInGraphicsView();
 
-		layerList[currentId]->layerWidget = tempWidget;
+            // Change l'ordre dans la liste des couches
+            QWidget *itemWidget = ui->listeWidget_layersList2D->itemWidget(item);
+            QWidget *tempWidget = new QWidget();
+            QLayout *widgetLayout = itemWidget->layout();
+            tempWidget->setLayout(widgetLayout);
 
-		QListWidgetItem *currentItem = ui->listeWidget_layersList2D->takeItem(currentIndex);
+            layerList[currentId]->layerWidget = tempWidget;
 
-		ui->listeWidget_layersList2D->insertItem(currentIndex+1, currentItem);
-		ui->listeWidget_layersList2D->setItemWidget(currentItem, tempWidget);
-		ui->listeWidget_layersList2D->setCurrentRow(currentIndex+1);
-	}
+            QListWidgetItem *currentItem = ui->listeWidget_layersList2D->takeItem(currentIndex);
+
+            ui->listeWidget_layersList2D->insertItem(currentIndex+1, currentItem);
+            ui->listeWidget_layersList2D->setItemWidget(currentItem, tempWidget);
+            ui->listeWidget_layersList2D->setCurrentRow(currentIndex+1);
+        }
+    }
+    else
+    {
+        QListWidgetItem *item = ui->listeWidget_layersList3D->currentItem();
+        int currentIndex = ui->listeWidget_layersList3D->row(item);
+
+        if (item && currentIndex < ui->listeWidget_layersList3D->count()-1)
+        {
+
+            // Change l'ordre dans la liste des couches
+            int currentId = item->data(Qt::UserRole).toInt();
+
+            QWidget *itemWidget = ui->listeWidget_layersList3D->itemWidget(item);
+            QWidget *tempWidget = new QWidget();
+            QLayout *widgetLayout = itemWidget->layout();
+            tempWidget->setLayout(widgetLayout);
+
+            layerList3D->getLayer3D(currentId)->layerWidget = tempWidget;
+
+            QListWidgetItem *currentItem = ui->listeWidget_layersList3D->takeItem(currentIndex);
+
+            ui->listeWidget_layersList3D->insertItem(currentIndex+1, currentItem);
+            ui->listeWidget_layersList3D->setItemWidget(currentItem, tempWidget);
+            ui->listeWidget_layersList3D->setCurrentRow(currentIndex+1);
+        }
+    }
 }
 
 void MainWindow::moveItemUp() {
-	QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
-	int currentIndex = ui->listeWidget_layersList2D->row(item);
 
-	if (item && currentIndex > 0) {
+    if (!this->mode)
+    {
+        QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
+        int currentIndex = ui->listeWidget_layersList2D->row(item);
 
-		// Change la profondeur des couches
-		int currentId = item->data(Qt::UserRole).toInt();
-		QListWidgetItem *prevItem = ui->listeWidget_layersList2D->item(currentIndex-1);
-		int prevId = prevItem->data(Qt::UserRole).toInt();
+        if (item && currentIndex > 0) {
 
-		int currentZIndex = layerList[currentId]->getZIndex();
-		int prevZIndex = layerList[prevId]->getZIndex();
+            // Change la profondeur des couches
+            int currentId = item->data(Qt::UserRole).toInt();
+            QListWidgetItem *prevItem = ui->listeWidget_layersList2D->item(currentIndex-1);
+            int prevId = prevItem->data(Qt::UserRole).toInt();
 
-		layerList[currentId]->setZIndex(prevZIndex);
-		layerList[prevId]->setZIndex(currentZIndex);
+            int currentZIndex = layerList[currentId]->getZIndex();
+            int prevZIndex = layerList[prevId]->getZIndex();
 
-		updateLayerOrderInGraphicsView();
+            layerList[currentId]->setZIndex(prevZIndex);
+            layerList[prevId]->setZIndex(currentZIndex);
 
-		// Change l'ordre dans la liste des couches
-		QWidget *itemWidget = ui->listeWidget_layersList2D->itemWidget(item);
-		QWidget *tempWidget = new QWidget();
-		QLayout *widgetLayout = itemWidget->layout();
-		tempWidget->setLayout(widgetLayout);
+            updateLayerOrderInGraphicsView();
 
-		layerList[currentId]->layerWidget = tempWidget;
+            // Change l'ordre dans la liste des couches
+            QWidget *itemWidget = ui->listeWidget_layersList2D->itemWidget(item);
+            QWidget *tempWidget = new QWidget();
+            QLayout *widgetLayout = itemWidget->layout();
+            tempWidget->setLayout(widgetLayout);
 
-		QListWidgetItem *currentItem = ui->listeWidget_layersList2D->takeItem(currentIndex);
+            layerList[currentId]->layerWidget = tempWidget;
 
-		ui->listeWidget_layersList2D->insertItem(currentIndex-1, currentItem);
-		ui->listeWidget_layersList2D->setItemWidget(currentItem, tempWidget);
-		ui->listeWidget_layersList2D->setCurrentRow(currentIndex-1);
-	}
+            QListWidgetItem *currentItem = ui->listeWidget_layersList2D->takeItem(currentIndex);
+
+            ui->listeWidget_layersList2D->insertItem(currentIndex-1, currentItem);
+            ui->listeWidget_layersList2D->setItemWidget(currentItem, tempWidget);
+            ui->listeWidget_layersList2D->setCurrentRow(currentIndex-1);
+        }
+    }
+    else
+    {
+        QListWidgetItem *item = ui->listeWidget_layersList3D->currentItem();
+        int currentIndex = ui->listeWidget_layersList3D->row(item);
+
+        if (item && currentIndex > 0) {
+
+            // Change l'ordre dans la liste des couches
+            int currentId = item->data(Qt::UserRole).toInt();
+
+            QWidget *itemWidget = ui->listeWidget_layersList3D->itemWidget(item);
+            QWidget *tempWidget = new QWidget();
+            QLayout *widgetLayout = itemWidget->layout();
+            tempWidget->setLayout(widgetLayout);
+
+            layerList3D->getLayer3D(currentId)->layerWidget = tempWidget;
+
+            QListWidgetItem *currentItem = ui->listeWidget_layersList3D->takeItem(currentIndex);
+
+            ui->listeWidget_layersList3D->insertItem(currentIndex-1, currentItem);
+            ui->listeWidget_layersList3D->setItemWidget(currentItem, tempWidget);
+            ui->listeWidget_layersList3D->setCurrentRow(currentIndex-1);
+        }
+    }
 }
 
 void MainWindow::updateLayerOrderInGraphicsView() {
@@ -738,4 +812,11 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 	}
 
 	return QObject::eventFilter(obj, event);
+}
+
+void MainWindow::testAdd3DModel()
+{
+    this->storage3D = new ExempleObject3DStorage();
+    this->layerList3D->addLayer3DtoOpenGLWidgetAndListWidget(this->storage3D);
+
 }
