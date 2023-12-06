@@ -35,7 +35,11 @@ SOURCES += \
     $$PWD/rasteritem.cpp \
     $$PWD/rasterimport.cpp \
     $$PWD/geotiff_to_obj.cpp \
-    $$PWD/wfsflow.cpp
+    $$PWD/wfsflow.cpp \
+#    $$PWD/wmsflow.cpp \
+#    $$PWD/wmtsflow.cpp \
+#    $$PWD/crs_converter.hpp
+
 
 HEADERS += \
     $$PWD/layer.h \
@@ -46,7 +50,9 @@ HEADERS += \
     $$PWD/rasteritem.h \
     $$PWD/rasterimport.h \
     $$PWD/geotiff_to_obj.h \
-    $$PWD/wfsflow.h
+    $$PWD/wfsflow.h \
+#    $$PWD/wmsflow.h \
+#    $$PWD/wmtsflow.h
 
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17

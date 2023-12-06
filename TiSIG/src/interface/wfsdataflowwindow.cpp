@@ -1,22 +1,6 @@
 #include "wfsdataflowwindow.h"
 #include "ui_wfsdataflowwindow.h"
 
-#include "../src/2D/wfsflow.h"
-#include "../src/interface/mainwindow.h"
-
-#include <iostream>
-#include <string>
-using namespace std;
-#include <QDebug>
-#include <algorithm>
-
-#include <QCoreApplication>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QFile>
-
-
 
 WFSDataFlowWindow::WFSDataFlowWindow(QWidget *parent) :
     QDialog(parent),
@@ -46,6 +30,7 @@ void WFSDataFlowWindow::OnButtonValidateDataFlowUrlClicked()
     accept();
 }
 
+
 void WFSDataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
 {
     QString flow = ui->comboBox_dataFlowWindow->currentText();
@@ -57,9 +42,3 @@ void WFSDataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
     }
     accept();
 }
-
-
-
-
-
-

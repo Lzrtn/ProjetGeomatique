@@ -158,8 +158,18 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    // Empty wfs flow folder
+    // Empty WFS flow folder
     for (const auto& entry : fs::directory_iterator("data/wfsFlow/")) {
+        fs::remove_all(entry.path());
+    }
+
+    // Empty WMS flow folder
+    for (const auto& entry : fs::directory_iterator("data/wmsFlow/")) {
+        fs::remove_all(entry.path());
+    }
+
+    // Empty WMTS flow folder
+    for (const auto& entry : fs::directory_iterator("data/wmtsFlow/")) {
         fs::remove_all(entry.path());
     }
 
@@ -264,13 +274,11 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
         std::string latmax = std::to_string(4.850961);
         std::replace(latmax.begin(), latmax.end(), ',', '.');
 
-        QString wfsDataSource = QString::fromStdString(url+"&REQUEST=GetFeature&OUTPUTFORMAT=SHAPE-ZIP&BBOX="+longmin+","+latmin+","+longmax+','+latmax+"&SRSNAME=EPSG:2154");
-        std::cout<<wfsDataSource.toStdString()<<std::endl;
-        WFSFlow *wfsflow = new WFSFlow(wfsDataSource);
+        WFSFlow *wfsflow = new WFSFlow(url, longmin, latmin, longmax, latmax);
         wfsflow->downloadZIP();
-        std::string PathWfsFlow = wfsflow->filePath.toStdString();
+        std::string PathWfsFlow = wfsflow->GetfilePath();
         PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
-        std::cout << "MAINWINDOW RETURN ========> " << PathWfsFlow<<std::endl;
+        std::cout << "Chemin du shp : " << PathWfsFlow<<std::endl;
         // Boucle tant que le fichier n'existe pas
         while (!QFileInfo(QString::fromStdString(PathWfsFlow)).exists()) {
             QThread::msleep(100); // Pause de 100 millisecondes
@@ -289,9 +297,12 @@ void MainWindow::OnAction2DWMSDataFlowClicked()
     wmsdataflowwindow.setModal(true);
     int result = wmsdataflowwindow.exec();
     if(result==QDialog::Accepted){
-        std::cout << wmsdataflowwindow.getLien()<<std::endl;
+        std::string url = wmsdataflowwindow.getURL();
+        std::cout << url<<std::endl;
+        // code Axel
     }
 }
+
 
 std::string MainWindow::OnActionVector2DLayerClicked()
 {

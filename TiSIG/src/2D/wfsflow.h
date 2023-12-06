@@ -11,15 +11,21 @@
 class WFSFlow
 {
 public:
-    WFSFlow(const QString &url);
+    WFSFlow(const std::string &url, const std::string &longmin, const std::string &latmin, const std::string &longmax, const std::string &latmax);
     int downloadZIP(); // fonction de téléchargement
     int unzipFile(); // fonction de décompression
     int resultDownload = 0;
-    QString filePath;
-private:
-    QString url;
-    std::string namelayer;
+    std::string GetfilePath(){ return filePath; };
 
+private:
+    std::string url;
+    std::string namelayer;
+    std::string filePath;
+
+    std::string longmin;
+    std::string latmin;
+    std::string longmax;
+    std::string latmax;
 
 };
 
