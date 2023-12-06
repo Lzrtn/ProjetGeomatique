@@ -10,6 +10,8 @@
 #include <QPointF>
 #include <QCheckBox>
 #include <QColor>
+#include <QSlider>
+#include <QAbstractSlider>
 #include <QMouseEvent>
 
 #include "mainwindow.h"
@@ -142,6 +144,8 @@ MainWindow::MainWindow(QWidget *parent)
 		onButtonClickedZoomOnLayer();
 	});
 
+    connect(ui->slider3D, &QSlider::valueChanged, this, &MainWindow::getValueFromSlider);
+
 
 	/*--------------------- example of linking storage to 3D interface --------------------*/
 	this->storage3D = new ExempleObject3DStorage();
@@ -200,6 +204,12 @@ QRectF MainWindow::get2DViewExtent()
 	QRectF viewSceneRect = ui->graphicsView_window2D->mapToScene(ui->graphicsView_window2D->rect()).boundingRect();
 	return viewSceneRect;
 }
+
+float MainWindow::getValueFromSlider()
+{
+    float val = ui->slider3D->value()/100;
+    return val;
+};
 
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
