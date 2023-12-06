@@ -22,13 +22,28 @@ public:
 	 *
 	 * @throw exception if vertices have different sizes
 	 *
-	 * @param position  vertices 3D of points of faces
-	 * @param normal    vertices 3D of normals
-	 * @param textCord  vertices 2D of points in texture
-	 * @param textPath  path of texture image
+	 * @param position:	vertices 3D of points of faces
+	 * @param normal:	vertices 3D of normals
+	 * @param textCord:	vertices 2D of points in texture
+	 * @param textPath:	path of texture image
 	 */
 	Object3D(const std::vector<QVector3D> & position, const std::vector<QVector3D> & normal,
-			const std::vector<QVector2D> & textCoord, const std::string & textPath);
+			 const std::vector<QVector2D> & textCoord, const std::string & textPath);
+
+	/**
+	 * @brief
+	 * make an object with geometrics properties
+	 *
+	 * @throw exception if vertices have different sizes
+	 *
+	 * @param position:	vertices 3D of points of faces
+	 * @param normal:	vertices 3D of normals
+	 * @param textCord:	vertices 2D of points in texture
+	 * @param textPath:	path of texture image
+	 * @param symbo:	color of object
+	 */
+	Object3D(const std::vector<QVector3D> & position, const std::vector<QVector3D> & normal,
+			 const std::vector<QVector2D> & textCoord, const std::string & textPath, const QVector3D & symbo);
 
 	/**
 	 * @brief
@@ -38,12 +53,29 @@ public:
 	 *
 	 * @throw exception if vertices have different sizes
 	 *
-	 * @param position  vertices 3D of points of faces
-	 * @param textCord  vertices 2D of points in texture
-	 * @param textPath  path of texture image
+	 * @param position:	vertices 3D of points of faces
+	 * @param textCord:	vertices 2D of points in texture
+	 * @param textPath:	path of texture image
 	 */
 	Object3D(const std::vector<QVector3D> & position,
-			const std::vector<QVector2D> & textCoord, const std::string & textPath);
+			 const std::vector<QVector2D> & textCoord, const std::string & textPath);
+
+	/**
+	 * @brief
+	 * make an object with geometrics properties. Auto make normals as vector product of coords
+	 *
+	 * @warning normals compute needs that faces are direct oriented
+	 *
+	 * @throw exception if vertices have different sizes
+	 *
+	 * @param position:	vertices 3D of points of faces
+	 * @param textCord:	vertices 2D of points in texture
+	 * @param textPath:	path of texture image
+	 * @param symbo:	color of object
+	 */
+	Object3D(const std::vector<QVector3D> & position,
+			 const std::vector<QVector2D> & textCoord, const std::string & textPath,
+			 const QVector3D & symbo);
 
 	/**
 	 * @brief
@@ -57,6 +89,20 @@ public:
 	 * @param pathTexture:	path to the texture file
 	 */
 	Object3D(const std::string & pathObj, const std::string &pathTexture);
+
+	/**
+	 * @brief
+	 * make an object with geometrics properties from .obj file
+	 *
+	 * @warning normals compute needs that faces are direct oriented
+	 *
+	 * @throw exception if files are unvalid
+	 *
+	 * @param pathObj:		path to the .obj file
+	 * @param pathTexture:	path to the texture file
+	 * @param symbo:		color of object
+	 */
+	Object3D(const std::string & pathObj, const std::string &pathTexture, const QVector3D & symbo);
 
 	virtual ~Object3D();
 
@@ -91,6 +137,7 @@ private:
 	QOpenGLBuffer arrayBuffer;
 	QOpenGLBuffer indexBuffer;
 	QOpenGLTexture *texture = nullptr;
+	QVector3D symbo = {0.5, 0.5, 0.5}; // default color
 
 };
 

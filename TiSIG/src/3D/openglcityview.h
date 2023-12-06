@@ -23,7 +23,7 @@
 /**
  * @brief The OpenGLcityView class is a widget that can display buildings in 3D
  */
-class OpenGLcityView : public QOpenGLWidget, protected QOpenGLFunctions
+class OpenGLcityView : public QOpenGLWidget, protected QOpenGLFunctions, public Updatable
 {
 	Q_OBJECT
 public:
@@ -43,6 +43,12 @@ public:
 
 	void ZoomIn() { this->controls.ZoomIn(true); }
 	void ZoomOut() { this->controls.ZoomIn(false); }
+
+	float getSymbologyOpacity() const { return this->symbologyOpacity; }
+	void setSymbologyOpacity(const float & value) {
+		this->symbologyOpacity = value;
+		this->RequestUpdate();
+	}
 
 
 protected:
@@ -93,6 +99,8 @@ private:
 	float lastTimeUpdate;
 	std::chrono::steady_clock::time_point timeStart;
 	const int timerDuration = 15; // in msec
+
+	float symbologyOpacity = 0.5;
 
 	//OpenGLCityView_BuildingStorage * buildingStorage = nullptr;
 };
