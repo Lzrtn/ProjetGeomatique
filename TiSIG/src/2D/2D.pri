@@ -19,12 +19,25 @@ LIBS += -lpq
 INCLUDEPATH += /usr/include
 LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
 
+#For Curl
+QT += network 
+# Config for Curl
+LIBS += -lcurl
+
+# Config for opencv
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv
+
 SOURCES += \
     $$PWD/layer.cpp \
     $$PWD/shapefile.cpp \
     $$PWD/transformation.cpp \
     $$PWD/geotiff.cpp \
-    $$PWD/geojson.cpp
+    $$PWD/geojson.cpp \
+    $$PWD/wms.cpp \
+    $$PWD/wmts.cpp
+
+
     
 
 HEADERS += \
@@ -32,7 +45,9 @@ HEADERS += \
     $$PWD/shapefile.h \
     $$PWD/transformation.h \
     $$PWD/geotiff.h \
-    $$PWD/geojson.cpp
+    $$PWD/geojson.h \
+    $$PWD/wms.h \
+    $$PWD/wmts.h
 
 
 # Ajoutez les flags de compilation nécessaires pour C++

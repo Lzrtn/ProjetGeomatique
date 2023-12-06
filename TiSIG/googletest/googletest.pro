@@ -7,7 +7,8 @@ SOURCES += \
 	bddgoogle.cpp \
 	executorGoogle.cpp \
 	test-geotiff.cpp \
-	test_geojson.cpp
+	test_geojson.cpp \
+	test_importraster.cpp
 	
 	main.cpp
 #        bddgoogle.cpp \
@@ -24,6 +25,16 @@ INSTALLS += target
 INCLUDEPATH += /usr/include/gtest
 LIBS += -lgtest -lgtest_main
 LIBS += -lpqxx
+
+#For Curl
+QT += network 
+# Config for Curl
+LIBS += -lcurl
+
+# Config for opencv
+INCLUDEPATH += /usr/include/opencv4/
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv4
 
 
 testlib.commands = ./googletest
