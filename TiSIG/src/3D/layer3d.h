@@ -21,7 +21,10 @@ private:
 
 public:
 	bool isVisible() const { return this->visible; }
-	void setVisible(const bool visible) { this->visible = visible; this->RequestUpdate(); }
+	void setVisible(const bool visible) {
+		this->visible = visible;
+		this->RequestUpdate();
+	}
 
 	Layer3D(Object3DStorage * objectsStorage);
 	~Layer3D();
