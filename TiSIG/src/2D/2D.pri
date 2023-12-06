@@ -16,6 +16,15 @@ INCLUDEPATH += /usr/include/gdal
 LIBS += -lgdal
 LIBS += -lpq
 
+# Proj directory
+PROJ_DIR = /usr/include/proj
+
+# proj headers
+INCLUDEPATH += $$PROJ_DIR/include
+
+# link library with proj
+LIBS += -L$$PROJ_DIR/lib -lproj
+
 INCLUDEPATH += /usr/include
 LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
 
@@ -35,7 +44,7 @@ SOURCES += \
     $$PWD/geotiff.cpp \
     $$PWD/geojson.cpp \
     $$PWD/wms.cpp \
-    $$PWD/wmts.cpp
+    $$PWD/wmts.cpp 
 
 
     
@@ -47,7 +56,8 @@ HEADERS += \
     $$PWD/geotiff.h \
     $$PWD/geojson.h \
     $$PWD/wms.h \
-    $$PWD/wmts.h
+    $$PWD/wmts.h \
+    $$PWD/crs_converter.hpp
 
 
 # Ajoutez les flags de compilation nécessaires pour C++
