@@ -66,7 +66,15 @@ void MntWindow::OnButtonSubmitClicked() {
 
         GeoTiffToObjConverter converter(pathDTM, pathOrtho, "./data/DONNEES_BDORTHO/");
 
-        this->m_pathObj = converter.writeObjFileWithTextures();
+
+        std::tuple<std::string, double, double> result = converter.writeObjFileWithTextures();
+
+        this->m_pathObj = std::get<0>(result);
+        this->m_xtranslate = std::get<1>(result);
+        this->m_ytranslate = std::get<2>(result);
+        this->m_pathTexture = pathOrtho;
+
+
 
         accept();
     }
