@@ -33,12 +33,16 @@ public:
 
     std::string getObj() { return m_pathObj; };
     std::string getTexture() { return m_pathTexture; };
+    double getXTranslate() { return m_xtranslate; };
+    double getYTranslate() { return m_ytranslate; };
 
 
 private:
     Ui::MntWindow *ui; ///< Ui::MntWindow ui
     std::string m_pathObj;
     std::string m_pathTexture;
+    double m_xtranslate;
+    double m_ytranslate;
 
 //    QLineEdit lineEdit_DTMPath; ///< QLineEdit lineEdit_DTMPath
 //    QLineEdit lineEdit_OrthoPath; ///< QLineEdit lineEdit_Path

@@ -319,7 +319,8 @@ void MainWindow::OnActionRastor3DLayerClicked()
     if (result == QDialog::Accepted) {
         std::cout << mntwindow.getObj()<< std::endl;
 
-        this->storage3D = new MNT3dstorage(mntwindow.getObj(), mntwindow.getTexture());
+        this->storage3D = new MNT3dstorage(mntwindow.getObj(), 0.0, 0.0, mntwindow.getTexture());
+//        this->storage3D = new MNT3dstorage(mntwindow.getObj(), mntwindow.getTexture());
         this->layer3D = new Layer3D(this->storage3D);
         this->ui->openGLWidget_window3D->addLayer(1, this->layer3D);
     }
