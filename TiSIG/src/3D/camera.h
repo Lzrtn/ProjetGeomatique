@@ -227,10 +227,4 @@ private:
 	bool hasChanged = true;
 };
 
-class ICameraDisplayInfo {
-public:
-	virtual void Display3DCameraCoordinates(QVector3D camPosition) = 0;
-	virtual void Display3DZoomLevel(float zoom) = 0;
-};
-
 #endif // CAMERA_H

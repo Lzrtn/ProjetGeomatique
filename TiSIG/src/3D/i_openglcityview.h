@@ -5,6 +5,17 @@
 #include "object3d.h"
 #include <map>
 
+class ICameraDisplayInfo {
+public:
+	virtual void Display3DCameraCoordinates(QVector3D camPosition) = 0;
+	virtual void Display3DZoomLevel(float zoom) = 0;
+};
+class IPicking3DDisplayInfo {
+public:
+	virtual void Display3DPickingResult(const std::map<std::string, std::string> &data) = 0;
+};
+
+
 /**
  * @brief The Emprise class
  * Give the current emprise of a view
