@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-
 #include <map>
 #include <QMainWindow>
 #include <QPushButton>
@@ -86,6 +85,7 @@ public:
 
 	/**
 	 * @brief Function to get mouse pressed event on the scene
+     * @param event QEvent to be filtered
 	 */
 	void getAttributesLayer(QMouseEvent * event);
 
