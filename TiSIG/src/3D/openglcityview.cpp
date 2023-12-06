@@ -179,10 +179,15 @@ void OpenGLcityView::mousePressEvent(QMouseEvent *event)
 			int idObj;
 			std::map<std::string, std::string> data;
 			if (selLayer->PickingObjectInfo(p1, p2, idObj, data)) {
+				if (this->pickingInfoDisplayer)
+					this->pickingInfoDisplayer->Display3DPickingResult(data);
 				for (auto &pair: data) {
 					std::cout << pair.first << " : " << pair.second << "\n";
 				}
 				std::cout << "(id object : " << idObj << " )" << std::endl;
+			} else {
+				if (this->pickingInfoDisplayer)
+					this->pickingInfoDisplayer->Display3DPickingResult({});
 			}
 		}
 	}
