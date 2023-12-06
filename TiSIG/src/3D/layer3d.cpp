@@ -51,13 +51,3 @@ void Layer3D::Draw(QOpenGLShaderProgram *shader)
 		this->objects[id_obj]->Draw(shader);
 	}
 }
-
-int Layer3D::getLayerId()
-{
-    return layerId;
-}
-
-QString Layer3D::getLayerName()
-{
-    return layerName;
-}
