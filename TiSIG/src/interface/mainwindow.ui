@@ -642,11 +642,6 @@
           <attribute name="verticalHeaderVisible">
            <bool>false</bool>
           </attribute>
-          <row>
-           <property name="text">
-            <string/>
-           </property>
-          </row>
           <column>
            <property name="text">
             <string>Nom</string>
@@ -858,11 +853,6 @@
           <attribute name="verticalHeaderVisible">
            <bool>false</bool>
           </attribute>
-          <row>
-           <property name="text">
-            <string/>
-           </property>
-          </row>
           <column>
            <property name="text">
             <string>Nom</string>
