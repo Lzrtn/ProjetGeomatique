@@ -16,7 +16,7 @@ public:
     GeoTiffToObjConverter(const std::string inputFilePath,const std::string inputOrthoFilePath, const std::string outputObjFilePath);
     ~GeoTiffToObjConverter();
 
-    std::string writeObjFileWithTextures();
+    std::tuple<std::string, double, double> writeObjFileWithTextures();
 
 
 private:
