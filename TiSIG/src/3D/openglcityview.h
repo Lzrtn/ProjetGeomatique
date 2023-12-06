@@ -51,8 +51,8 @@ public:
 
 protected:
 
-	ICameraDisplayInfo * camInfoDisplayer;
-	IPicking3DDisplayInfo * pickingInfoDisplayer;
+	ICameraDisplayInfo * camInfoDisplayer = nullptr;
+	IPicking3DDisplayInfo * pickingInfoDisplayer = nullptr;
 
 	/**
 	 * @brief these overrided methodes are used by QT to init and display the widget
