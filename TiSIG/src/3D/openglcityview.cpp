@@ -110,6 +110,7 @@ void OpenGLcityView::paintGL()
 		this->camInfoDisplayer->Display3DZoomLevel(this->camera.getZoom());
 	}
 
+	this->shader.setUniformValue("symbology_opacity", 0.0f);
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVPCompass());
 	this->shader.setUniformValue("power_light", GLfloat(0.5));
 	this->shader.setUniformValue("translation", QVector3D(0,0,0));
@@ -125,6 +126,7 @@ void OpenGLcityView::paintGL()
 		pair.second->Draw(&this->shader);
 	}*/
 
+	this->shader.setUniformValue("symbology_opacity", this->symbologyOpacity);
 	for (auto &pair : this->layers) {
 		pair.second->Draw(&this->shader);
 	}

@@ -94,6 +94,8 @@ private:
 	std::chrono::steady_clock::time_point timeStart;
 	const int timerDuration = 15; // in msec
 
+	float symbologyOpacity = 0.5;
+
 	//OpenGLCityView_BuildingStorage * buildingStorage = nullptr;
 };
 
