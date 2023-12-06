@@ -111,7 +111,7 @@ private slots:
 	/**
 	* @brief Function to zoom out
 	*
-	*eturn path
+    *
 	*/
 	void OnButtonZoomOut();
 
@@ -199,6 +199,13 @@ private slots:
 
 	*/
 	std::string OnAction3DModelClicked();
+
+    /**
+    * @brief Function to get value from slider
+    * @return value
+    *
+    */
+    float getValueFromSlider();
 
 
 	void moveItemUp( );
