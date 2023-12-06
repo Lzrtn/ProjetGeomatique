@@ -34,6 +34,10 @@ public:
 		this->camInfoDisplayer = camInfoDisplayer;
 	};
 
+	void setPickingInfoDisplayer(IPicking3DDisplayInfo * pickingInfoDisplayer) {
+		this->pickingInfoDisplayer = pickingInfoDisplayer;
+	};
+
 	void addLayer(const int id, Layer3D * layer) {
 		this->layers[id] = layer;
 	}
@@ -48,6 +52,7 @@ public:
 protected:
 
 	ICameraDisplayInfo * camInfoDisplayer;
+	IPicking3DDisplayInfo * pickingInfoDisplayer;
 
 	/**
 	 * @brief these overrided methodes are used by QT to init and display the widget
