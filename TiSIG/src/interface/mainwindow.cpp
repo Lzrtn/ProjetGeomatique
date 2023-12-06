@@ -145,7 +145,7 @@ MainWindow::MainWindow(QWidget *parent)
 	});
 
 	connect(ui->slider3D, &QSlider::valueChanged, this, &MainWindow::getValueFromSlider);
-
+	this->getValueFromSlider();
 
 	/*--------------------- example of linking storage to 3D interface --------------------*/
 	this->storage3D = new ExempleObject3DStorage();
