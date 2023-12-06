@@ -13,6 +13,7 @@ public:
     WMS(int crs, string  str_north, string str_south, string str_east, string str_west,
         int width, int height);
     ~WMS();
+    void setURL(const char* newurl);
     const char* getUrl();
     void getImage();
     std::string getPath();

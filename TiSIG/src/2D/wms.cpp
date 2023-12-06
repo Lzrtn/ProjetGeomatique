@@ -69,6 +69,10 @@ WMS::WMS(int crs, string  str_north, string str_south, string str_east, string s
     url = strdup(str_url.c_str());
 }
 
+void WMTS::setURL(const char* newurl){
+    this.url = newurl;
+}
+
 const char* WMS::getUrl() {
     return url;
 }

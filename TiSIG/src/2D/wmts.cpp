@@ -105,6 +105,9 @@ WMTS::WMTS(int tilematrix, double west_limit, double north_limit, int width, int
     }
 }
 
+void WMTS::setURL(const char* newurl){
+    this.url = newurl;
+}
 
 vector<vector<const char*>> WMTS::getUrl() {
     /*for (size_t i = 0; i <tablurl.size(); ++i) {
@@ -191,6 +194,6 @@ void WMTS::combine()
 
     // Save output image
     imwrite("../src/data/dowloaded_images/wmts_combine/combine.jpeg", gridImage);
-
+    
     cout << "Grille d'images créée avec succès"<< endl;
 }
