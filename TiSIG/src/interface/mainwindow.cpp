@@ -276,10 +276,8 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
             QThread::msleep(100); // Pause de 100 millisecondes
             QCoreApplication::processEvents();
         }
-
         // Le fichier existe maintenant, vous pouvez appeler AddShpFileClicked
         AddShpFileClicked(PathWfsFlow);
-//        AddShpFileClicked(PathWfsFlow);
     }
 }
 
