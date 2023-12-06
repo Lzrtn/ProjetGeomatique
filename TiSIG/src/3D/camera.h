@@ -242,7 +242,7 @@ public:
 	 *
 	 * @return true if screen refresh is needed
 	 */
-	bool consumeChanges() {
+	bool ConsumeChanges() {
 		bool l = this->hasChanged;
 		this->hasChanged = false;
 		return l;
