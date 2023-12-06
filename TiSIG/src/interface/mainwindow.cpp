@@ -353,35 +353,39 @@ void MainWindow::Display3DZoomLevel(float zoom)
 
 void MainWindow::AddShpFileClicked(std::string path)
 {
-	// PostGreSQL Connection to the first database
-	DbManager test("database2D", ipAdress);
-	pqxx::connection conn(test.getString());
+    // PostGreSQL Connection to the first database
+    DbManager test("database2D", ipAdress);
+    pqxx::connection conn(test.getString());
 
-	if (conn.is_open()) {
-		std::cout << "Connexion réussie à PostgreSQL" << std::endl;
+    if (conn.is_open()) {
+        std::cout << "Connexion réussie à PostgreSQL" << std::endl;
 
-	} else {
-		std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
-		exit(1);
-	}
-	//import du shapefile dans la base de données
-	Shapefile * essai1 = new Shapefile(path, test);
+    } else {
+        std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
+        exit(1);
+    }
+    //import du shapefile dans la base de données
+    Shapefile * essai1 = new Shapefile(path, test);
 
-	essai1->import_to_db(2154);
-	QColor myColor = essai1->showColor();
+    essai1->import_to_db(2154);
+    QColor myColor = essai1->showColor();
 
-	int layerId = essai1->getId();
+    int layerId = essai1->getId();
 
-	//affichage des shapefiles importé
-	test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
-	pqxx::result rowbis =test.getResult();
-	QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis,scene, myColor);
-	ui->lineEdit_epsg2D->setText(essai1->getEPSGtoSet());
-	layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
-	addLayerToListWidget(layerId, *layerList[layerId]);
-	index++;
+    //affichage des shapefiles importé
+    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
+    pqxx::result rowbis =test.getResult();
+    test.Request("SELECT nature From "+essai1->getTableName()+";");
+    pqxx::result rowbisType = test.getResult();
+    test.Request("SELECT DISTINCT nature FROM "+essai1->getTableName()+";");
+    pqxx::result rowTer = test.getResult();
+    QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis, rowbisType, rowTer,scene, myColor);
+    ui->lineEdit_epsg2D->setText(essai1->getEPSGtoSet());
+    layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
+    addLayerToListWidget(layerId, *layerList[layerId]);
+    index++;
 
-	ShpList.insert(std::pair<const int, Shapefile *>(layerId, essai1));
+    ShpList.insert(std::pair<const int, Shapefile *>(layerId, essai1));
 
 
 }
