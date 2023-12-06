@@ -102,4 +102,28 @@ private:
 	QVector3D translation = {0,0,0};
 };
 
+
+/**
+ * @brief Return true if emprise has changed since last 'consumeChanges' call
+ *
+ * @return true if screen refresh is needed
+ */
+class Updatable {
+public:
+	void RequestUpdate() {
+		this->requestedUpdate = true;
+	}
+
+	bool ConsumeUpdate() {
+		if (this->requestedUpdate) {
+			this->requestedUpdate = false;
+			return true;
+		}
+		return false;
+	}
+
+private:
+	bool requestedUpdate = false;
+};
+
 #endif // I_OPENGLCITYVIEW_H

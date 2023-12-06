@@ -467,26 +467,6 @@
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QPushButton" name="btn_layerInformation2D">
-             <property name="toolTip">
-              <string>Information attributaire</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset>
-               <normaloff>icons/Information.png</normaloff>icons/Information.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QPushButton" name="btn_moveLayerUp2D">
              <property name="toolTip">
               <string>Monter la couche</string>
@@ -625,7 +605,7 @@
            <bool>true</bool>
           </property>
           <attribute name="horizontalHeaderVisible">
-           <bool>true</bool>
+           <bool>false</bool>
           </attribute>
           <attribute name="horizontalHeaderCascadingSectionResizes">
            <bool>true</bool>
@@ -664,17 +644,27 @@
       </widget>
       <widget class="QWidget" name="Left_3D">
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_9">
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
+        <item row="5" column="1">
+         <widget class="QSlider" name="slider3D">
+          <property name="maximum">
+           <number>100</number>
           </property>
-          <property name="text">
-           <string>Gestion des couches</string>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Transparence</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QListWidget" name="listeWidget_layersList3D"/>
+        </item>
+        <item row="1" column="0" colspan="2">
          <widget class="QFrame" name="frame_6">
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
@@ -683,26 +673,6 @@
            <enum>QFrame::Raised</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QPushButton" name="btn_layerInformation3D">
-             <property name="toolTip">
-              <string>Information attributaire</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset>
-               <normaloff>icons/Information.png</normaloff>icons/Information.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-            </widget>
-           </item>
            <item>
             <widget class="QPushButton" name="btn_moveLayerUp3D">
              <property name="toolTip">
@@ -799,10 +769,17 @@
           </layout>
          </widget>
         </item>
-        <item row="2" column="0">
-         <widget class="QListWidget" name="listeWidget_layersList3D"/>
+        <item row="0" column="0" colspan="2">
+         <widget class="QLabel" name="label_9">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="text">
+           <string>Gestion des couches</string>
+          </property>
+         </widget>
         </item>
-        <item row="3" column="0">
+        <item row="6" column="0" colspan="2">
          <widget class="QLabel" name="label_attributeInformation3D">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
@@ -815,7 +792,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item row="7" column="0" colspan="2">
          <widget class="QTableWidget" name="tableWidget_layerAttributeInformation3D">
           <property name="focusPolicy">
            <enum>Qt::StrongFocus</enum>

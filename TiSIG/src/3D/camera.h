@@ -10,7 +10,7 @@
  * Camera contains all projection informations to compute 4D matrix from 3D real
  * coordinates to 3D screen coordinates.
  */
-class Camera
+class Camera : public Updatable
 {
 public:
 
@@ -237,17 +237,6 @@ public:
 	 */
 	Emprise getEmprise() const { return this->emprise; };
 
-	/**
-	 * @brief Return true if emprise has changed since last 'consumeChanges' call
-	 *
-	 * @return true if screen refresh is needed
-	 */
-	bool consumeChanges() {
-		bool l = this->hasChanged;
-		this->hasChanged = false;
-		return l;
-	}
-
 private:
 	/**
 	 * @brief angles (in degrees !)
@@ -267,7 +256,6 @@ private:
 	QMatrix4x4 matMVP;
 	QMatrix4x4 matMVPCompass;
 	Emprise emprise;
-	bool hasChanged = true;
 };
 
 /**

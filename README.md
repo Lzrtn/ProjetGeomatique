@@ -317,6 +317,7 @@ Les noms sont sous format *typeObj_nameObj*.
 
 - Fenêtre de gestion des couches : *listeWidget_layersList3D*
 - Fenêtre des informations attributaires : *tableWidget_layerAttributeInformation3D*
+- Slider pour transparence : *slider3D*
 
 ## Barre d'actions (menu TiSIG)
 

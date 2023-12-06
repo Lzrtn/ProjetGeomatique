@@ -28,7 +28,7 @@ ExempleObject3DStorage::ExempleObject3DStorage()
 		{-1,1}, {1, 1}, {1, -1},
 		{-1,1}, {1, 1}, {1, -1}
 	};
-	this->buildings[0] = new Building3DFactory(vertices, normals, uv, ":/cube.png");
+	this->buildings[0] = new Building3DFactory(vertices, normals, uv, ":/cube.png", {0,0,1});
 
 	vertices = {
 		{ -4, 1,-1}, { -2, 1, 1}, { -2,-1,-1},
@@ -38,7 +38,7 @@ ExempleObject3DStorage::ExempleObject3DStorage()
 	};
 	// normals same
 	// uv same
-	this->buildings[1] = new Building3DFactory(vertices, normals, uv, ":/cube.png");
+	this->buildings[1] = new Building3DFactory(vertices, normals, uv, ":/cube.png", {0,1,0});
 
 	/*------------------------------ add square (45°) -----------------------------*/
 	vertices = {
@@ -53,7 +53,7 @@ ExempleObject3DStorage::ExempleObject3DStorage()
 		{0, 0}, {0, 1}, {1, 1},
 		{0, 0}, {1, 0}, {1, 1},
 	};
-	this->buildings[2] = new Building3DFactory(vertices, normals, uv, ":/cube.png");
+	this->buildings[2] = new Building3DFactory(vertices, normals, uv, ":/cube.png", {0,1,1});
 
 	/*------------------------------ square (compass) -----------------------------*/
 	vertices = {
@@ -68,7 +68,7 @@ ExempleObject3DStorage::ExempleObject3DStorage()
 		{0, 0}, {0, 1}, {1, 1},
 		{0, 0}, {1, 0}, {1, 1},
 	};
-	this->buildings[3] = new Building3DFactory(vertices, normals, uv, ":/rose des vents.png");
+	this->buildings[3] = new Building3DFactory(vertices, normals, uv, ":/rose des vents.png", {1, 0.5, 0});
 
 	/*------------------------------    MNT (cube)   ------------------------------*/
 	this->buildings[4] = new MNT3DFactory("../src/data/Tests/cube.obj", ":/cube.png");

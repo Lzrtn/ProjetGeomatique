@@ -10,6 +10,8 @@
 #include <QPointF>
 #include <QCheckBox>
 #include <QColor>
+#include <QSlider>
+#include <QAbstractSlider>
 #include <QMouseEvent>
 
 #include "mainwindow.h"
@@ -77,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->graphicsView_window2D->setScene(scene);
 	ui->graphicsView_window2D->setDragMode(QGraphicsView::ScrollHandDrag);
 	ui->graphicsView_window2D->installEventFilter(this);
-	View_zoom* z = new View_zoom(ui->graphicsView_window2D);
+    View_zoom* z = new View_zoom(ui->graphicsView_window2D);
 	z->set_modifiers(Qt::NoModifier);
 
 
@@ -155,6 +157,9 @@ MainWindow::MainWindow(QWidget *parent)
         moveItemDown();
     });
 
+	connect(ui->slider3D, &QSlider::valueChanged, this, &MainWindow::getValueFromSlider);
+	this->getValueFromSlider();
+
 	/*--------------------- example of linking storage to 3D interface --------------------*/
     //Création du gestionnaire de liste 3D
     this->layerList3D = new LayerManager3D(this->getUi());
@@ -217,6 +222,13 @@ QRectF MainWindow::get2DViewExtent()
 	QRectF viewSceneRect = ui->graphicsView_window2D->mapToScene(ui->graphicsView_window2D->rect()).boundingRect();
 	return viewSceneRect;
 }
+
+float MainWindow::getValueFromSlider()
+{
+	float val = ui->slider3D->value()/100.;
+	this->ui->openGLWidget_window3D->setSymbologyOpacity(val);
+	return val;
+};
 
 void MainWindow::OnButtonSwitchTo2D3DClicked()
 {
@@ -327,14 +339,14 @@ std::string MainWindow::OnActionRastor2DLayerClicked()
 
 void MainWindow::OnActionRastor3DLayerClicked()
 {
-    MntWindow mntwindow;
-    mntwindow.setModal(true);
-    int result = mntwindow.exec();
+	MntWindow mntwindow;
+	mntwindow.setModal(true);
+	int result = mntwindow.exec();
 
-    if (result == QDialog::Accepted) {
-        std::cout << mntwindow.getObj()<< std::endl;
+	if (result == QDialog::Accepted) {
+		std::cout << mntwindow.getObj()<< std::endl;
 //        ui->openGLWidget_window3D->AddBuilding(5, Building3DFactory(0));
-    }
+	}
 }
 
 
@@ -392,7 +404,11 @@ void MainWindow::AddShpFileClicked(std::string path)
 	//affichage des shapefiles importé
 	test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
 	pqxx::result rowbis =test.getResult();
-	QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis,scene, myColor);
+	test.Request("SELECT nature From "+essai1->getTableName()+";");
+	pqxx::result rowbisType = test.getResult();
+	test.Request("SELECT DISTINCT nature FROM "+essai1->getTableName()+";");
+	pqxx::result rowTer = test.getResult();
+	QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis, rowbisType, rowTer,scene, myColor);
 	ui->lineEdit_epsg2D->setText(essai1->getEPSGtoSet());
 	layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
 	addLayerToListWidget(layerId, *layerList[layerId]);
@@ -450,7 +466,10 @@ void MainWindow::OnButtonZoomIn()
 {
     if (!this->mode)
     {
-		ui->graphicsView_window2D->scale(1.2,1.2);
+        qreal currentScale = ui->graphicsView_window2D->transform().m11();
+        if (currentScale<250){
+            ui->graphicsView_window2D->scale(1.2,1.2);
+        }
     }
     else
     {
@@ -462,9 +481,9 @@ void MainWindow::OnButtonZoomOut()
 {
 	if (!this->mode) {
 		ui->graphicsView_window2D->scale(1/1.2,1/1.2);
-    }
-    else
-    {
+	}
+	else
+	{
 		this->ui->openGLWidget_window3D->ZoomOut();
 	}
 }
@@ -480,6 +499,8 @@ void MainWindow::OnButtonZoomFull()
 	}
 
 	ui->graphicsView_window2D->fitInView(visibleItemsRect,Qt::KeepAspectRatio);
+    qreal currentScale = ui->graphicsView_window2D->transform().m11();
+    std::cout<<currentScale<<std::endl;
 }
 
 void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
@@ -489,7 +510,7 @@ void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 	layer.setZIndex(index);
 
 	// Créez un nouvel élément pour la couche
-    layer.layerItem = new QListWidgetItem();
+	layer.layerItem = new QListWidgetItem();
 
 	layer.layerItem->setData(Qt::UserRole, layerId);
 
@@ -520,7 +541,7 @@ void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
 	layer.layerItem->setSizeHint(layer.layerWidget->sizeHint());
 
 
-    ui->listeWidget_layersList2D->insertItem(0, layer.layerItem);
+	ui->listeWidget_layersList2D->insertItem(0, layer.layerItem);
 	ui->listeWidget_layersList2D->setItemWidget(layer.layerItem, layer.layerWidget);
 
 	// met à jour l'ordre de superpositions des couches
@@ -696,88 +717,88 @@ void MainWindow::onButtonClickedZoomOnLayer()
 }
 
 void MainWindow::getAttributesLayer(QMouseEvent *event){
-    if (ui->listeWidget_layersList2D->currentItem())
+	if (ui->listeWidget_layersList2D->currentItem())
 	{
-        QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
-        int currentId = item->data(Qt::UserRole).toInt();
+		QListWidgetItem *item = ui->listeWidget_layersList2D->currentItem();
+		int currentId = item->data(Qt::UserRole).toInt();
 
-        ui->tableWidget_layerAttributeInformation2D->clear();
-        ui->tableWidget_layerAttributeInformation2D->setRowCount(0);
+		ui->tableWidget_layerAttributeInformation2D->clear();
+		ui->tableWidget_layerAttributeInformation2D->setRowCount(0);
 
-        QStringList nameCol;
-        nameCol << "Nom" << "Valeur";
-        ui->tableWidget_layerAttributeInformation2D->setHorizontalHeaderLabels(nameCol);
+		QStringList nameCol;
+		nameCol << "Nom" << "Valeur";
+		ui->tableWidget_layerAttributeInformation2D->setHorizontalHeaderLabels(nameCol);
 
-        if(currentId>=1000 && currentId < 2000 && layerList[currentId]->isLayerVisible())
-        {
-            //Get selected shapefile
-            Shapefile * shp = ShpList[currentId];
-            QPointF mousePos = ui->graphicsView_window2D->mapToScene(event->pos());
+		if(currentId>=1000 && currentId < 2000 && layerList[currentId]->isLayerVisible())
+		{
+			//Get selected shapefile
+			Shapefile * shp = ShpList[currentId];
+			QPointF mousePos = ui->graphicsView_window2D->mapToScene(event->pos());
 
-            double x = mousePos.x();
-            double y = -mousePos.y();  // Assurez-vous du sens de l'axe y en fonction de votre scène
-            std::string x_str = std::to_string(x);
-            std::string y_str = std::to_string(y);
-            std::replace(x_str.begin(), x_str.end(), ',', '.');
-            std::replace(y_str.begin(), y_str.end(), ',', '.');
-            //std::cout << "Les coordonnées écran : " << x_str << ", " << y_str << std::endl;
+			double x = mousePos.x();
+			double y = -mousePos.y();  // Assurez-vous du sens de l'axe y en fonction de votre scène
+			std::string x_str = std::to_string(x);
+			std::string y_str = std::to_string(y);
+			std::replace(x_str.begin(), x_str.end(), ',', '.');
+			std::replace(y_str.begin(), y_str.end(), ',', '.');
+			//std::cout << "Les coordonnées écran : " << x_str << ", " << y_str << std::endl;
 
-            DbManager db_manager = shp->getDbManager();
-            std::string dataType = shp->getDataType();
-            std::string request;
-            if (dataType == "Polygon"){
-                request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Within(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom);";
-            }
-            else if(dataType == "LineString" || dataType == "MultiLineString"){
-                request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Distance(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom) < 3 ORDER BY ST_Distance(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom) LIMIT 1;";
-            }
-            db_manager.Request(request);
-            pqxx::result rows_shape = db_manager.getResult();
+			DbManager db_manager = shp->getDbManager();
+			std::string dataType = shp->getDataType();
+			std::string request;
+			if (dataType == "Polygon"){
+				request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Within(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom);";
+			}
+			else if(dataType == "LineString" || dataType == "MultiLineString"){
+				request = "SELECT * FROM "+shp->getTableName()+" WHERE ST_Distance(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom) < 3 ORDER BY ST_Distance(ST_SetSRID(ST_MakePoint(" + x_str + "," + y_str + "), 2154), geom) LIMIT 1;";
+			}
+			db_manager.Request(request);
+			pqxx::result rows_shape = db_manager.getResult();
 
-            if (!rows_shape.empty()){
-                for (pqxx::result::const_iterator row = rows_shape.begin(); row != rows_shape.end(); ++row)
-                {
-                    for (unsigned int j = 0; j < row.size(); ++j)
-                    {
-                        std::string name_col = rows_shape.column_name(j);
-                        if (!row[j].is_null())
-                        {
-                            std::string value = row[j].as<std::string>();
+			if (!rows_shape.empty()){
+				for (pqxx::result::const_iterator row = rows_shape.begin(); row != rows_shape.end(); ++row)
+				{
+					for (unsigned int j = 0; j < row.size(); ++j)
+					{
+						std::string name_col = rows_shape.column_name(j);
+						if (!row[j].is_null())
+						{
+							std::string value = row[j].as<std::string>();
 
-                            // Ajoute une nouvelle ligne pour chaque colonne
-                            ui->tableWidget_layerAttributeInformation2D->insertRow(j);
+							// Ajoute une nouvelle ligne pour chaque colonne
+							ui->tableWidget_layerAttributeInformation2D->insertRow(j);
 
-                            // Remplit la première colonne avec le nom de la colonne
-                            QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(name_col));
-                            ui->tableWidget_layerAttributeInformation2D->setItem(j, 0, col_name_item);
+							// Remplit la première colonne avec le nom de la colonne
+							QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(name_col));
+							ui->tableWidget_layerAttributeInformation2D->setItem(j, 0, col_name_item);
 
-                            // Remplit la deuxième colonne avec la valeur
-                            QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString(value));
-                            ui->tableWidget_layerAttributeInformation2D->setItem(j, 1, value_item);
-                        }
-                        else
-                        {
-                            //std::cout << "Nom de la colonne : " << name_col << ", Valeur : NULL" << std::endl;
-                            // Ajoute une nouvelle ligne pour chaque colonne
-                            ui->tableWidget_layerAttributeInformation2D->insertRow(j);
+							// Remplit la deuxième colonne avec la valeur
+							QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString(value));
+							ui->tableWidget_layerAttributeInformation2D->setItem(j, 1, value_item);
+						}
+						else
+						{
+							//std::cout << "Nom de la colonne : " << name_col << ", Valeur : NULL" << std::endl;
+							// Ajoute une nouvelle ligne pour chaque colonne
+							ui->tableWidget_layerAttributeInformation2D->insertRow(j);
 
-                            // Remplit la première colonne avec le nom de la colonne
-                            QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(name_col));
-                            ui->tableWidget_layerAttributeInformation2D->setItem(j, 0, col_name_item);
+							// Remplit la première colonne avec le nom de la colonne
+							QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(name_col));
+							ui->tableWidget_layerAttributeInformation2D->setItem(j, 0, col_name_item);
 
-                            // Remplit la deuxième colonne avec la valeur
-                            QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString("NULL"));
-                            ui->tableWidget_layerAttributeInformation2D->setItem(j, 1, value_item);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                std::cerr << "Aucune ligne trouvée." << std::endl;
-            }
+							// Remplit la deuxième colonne avec la valeur
+							QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString("NULL"));
+							ui->tableWidget_layerAttributeInformation2D->setItem(j, 1, value_item);
+						}
+					}
+				}
+			}
+			else
+			{
+				std::cerr << "Aucune ligne trouvée." << std::endl;
+			}
 		QMainWindow::mousePressEvent(event);
-        }
+		}
 	}
 }
 
