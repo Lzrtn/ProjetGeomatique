@@ -26,8 +26,9 @@ public:
 	 * @param pathTexture :	path of texture image
 	 */
 	Building3D(const std::vector<QVector3D> & vertices, const std::vector<QVector3D> & normals,
-			const std::vector<QVector2D> & uv, const std::string & pathTexture) :
-		Object3D(vertices, normals, uv, pathTexture)
+			   const std::vector<QVector2D> & uv, const std::string & pathTexture,
+			   const QVector3D & symbo) :
+		Object3D(vertices, normals, uv, pathTexture, symbo)
 	{};
 
 	/**
@@ -43,8 +44,9 @@ public:
 	 * @param pathTexture :	path of texture image
 	 */
 	Building3D(const std::vector<QVector3D> & position,
-			const std::vector<QVector2D> & textCoord, const std::string & textPath) :
-		Object3D(position, textCoord, textPath)
+			   const std::vector<QVector2D> & textCoord, const std::string & textPath,
+			   const QVector3D & symbo) :
+		Object3D(position, textCoord, textPath, symbo)
 	{};
 };
 
@@ -66,7 +68,27 @@ public:
 			const std::vector<QVector3D> &normals,
 			const std::vector<QVector2D> &uv,
 			const std::string &pathTexture) :
-		vertices(vertices), normals(normals), uv(uv), pathTexture(pathTexture)
+		vertices(vertices), normals(normals), uv(uv), pathTexture(pathTexture), symbo({0.5, .5, .5})
+	{};
+
+	/**
+	 * @brief Building3DFactory produce buildings from this geometry
+	 *
+	 * All faces may have 3 points: give only trianglulated vertices with same size
+	 *
+	 * @param vertices :	3D coordinate of points
+	 * @param normals :		3D vector normal to faces
+	 * @param uv :			2D coordinate of point in texture image
+	 * @param pathTexture :	path of texture image. Only one image can be used
+	 * @param symbo:		color of building (default gray 50%)
+	 */
+	Building3DFactory(
+			const std::vector<QVector3D> &vertices,
+			const std::vector<QVector3D> &normals,
+			const std::vector<QVector2D> &uv,
+			const std::string &pathTexture,
+			const QVector3D &symbo) :
+		vertices(vertices), normals(normals), uv(uv), pathTexture(pathTexture), symbo(symbo)
 	{};
 
 	/**
@@ -82,6 +104,7 @@ private:
 	std::vector<QVector3D> normals;
 	std::vector<QVector2D> uv;
 	std::string pathTexture;
+	QVector3D symbo;
 };
 
 #endif // BUILDING3D_H
