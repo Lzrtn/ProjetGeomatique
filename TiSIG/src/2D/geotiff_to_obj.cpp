@@ -68,13 +68,11 @@ std::tuple<std::string, double, double> GeoTiffToObjConverter::writeObjFileWithT
             int currentSubWidth = subWidth + 1;
             int currentSubHeight = subHeight + 1;
 
-            // If this is the last sub-image in the row, adjust the width to include the remaining pixels
             if (i % 3 == 2)
             {
                 currentSubWidth = width - startX;
             }
 
-            // If this is the last sub-image in the column, adjust the height to include the remaining pixels
             if (i / 3 == 1)
             {
                 currentSubHeight = height - startY;
@@ -122,7 +120,6 @@ std::tuple<std::string, double, double> GeoTiffToObjConverter::writeObjFileWithT
             fclose(objFile);
         }
 
-        // Restore the original locale
         setlocale(LC_NUMERIC, currentLocale);
         double xTranslate = adfGeoTransform[0];
         double yTranslate = adfGeoTransform[3];
