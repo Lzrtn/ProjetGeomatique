@@ -43,8 +43,15 @@ public:
   *
   * @return The current zoom level
   */
-  int getZoomLevel(){return zoom_level; };
-
+  qreal getZoomLevel(){return zoom_level; };
+  
+  /**
+  * @brief Set the current zoom level
+  *
+  * @param  qreal The new zoom level
+  */
+  void setZoomLevel(qreal zl){zoom_level=zl;};
+  
 private:
   QGraphicsView* view; ///< View on the interface
   Qt::KeyboardModifiers modifiers; ///< wheel
@@ -52,6 +59,7 @@ private:
   QPointF target_scene, target_view; ///< Points functions are going to target to zoom on
   int zoom_level; ///< Level of zoom
   bool eventFilter(QObject* object, QEvent* event); ///< mouse events
+  
 
 signals:
   void zoomed();
