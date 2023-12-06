@@ -5,11 +5,32 @@
 #include "object3d.h"
 #include <map>
 
+
+/**
+ * @brief The ICameraDisplayInfo class give function to display camera values
+ * like position, orientation and zoom
+ */
 class ICameraDisplayInfo {
 public:
+
+	/**
+	 * @brief Display3DCameraCoordinates is called when camera position has changed
+	 * Override then do action with this new value
+	 *
+	 * @param camPosition:	new position
+	 */
 	virtual void Display3DCameraCoordinates(QVector3D camPosition) = 0;
+
+	/**
+	 * @brief Display3DZoomLevel is called when camera zoom level has changed
+	 * Override then do action with this new value
+	 *
+	 * @param zoom:	new zoom
+	 */
 	virtual void Display3DZoomLevel(float zoom) = 0;
 };
+
+
 class IPicking3DDisplayInfo {
 public:
 	virtual void Display3DPickingResult(const std::map<std::string, std::string> &data) = 0;
@@ -117,6 +138,30 @@ protected:
 
 private:
 	QVector3D translation = {0,0,0};
+};
+
+
+/**
+ * @brief Return true if emprise has changed since last 'consumeChanges' call
+ *
+ * @return true if screen refresh is needed
+ */
+class Updatable {
+public:
+	void RequestUpdate() {
+		this->requestedUpdate = true;
+	}
+
+	bool ConsumeUpdate() {
+		if (this->requestedUpdate) {
+			this->requestedUpdate = false;
+			return true;
+		}
+		return false;
+	}
+
+private:
+	bool requestedUpdate = false;
 };
 
 #endif // I_OPENGLCITYVIEW_H

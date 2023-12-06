@@ -33,7 +33,7 @@ TEST(readObjFiles, testReadUnvalidPath) {
 	// compute throw
 	try {
 		readObj(path, vertices, normals, uv);
-	} catch (std::runtime_error /*e*/) {
+	} catch (std::runtime_error */*e*/) {
 		error = true;
 	}
 	EXPECT_TRUE(error);

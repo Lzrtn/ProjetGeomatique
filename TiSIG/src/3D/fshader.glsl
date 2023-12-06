@@ -6,6 +6,8 @@ precision mediump float;
 #endif
 
 uniform sampler2D texture;
+uniform vec3 symbology_color;
+uniform float symbology_opacity;
 
 varying vec2 v_texcoord;
 
@@ -19,7 +21,7 @@ in float ambUniLightCoef;
 void main()
 {
     // Set fragment color from texture
-    vec4 color = texture2D(texture, v_texcoord);
+    vec4 color = (1.0-symbology_opacity) * texture2D(texture, v_texcoord) + symbology_opacity * vec4(symbology_color, 1);
     color.xyz *= (ambDirLightCoef * ambDirLightColor + ambUniLightCoef * ambUniLightColor);
     gl_FragColor = color;
 }
