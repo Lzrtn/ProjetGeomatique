@@ -79,6 +79,8 @@ private:
 	 */
 	void UpdateBuildings();
 
+	Layer3D* getSelectedLayer() const;
+
 	QOpenGLShaderProgram shader;
 	std::map<int, Layer3D*> layers;
 	//std::map<int, Object3D*> buildings;
