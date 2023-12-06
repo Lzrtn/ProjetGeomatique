@@ -2,7 +2,7 @@
 #include "../src/2D/wmts.h"
 #include "../src/2D/wms.h"
 #include <cmath>
-
+ 
 /*--------------------------------------------------WMS-----------------------------------------------------------*/
 
 TEST(WMSTest, size_image){
@@ -44,7 +44,7 @@ TEST(WMSTest, constructor_Default){
 TEST(WMTSTest, size_tablurl){
 
     //Initialize WMTS   
-    WMTS wmtsInstance(14, 536227.222852, 5739265.686868, 1080, 1080);
+    WMTS wmtsInstance(14, 536227.222852, 5739265.686868, 1080, 1080,3857);
     //Getting table_size
     int table_size = wmtsInstance.getUrl().size();
     //Calculating size of table for 1080x1080 pixel image 
@@ -58,7 +58,7 @@ TEST(WMTSTest, size_tablurl){
 TEST(WMTSTest, constructor_Default){
 
     //Initialize wms
-    WMTS wmtsInstance(14, 536227.222852, 5739265.686868, 1080, 1080);
+    WMTS wmtsInstance(14, 536227.222852, 5739265.686868, 1080, 1080,3857);
     //Getting url
     const char* url = wmtsInstance.getUrl()[0][2];
     //Initialize other url for equivalence test
