@@ -309,11 +309,18 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
         std::string url = wfsdataflowwindow.getURL();
 
         WFSFlow *wfsflow = new WFSFlow(url, latmin, longmin, latmax, longmax);
-
-        wfsflow->downloadZIP();
         std::string PathWfsFlow = wfsflow->GetfilePath();
         PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
         std::cout << "Chemin du shp : " << PathWfsFlow<<std::endl;
+
+        // Parcourir le répertoire et supprimer tous les fichiers correspondant au nom
+        for (const auto& entry : fs::directory_iterator("data/wfsFlow/")) {
+            if (entry.path().filename().stem().string() == fs::path(PathWfsFlow).filename().stem().string()) {
+                fs::remove(entry.path());
+            }
+        }
+
+        wfsflow->downloadZIP();
         // Boucle tant que le fichier n'existe pas
         while (!QFileInfo(QString::fromStdString(PathWfsFlow)).exists()) {
             QThread::msleep(100); // Pause de 100 millisecondes

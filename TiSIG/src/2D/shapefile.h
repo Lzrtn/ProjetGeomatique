@@ -83,6 +83,8 @@ public:
 
    std::string getDataType(){return data_type;}
 
+   int update();
+
 private:
     /**
      * @brief Absolute or relative path of your shapefile
