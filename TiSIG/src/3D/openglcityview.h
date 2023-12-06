@@ -44,6 +44,9 @@ public:
 	void ZoomIn() { this->controls.ZoomIn(true); }
 	void ZoomOut() { this->controls.ZoomIn(false); }
 
+	float getSymbologyOpacity() const { return this->symbologyOpacity; }
+	void setSymbologyOpacity(const float & value) { this->symbologyOpacity = value; }
+
 
 protected:
 
