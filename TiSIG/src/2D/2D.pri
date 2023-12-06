@@ -26,6 +26,12 @@ LIBS += -lquazip5
 INCLUDEPATH += /usr/include
 LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
 
+INCLUDEPATH += /usr/include/proj
+LIBS += -lproj
+
+
+
+
 SOURCES += \
     $$PWD/layer.cpp \
     $$PWD/shapefile.cpp \
@@ -38,7 +44,7 @@ SOURCES += \
     $$PWD/wfsflow.cpp \
 #    $$PWD/wmsflow.cpp \
 #    $$PWD/wmtsflow.cpp \
-#    $$PWD/crs_converter.hpp
+    $$PWD/crs_converter.hpp
 
 
 HEADERS += \

@@ -79,6 +79,14 @@ public:
      */
     void getAttributesLayer(QMouseEvent * event);
 
+    /**
+     * @brief Get the current extent of the 2D graphics view in scene coordinates
+     * @return The extent of the view in scene coordinates
+     */
+    QRectF get2DViewExtent();
+
+    std::vector<std::string> getExtentWMS();
+
 
 private:
     Ui::MainWindow *ui; ///< Ui::MainWindow ui

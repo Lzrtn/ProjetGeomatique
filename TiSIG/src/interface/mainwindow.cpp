@@ -35,6 +35,7 @@ namespace fs = std::filesystem;
 #include "../src/outils/docker.h"
 #include "../src/2D/geojson.h"
 #include "../src/2D/wfsflow.h"
+#include "../src/2D/crs_converter.hpp"
 
 
 
@@ -256,25 +257,59 @@ void MainWindow::OnActionHelpClicked()
     helpwindow.exec();
 }
 
+
+QRectF MainWindow::get2DViewExtent()
+{
+    if (index == 0)
+    {
+        QRectF defaultExtent = QRectF(QPointF(837354.3000,-6520755.6000),QPointF(842550.9000,-6517267.8723));
+        return defaultExtent;
+    }
+    QRectF viewSceneRect = ui->graphicsView_window2D->mapToScene(ui->graphicsView_window2D->rect()).boundingRect();
+    return viewSceneRect;
+}
+
+std::vector<std::string> MainWindow::getExtentWMS()
+{
+    double Xmin = static_cast<double>(std::abs(get2DViewExtent().topLeft().x()));
+    double Ymax = static_cast<double>(std::abs(get2DViewExtent().topLeft().y()));
+    std::vector<double> coordL = crs_converter(2154, Xmin, Ymax, 4326);
+
+    double Xmax = static_cast<double>(std::abs(get2DViewExtent().bottomRight().x()));
+    double Ymin = static_cast<double>(std::abs(get2DViewExtent().bottomRight().y()));
+    std::vector<double> coordR = crs_converter(2154, Xmax, Ymin, 4326);
+
+    // Emprise de la fenêtre à récupérer
+    std::string latmin = std::to_string(coordR[1]);
+    std::replace(latmin.begin(), latmin.end(), ',', '.');
+    std::string longmin = std::to_string(coordL[0]);
+    std::replace(longmin.begin(), longmin.end(), ',', '.');
+    std::string latmax = std::to_string(coordL[1]);
+    std::replace(latmax.begin(), latmax.end(), ',', '.');
+    std::string longmax = std::to_string(coordR[0]);
+    std::replace(longmax.begin(), longmax.end(), ',', '.');
+
+    std::vector<std::string> extent = {latmin, longmin, latmax, longmax};
+
+    return extent;
+}
+
+
 void MainWindow::OnAction2DWFSDataFlowClicked()
 {
     WFSDataFlowWindow wfsdataflowwindow;
     wfsdataflowwindow.setModal(true);
     int result = wfsdataflowwindow.exec();
     if(result==QDialog::Accepted){
+        std::vector<std::string> extent = getExtentWMS();
+        std::string latmin = extent[0];
+        std::string longmin = extent[1];
+        std::string latmax = extent[2];
+        std::string longmax = extent[3];
         std::string url = wfsdataflowwindow.getURL();
 
-        // Emprise de la fenêtre à récupérer
-        std::string longmin = std::to_string(45.727093);
-        std::replace(longmin.begin(), longmin.end(), ',', '.');
-        std::string latmin = std::to_string(4.819074);
-        std::replace(latmin.begin(), latmin.end(), ',', '.');
-        std::string longmax = std::to_string(45.746508);
-        std::replace(longmax.begin(), longmax.end(), ',', '.');
-        std::string latmax = std::to_string(4.850961);
-        std::replace(latmax.begin(), latmax.end(), ',', '.');
+        WFSFlow *wfsflow = new WFSFlow(url, latmin, longmin, latmax, longmax);
 
-        WFSFlow *wfsflow = new WFSFlow(url, longmin, latmin, longmax, latmax);
         wfsflow->downloadZIP();
         std::string PathWfsFlow = wfsflow->GetfilePath();
         PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
@@ -288,7 +323,6 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
         AddShpFileClicked(PathWfsFlow);
     }
 }
-
 
 
 void MainWindow::OnAction2DWMSDataFlowClicked()
