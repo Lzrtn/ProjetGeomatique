@@ -68,7 +68,7 @@ public:
 			const std::vector<QVector3D> &normals,
 			const std::vector<QVector2D> &uv,
 			const std::string &pathTexture) :
-		vertices(vertices), normals(normals), uv(uv), pathTexture(pathTexture), symbo({.5, .5, .5})
+		vertices(vertices), normals(normals), uv(uv), pathTexture(pathTexture), symbo({0.5, .5, .5})
 	{};
 
 	/**
