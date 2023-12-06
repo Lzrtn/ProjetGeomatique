@@ -159,11 +159,19 @@ void OpenGLcityView::keyReleaseEvent(QKeyEvent *event)
 }
 void OpenGLcityView::mousePressEvent(QMouseEvent *event)
 {
-	this->controls.mousePressEvent(event, true);
+	if (event->button() & Qt::LeftButton)
+		this->controls.mousePressEvent(event, true);
+	if (event->button() & Qt::RightButton) {
+
+	}
 }
 void OpenGLcityView::mouseReleaseEvent(QMouseEvent *event)
 {
-	this->controls.mousePressEvent(event, false);
+	if (event->button() & Qt::LeftButton)
+		this->controls.mousePressEvent(event, false);
+	if (event->button() & Qt::RightButton) {
+
+	}
 }
 void OpenGLcityView::mouseMoveEvent(QMouseEvent *event)
 {
