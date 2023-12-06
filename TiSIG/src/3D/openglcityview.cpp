@@ -75,8 +75,12 @@ void OpenGLcityView::timerEvent(QTimerEvent* /*e*/)
 		dt = this->timerDuration * 2;
 	if (this->controls.update(dt) && this->isValid())
 		this->camera.ComputeMPV();
-	if (this->camera.ConsumeChanges())
+	if (this->camera.ConsumeUpdate())
 		this->RequestUpdate();
+	for (auto &pair : this->layers) {
+		if (pair.second->ConsumeUpdate())
+			this->RequestUpdate();
+	}
 	if (this->ConsumeUpdate()) {
 		this->UpdateBuildings();
 		this->update();

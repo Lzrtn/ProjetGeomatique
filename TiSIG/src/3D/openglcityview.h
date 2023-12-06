@@ -23,7 +23,7 @@
 /**
  * @brief The OpenGLcityView class is a widget that can display buildings in 3D
  */
-class OpenGLcityView : public QOpenGLWidget, protected QOpenGLFunctions
+class OpenGLcityView : public QOpenGLWidget, protected QOpenGLFunctions, public Updatable
 {
 	Q_OBJECT
 public:
@@ -49,8 +49,6 @@ public:
 		this->symbologyOpacity = value;
 		this->RequestUpdate();
 	}
-
-	void RequestUpdate() { this->requestedUpdate = true; }
 
 
 protected:
@@ -87,14 +85,6 @@ private:
 	 */
 	void UpdateBuildings();
 
-	bool ConsumeUpdate() {
-		if (this->requestedUpdate) {
-			this->requestedUpdate=false;
-			return true;
-		}
-		return false;
-	}
-
 	QOpenGLShaderProgram shader;
 	std::map<int, Layer3D*> layers;
 	//std::map<int, Object3D*> buildings;
@@ -111,7 +101,6 @@ private:
 	const int timerDuration = 15; // in msec
 
 	float symbologyOpacity = 0.5;
-	bool requestedUpdate = true;
 
 	//OpenGLCityView_BuildingStorage * buildingStorage = nullptr;
 };

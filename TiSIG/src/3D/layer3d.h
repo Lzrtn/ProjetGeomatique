@@ -9,7 +9,7 @@
  *
  * Group of objects 3D linked to Object3DStorage to be displayed into OpenGLCityView
  */
-class Layer3D
+class Layer3D : public Updatable
 {
 private:
 	Object3DStorage * objectsStorage;
@@ -21,7 +21,7 @@ private:
 
 public:
 	bool isVisible() const { return this->visible; }
-	void setVisible(const bool visible) { this->visible = visible; }
+	void setVisible(const bool visible) { this->visible = visible; this->RequestUpdate(); }
 
 	Layer3D(Object3DStorage * objectsStorage);
 	~Layer3D();
