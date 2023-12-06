@@ -28,6 +28,14 @@ public:
 
 	void UpdateEmprise(const Emprise & emprise);
 
+	bool PickingObjectInfo(
+			const QVector3D &p1,
+			const QVector3D &p2,
+			int &idObject,
+			std::map<std::string, std::string> &data) {
+		return this->objectsStorage->PickingObjectInfo(p1, p2, idObject, data);
+	}
+
 	void Draw(QOpenGLShaderProgram *shader);
 };
 
