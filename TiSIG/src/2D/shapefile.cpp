@@ -271,25 +271,66 @@ std::vector<float> Shapefile::getBoundingBox()
 
 
 
-QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene *scene, QColor myColor)
+QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,pqxx::result rowbisType, pqxx::result rowTer,QGraphicsScene *scene, QColor myColor)
 {
-
-    Transformation t;
+    Transformation t; // Instanciation of transformation class
 
     QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
     scene->addItem(layerGroup);
+
+    // Getting the EPSG to set on the ui
+
     std::string EPSG;
-        for (const auto& rowbi : rowbis)
-        {
-            auto geojsongeom = rowbi[0].as<std::string>();
-            EPSG = t.whichCRS(geojsongeom).substr(5,7);
-            break;
-        }
+    for (const auto& rowbi : rowbis)
+    {
+        auto geojsongeom = rowbi[0].as<std::string>();
+        EPSG = t.whichCRS(geojsongeom).substr(5,7);
+        break;
+    }
     EPSGtoSet = QString::fromStdString(EPSG);
+
+    // Getting natures and the number of them
+    int nbColor = 0;
+    std::vector <std::string> natureList;
+    for (const auto& rowte : rowTer)
+    {
+        std::string natureValue = rowte[0].as<std::string>();
+        natureList.push_back(natureValue);
+        nbColor +=1;
+    }
+
+    // Generating colors, as many as there are different natures
+    srand(time(NULL));
+    std::vector <QColor> colorList;
+    for (int i = 0; i < nbColor; i++) {
+        int red_random = rand() % 255;
+        int green_random = rand() % 255;
+        int blue_random = rand() % 255;
+        QColor colorToAssign(red_random, green_random, blue_random);
+        colorList.push_back(colorToAssign);
+    }
+
+    // Association of any nature to a specific color
+    std::map<std::string, QColor> natureColorMap;
+
+    // Remplissez la liste avec des associations nature-couleur
+    for (int i = 0; i < nbColor; ++i) {
+        // Utilisez une couleur de la liste, assurez-vous qu'elle ne dépasse pas la taille de la liste
+        QColor color = colorList[i];
+        natureColorMap[natureList[i]] = color;
+    }
+
+
+    int count = 0;
 
     for (const auto& rowbi : rowbis)
     {
+        //std::cout<<"Le select distinct = "<<rowTer[0][0]<<std::endl;
 
+        std::string nature = rowbisType[count][0].c_str();
+
+        count +=1;
+        //std::cout<<nature<<std::endl;
         auto geojsongeom = rowbi[0].as<std::string>();
         std::string dataType = t.whatType(geojsongeom);
         data_type=dataType;
@@ -304,14 +345,16 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
                     layerGroup->addToGroup(lineToPlotItem);
                 }
             }
-
         }
         else if(dataType == "Polygon")
         {
+
             QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojsongeom);
             QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
             layerGroup->addToGroup(polygoneToPlotItem);
-            polygoneToPlotItem->setBrush(myColor);
+            QColor natureColor = natureColorMap[nature];
+
+            polygoneToPlotItem->setBrush(natureColor);
         }
         else if(dataType == "Point" || dataType == "MultiPoint")
         {
@@ -326,6 +369,7 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
     }
     return(layerGroup);
 }
+
 
 QColor Shapefile::showColor(){
     std::string requete_couleur = "SELECT red, green, blue, alpha from symbologie where name = '"+table_name+"';";
