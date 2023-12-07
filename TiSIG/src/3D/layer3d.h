@@ -75,6 +75,8 @@ public:
 		return this->objectsStorage->PickingObjectInfo(p1, p2, idObject, data);
 	}
 
+	QVector3D getCameraInitPosition() const { return this->objectsStorage->getCameraInitPosition() + this->objectsStorage->getTranslation(); }
+
 	/**
 	 * @brief Draw the layer using the specified shader program.
 	 * @param shader The shader program to use for drawing.

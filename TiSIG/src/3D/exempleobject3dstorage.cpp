@@ -97,8 +97,10 @@ void ExempleObject3DStorage::GetObjectsInEmprise(
 	show_objects = {0, 1, 2, 3, 4};
 
 	// give new buildings
-	for (int id: show_objects) {
-		new_buildings[id] = buildings[id];
+	if (this->firstUpdate) {
+		this->firstUpdate = false;
+		for (int id: show_objects)
+			new_buildings[id] = buildings[id];
 	}
 
 	// building id to forget

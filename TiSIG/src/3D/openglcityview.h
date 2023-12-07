@@ -62,6 +62,8 @@ public:
 		this->RequestUpdate();
 	}
 
+	void ZoomAtEmprise();
+
 
 protected:
 

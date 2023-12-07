@@ -354,7 +354,7 @@ void MainWindow::OnActionRastor3DLayerClicked()
 
 		this->layerList3D->addLayer3DtoOpenGLWidgetAndListWidget(
 //                    new MNT3dstorage(mntwindow.getObj(), mntwindow.getXTranslate(), mntwindow.getYTranslate(), mntwindow.getTexture())
-                    new MNT3dstorage(mntwindow.getObj(), 0.0, 0.0, mntwindow.getTexture())
+					new MNT3dstorage(mntwindow.getObj(), 0.0, 0.0, mntwindow.getTexture())
 					);
 //        std::cout<<mntwindow.getXTranslate()<<" "<<mntwindow.getYTranslate()<<std::endl;
 //        this->storage3D = new MNT3dstorage(mntwindow.getObj(), mntwindow.getTexture());
@@ -442,30 +442,30 @@ void MainWindow::AddShpFileClicked(std::string path)
 	int layerId = essai1->getId();
 
 	//affichage des shapefiles importé
-    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
+	test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
 	pqxx::result rowbis =test.getResult();
-    test.Request("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '"+essai1->getTableName()+"';");
-    pqxx::result columnNamesResult = test.getResult();
-    std::vector<std::string> columnList;
+	test.Request("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '"+essai1->getTableName()+"';");
+	pqxx::result columnNamesResult = test.getResult();
+	std::vector<std::string> columnList;
 
-    for (const auto& row : columnNamesResult)
-    {
-        std::string columnName = row[0].as<std::string>();
-        std::cout << "Le titre de la colonne : " << columnName << std::endl;
-        columnList.push_back(columnName);
-    }
+	for (const auto& row : columnNamesResult)
+	{
+		std::string columnName = row[0].as<std::string>();
+		std::cout << "Le titre de la colonne : " << columnName << std::endl;
+		columnList.push_back(columnName);
+	}
 
-    pqxx::result rowbisType;
-    pqxx::result rowTer;
+	pqxx::result rowbisType;
+	pqxx::result rowTer;
 
 
-    if (std::find(columnList.begin(), columnList.end(), "nature") != columnList.end())
-    {
-      test.Request("SELECT nature From "+essai1->getTableName()+";");
-      rowbisType = test.getResult();
-      test.Request("SELECT DISTINCT nature FROM "+essai1->getTableName()+";");
-      rowTer = test.getResult();
-    }
+	if (std::find(columnList.begin(), columnList.end(), "nature") != columnList.end())
+	{
+	  test.Request("SELECT nature From "+essai1->getTableName()+";");
+	  rowbisType = test.getResult();
+	  test.Request("SELECT DISTINCT nature FROM "+essai1->getTableName()+";");
+	  rowTer = test.getResult();
+	}
 
 
 	QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis, rowbisType, rowTer,scene, myColor);
@@ -550,17 +550,20 @@ void MainWindow::OnButtonZoomOut()
 
 void MainWindow::OnButtonZoomFull()
 {
+	if (!this->mode) {
+		// Zoom sur l'ensemble des couches visibles
+		QRectF visibleItemsRect;
+		foreach (QGraphicsItem *item, scene->items()) {
+			if (item->isVisible())
+				visibleItemsRect = visibleItemsRect.united(item->sceneBoundingRect());
+		}
 
-	// Zoom sur l'ensemble des couches visibles
-	QRectF visibleItemsRect;
-	foreach (QGraphicsItem *item, scene->items()) {
-		if (item->isVisible())
-			visibleItemsRect = visibleItemsRect.united(item->sceneBoundingRect());
+		ui->graphicsView_window2D->fitInView(visibleItemsRect,Qt::KeepAspectRatio);
+		qreal currentScale = ui->graphicsView_window2D->transform().m11();
+		std::cout<<currentScale<<std::endl;
+	} else {
+		this->ui->openGLWidget_window3D->ZoomAtEmprise();
 	}
-
-	ui->graphicsView_window2D->fitInView(visibleItemsRect,Qt::KeepAspectRatio);
-	qreal currentScale = ui->graphicsView_window2D->transform().m11();
-	std::cout<<currentScale<<std::endl;
 }
 
 void MainWindow::addLayerToListWidget(int layerId, Layer &layer) {
@@ -885,7 +888,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
 void MainWindow::testAdd3DModel()
 {
-    this->storage3D = new ExempleObject3DStorage();
+	this->storage3D = new ExempleObject3DStorage();
 //    this->storage3D = new Batiments(ipAdress);
 	this->layerList3D->addLayer3DtoOpenGLWidgetAndListWidget(this->storage3D);
 

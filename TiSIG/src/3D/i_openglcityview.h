@@ -128,6 +128,15 @@ public:
 	 */
 	QVector3D getTranslation() const { return this->translation; };
 
+	/**
+	 * @brief getCameraInitPosition
+	 *
+	 * Use same coordinate than data
+	 *
+	 * @return camera position when click on "center on emprise". Orientaion is 0,0
+	 */
+	QVector3D getCameraInitPosition() const { return this->cameraInitPosition; }
+
 protected:
 	/**
 	 * @brief getTranslation
@@ -136,8 +145,18 @@ protected:
 	 */
 	void setTranslation(const QVector3D & translation) { this->translation = translation; }
 
+	/**
+	 * @brief setCameraInitPosition
+	 *
+	 * Use same coordinate than data
+	 *
+	 * set camera position when click on "center on emprise". Orientaion is 0,0
+	 */
+	void setCameraInitPosition(const QVector3D & position) { this->cameraInitPosition = position; }
+
 private:
 	QVector3D translation = {0,0,0};
+	QVector3D cameraInitPosition = {0, 0, 50};
 };
 
 

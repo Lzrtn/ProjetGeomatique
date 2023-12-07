@@ -28,6 +28,7 @@ public:
 
 private:
 	std::map<int, Object3DFactory*> buildings;
+	bool firstUpdate = true;
 };
 
 #endif // EXEMPLEOBJECT3DSTORAGE_H
