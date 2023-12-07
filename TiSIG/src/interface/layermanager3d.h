@@ -44,6 +44,12 @@ public:
      */
     Layer3D *getLayer3D(int id);
 
+    /**
+     * @brief Retrieves the selected layer.
+     * @return A pointer to the Layer3D object, or nullptr if not found.
+     */
+    Layer3D* getSelectedLayer3D();
+
     int index = 0;
 
 private:
