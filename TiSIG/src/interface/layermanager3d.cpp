@@ -20,6 +20,16 @@ Layer3D* LayerManager3D::getLayer3D(int id)
 	return layerList3D[id];
 }
 
+Layer3D* LayerManager3D::getSelectedLayer3D()
+{
+	QListWidgetItem *item = ui->listeWidget_layersList3D->currentItem();
+	if (item)
+	{
+		int currentId = item->data(Qt::UserRole).toInt();
+		return layerList3D[currentId];
+	}
+	return nullptr;
+}
 
 void LayerManager3D::addLayer3DtoOpenGLWidgetAndListWidget(Object3DStorage *storage3D)
 {
