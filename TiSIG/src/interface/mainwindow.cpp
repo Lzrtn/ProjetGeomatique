@@ -67,11 +67,11 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->action_add3DVectorLayer->setEnabled(mode);
 	ui->action_add3DRastorLayer->setEnabled(mode);
 	ui->action_add3DModel->setEnabled(mode);
-    ui->openGLWidget_window3D->setCamInfoDisplayer(this);
-    ui->openGLWidget_window3D->setPickingInfoDisplayer(this);
+	ui->openGLWidget_window3D->setCamInfoDisplayer(this);
+	ui->openGLWidget_window3D->setPickingInfoDisplayer(this);
 
-    ui->tableWidget_layerAttributeInformation2D->horizontalHeader()->setVisible(1);
-    ui->tableWidget_layerAttributeInformation3D->horizontalHeader()->setVisible(1);
+	ui->tableWidget_layerAttributeInformation2D->horizontalHeader()->setVisible(1);
+	ui->tableWidget_layerAttributeInformation3D->horizontalHeader()->setVisible(1);
 
 
 
@@ -393,28 +393,28 @@ void MainWindow::Display3DZoomLevel(float zoom)
 
 void MainWindow::Display3DPickingResult(const std::map<std::string, std::string> &data)
 {
-    // reset display
-    ui->tableWidget_layerAttributeInformation3D->clear();
-    ui->tableWidget_layerAttributeInformation3D->setRowCount(0);
+	// reset display
+	ui->tableWidget_layerAttributeInformation3D->clear();
+	ui->tableWidget_layerAttributeInformation3D->setRowCount(0);
 
-    // adding header
-    QStringList nameCol;
-    nameCol << "Nom" << "Valeur";
-    ui->tableWidget_layerAttributeInformation3D->setHorizontalHeaderLabels(nameCol);
+	// adding header
+	QStringList nameCol;
+	nameCol << "Nom" << "Valeur";
+	ui->tableWidget_layerAttributeInformation3D->setHorizontalHeaderLabels(nameCol);
 
-    int j = 0;
-    for (auto &pair: data)
-    {
-        ui->tableWidget_layerAttributeInformation3D->insertRow(j);
+	int j = 0;
+	for (auto &pair: data)
+	{
+		ui->tableWidget_layerAttributeInformation3D->insertRow(j);
 
-        QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(pair.first));
-        ui->tableWidget_layerAttributeInformation3D->setItem(j, 0, col_name_item);
+		QTableWidgetItem *col_name_item = new QTableWidgetItem(QString::fromStdString(pair.first));
+		ui->tableWidget_layerAttributeInformation3D->setItem(j, 0, col_name_item);
 
-        QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString(pair.second));
-        ui->tableWidget_layerAttributeInformation3D->setItem(j, 1, value_item);
+		QTableWidgetItem *value_item = new QTableWidgetItem(QString::fromStdString(pair.second));
+		ui->tableWidget_layerAttributeInformation3D->setItem(j, 1, value_item);
 
-        j +=1;
-    }
+		j +=1;
+	}
 }
 
 void MainWindow::AddShpFileClicked(std::string path)
@@ -736,13 +736,13 @@ void MainWindow::onButtonClickedDeleteLayer()
 		layerList.erase(layerId);
 
 
-        // Clear Attribute table
-        ui->tableWidget_layerAttributeInformation2D->clear();
-        ui->tableWidget_layerAttributeInformation2D->setRowCount(0);
+		// Clear Attribute table
+		ui->tableWidget_layerAttributeInformation2D->clear();
+		ui->tableWidget_layerAttributeInformation2D->setRowCount(0);
 
-        QStringList nameCol;
-        nameCol << "Nom" << "Valeur";
-        ui->tableWidget_layerAttributeInformation2D->setHorizontalHeaderLabels(nameCol);
+		QStringList nameCol;
+		nameCol << "Nom" << "Valeur";
+		ui->tableWidget_layerAttributeInformation2D->setHorizontalHeaderLabels(nameCol);
 	}
 }
 
