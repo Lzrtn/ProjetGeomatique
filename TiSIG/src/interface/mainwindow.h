@@ -18,6 +18,7 @@
 #include "../src/2D/rasteritem.h"
 #include "../src/3D/camera.h"
 #include "../src/2D/shapefile.h"
+#include "../src/2D/wfsflow.h"
 
 #include "../src/3D/i_openglcityview.h"
 #include "../src/3D/layer3d.h"
@@ -64,6 +65,20 @@ public:
 	 * @return The extent of the view in scene coordinates
 	 */
 	QRectF get2DViewExtent();
+
+
+	/**
+	 * @brief Get the current extent of the 2D graphics view in WGS84
+	 * @return The extent of the view in WGS84 {latmin, longmin, latmax, longmax} for WFSflow
+	 */
+	std::vector<std::string> getExtentWMS();
+
+	/**
+	 * @brief Adds a WFS flow to the application
+	 *
+	 * @param wfsflow the WFS flow object corresponding to the flow
+	 */
+    void AddshpWFS(WFSFlow *wfsflow);
 
 	/**
 	 * @brief Function to add Layer to the ListWidget
