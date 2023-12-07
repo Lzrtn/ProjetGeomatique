@@ -34,8 +34,12 @@ void WMSDataFlowWindow::OnButtonValidateDataFlowUrlClicked()
 void WMSDataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
 {
     QString flow = ui->comboBox_dataFlowWindow->currentText();
+    flowName = flow.toStdString();
+
     if(flow == "BDOrtho - WMS"){
-        url = "URL vers BDOrtho - WMS";
+
+//        url = "URL vers BDOrtho - WMS";
+        url = "https://data.geopf.fr/wms-r?LAYERS=OI.OrthoimageCoverage&EXCEPTIONS=text/xml&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&STYLES=";
     }
     if(flow == "BDOrtho - WMTS"){
         url = "URL vers BDOrtho - WMTS";

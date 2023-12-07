@@ -44,6 +44,7 @@ namespace fs = std::filesystem;
 #include "../src/2D/wfsflow.h"
 #include "../src/2D/crs_converter.hpp"
 #include "../src/2D/shpwfsflow.h"
+#include "../src/2D/wmsflow.h"
 
 
 
@@ -469,6 +470,37 @@ void MainWindow::OnAction2DWMSDataFlowClicked()
         std::string url = wmsdataflowwindow.getURL();
         std::cout << url<<std::endl;
         // code Axel
+
+        std::string baseURL = wmsdataflowwindow.getURL();
+
+        double xMin = get2DViewExtent().topLeft().x();
+        double yMin = get2DViewExtent().topLeft().y();
+        double xMax = get2DViewExtent().bottomRight().x();
+        double yMax = get2DViewExtent().bottomRight().y();
+
+
+        int width = ui->graphicsView_window2D->width();
+        int height = ui->graphicsView_window2D->height();
+
+        WMSFlow wmsInstance(2154,std::to_string(yMin),std::to_string(yMax),
+                            std::to_string(xMax),std::to_string(xMin), width, height);
+
+        std::string fullURL = baseURL + wmsInstance.getUrl();
+
+//        const char* fullURL = strFullURL.c_str();
+        wmsInstance.setURL(fullURL.c_str());
+        wmsInstance.getImage();
+
+        std::cout << fullURL.c_str()<<std::endl;
+
+
+
+
+
+//        AddWMSLayer(wmsdataflowwindow.getFlowName(),path);
+
+
+
     }
 }
 
@@ -688,6 +720,33 @@ void MainWindow::AddGeotiffFileClicked(std::string path)
 	index++;
 }
 
+void MainWindow::AddWMSLayer(std::string flowName, std::string path)
+{
+
+    QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
+    scene->addItem(layerGroup);
+    int layerId = 4000 + index;
+
+
+    RasterItem* rasterItem = new RasterItem(QString::fromStdString(path),get2DViewExtent());
+
+    layerGroup->addToGroup(rasterItem);
+
+
+    layerList[layerId] = new Layer("Layer "+QString::number(index)+" : "+QString::fromStdString(flowName), true, layerGroup);
+
+    addLayerToListWidget(layerId, *layerList[layerId]);
+    index++;
+
+}
+
+//void MainWindow::UpdateWMSLayer(Layer & wmsLayer, std::string path)
+//{
+
+////    QGraphicsItemGroup *layerGroup = wmsLayer.
+
+
+//}
 
 void MainWindow::OnButtonZoomIn()
 {

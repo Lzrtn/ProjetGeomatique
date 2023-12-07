@@ -30,12 +30,14 @@ public:
     ~WMSDataFlowWindow();
 
     std::string getURL() { return url; };
+    std::string getFlowName() { return flowName; };
 
 
 private:
     Ui::WMSDataFlowWindow *ui;
 
     std::string url;
+    std::string flowName;
 
 
 private slots:

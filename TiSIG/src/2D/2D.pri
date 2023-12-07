@@ -43,7 +43,7 @@ SOURCES += \
     $$PWD/rasterimport.cpp \
     $$PWD/geotiff_to_obj.cpp \
     $$PWD/wfsflow.cpp \
-#    $$PWD/wmsflow.cpp \
+    $$PWD/wmsflow.cpp \
 #    $$PWD/wmtsflow.cpp \
     $$PWD/crs_converter.hpp
 
@@ -59,7 +59,7 @@ HEADERS += \
     $$PWD/rasterimport.h \
     $$PWD/geotiff_to_obj.h \
     $$PWD/wfsflow.h \
-#    $$PWD/wmsflow.h \
+    $$PWD/wmsflow.h \
 #    $$PWD/wmtsflow.h
 
 # Ajoutez les flags de compilation nécessaires pour C++

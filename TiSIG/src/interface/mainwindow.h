@@ -179,6 +179,21 @@ private slots:
 	 */
 	void AddGeotiffFileClicked(std::string path);
 
+    /**
+    * @brief Function to add a WMS layer
+    *
+    *
+    */
+    void AddWMSLayer(std::string flowName, std::string path);
+
+//    /**
+//    * @brief Function to update the raster content of a WMS layer
+//    * according to the current extent: replace the rasteritem with
+//    * a new one from the given file path
+//    *
+//    */
+//    void UpdateWMSLayer(Layer & wmsLayer, std::string path);
+
 	/**
 	* @brief Function to show help window
 	*

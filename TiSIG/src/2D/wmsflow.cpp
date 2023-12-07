@@ -3,7 +3,7 @@
 #include <iostream>
 #include <curl/curl.h>
 #include <fstream>
-#include <opencv2/opencv.hpp>
+
 
 
 using namespace std;
@@ -50,31 +50,30 @@ WMSFlow::WMSFlow(int crs, string  str_north, string str_south, string str_east, 
     string str_crs   = to_string(crs);
 
     //Base url of the flow ("wms-r" for WMS-Raster)
-    string link           = "https://data.geopf.fr/wms-r";    
+  /*string link           = "https://data.geopf.fr/wms-r";    
     string layer          = "OI.OrthoimageCoverage";
     string exception      = "text/xml"; 
     string format         = "png";   
     string service        = "WMS";
     string version        = "1.3.0";    
-    string request        = "GetMap";
+    string request        = "GetMap";*/
     string bbox           = key_bbox+str_south+coma+str_west+coma+str_north+coma+str_east;
     string width_request  = key_width+str_width;
     string height_request = key_height+str_heigh;
 
     // Concatenate using the + operator
-    string str_url = link + key_layers + layer + key_exceptions + exception + key_format + format + 
-                key_service + service + key_version + version + key_request + request + key_styles + 
+    part_url = /*link + key_layers + layer + key_exceptions + exception + key_format + format + 
+                key_service + service + key_version + version + key_request + request + key_styles +*/
                 key_crs + str_crs + bbox + width_request + height_request;
     
-    url = strdup(str_url.c_str());
 }
 
 void WMSFlow::setURL(const char* newurl){
-    this.url = newurl;
+    url = newurl;
 }
 
-const char* WMSFlow::getUrl() {
-    return url;
+std::string WMSFlow::getUrl() {
+    return part_url;
 }
 
 WMSFlow::~WMSFlow() {
