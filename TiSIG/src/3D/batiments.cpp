@@ -7,7 +7,7 @@
 Batiments::Batiments(std::string ip)
 	:ipAddress(ip)
 {
-	this->setCameraInitPosition({1839312.84, 5173874.29, 278.99});
+	this->setCameraInitPosition({1839312.84, 5173874.29, 2000.});
 }
 
 using json = nlohmann::json;
@@ -27,9 +27,9 @@ void Batiments::GetObjectsInEmprise(
 	new_objects.clear();
 
 	//std::cout << "Contenu de listIndex : ";
-	for (const auto& index : listIndex) {
-		//std::cout << index << " ";
-	}
+	//for (const auto& index : listIndex) {
+	//	std::cout << index << " ";
+	//}
 	//std::cout << std::endl;
 
 	for (const auto& index : listIndex) {
