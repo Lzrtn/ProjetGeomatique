@@ -51,6 +51,9 @@ public:
                 const QVector3D &/*p2*/,
                 int &/*idObject*/,
             std::map<std::string, std::string> &/*data*/) override{return false;};
+    void setSymbo();
+    std::vector<std::string> getSymbo();
+    std::vector<std::string> getAdress(std::string buildingID25);
     /**
      * @brief Sets the IP address used for communication with external systems.
      *
@@ -72,8 +75,10 @@ private:
         {0.5f, 1.0f}, {0.0f, 0.0f}, {1, 1}
     };
 
-//    std::string textPath = ":/rose des vents.png";
-    std::string textPath = "";
+    std::string textPath = ":/rose des vents.png";
+
+    std::vector<std::string> symbo;
+
 };
 
 #endif // BATIMENTS_H

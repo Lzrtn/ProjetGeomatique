@@ -47,7 +47,7 @@ std::vector<QVector3D> Batiment::createBuilding(std::string id, std::string ipAd
         if (conn.is_open()) {
 
             std::cout << "Requête un bâtiment" << std::endl;
-            manager.Request("SELECT id, ST_ASGEOJSON(geometry) FROM surface_geometry WHERE parent_id = '" + id + "';");
+            manager.Request("SELECT id, ST_ASGEOJSON(geometry) FROM surface_geometry WHERE cityobject_id = '" + id + "' AND geometry NOTNULL;");
 
             for (const auto& row : manager.getResult()) {
 
