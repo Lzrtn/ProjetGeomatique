@@ -2,7 +2,7 @@
 #define TRANSFORMATION_H
 
 #include <string>
-#include <nlohmann/json.hpp>
+#include "../data/json.hpp"
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -16,6 +16,7 @@ public:
     QPolygonF JSONtoCoordsPOL(std::string polygone);
     std::vector<QVector <QLineF>> JSONtoCoordsLIN(std::string line);
     std::vector<QPointF> JSONtoCoordsPTS(std::string point);
+    std::string whichCRS(std::string data);
     std::string whatType(std::string data);
 };
 

@@ -2,6 +2,8 @@
 #define SHAPEFILE_H
 #include <iostream>
 #include <vector>
+#include <pqxx/pqxx>
+
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPolygonItem>
@@ -10,7 +12,6 @@
 #include <QPointF>
 #include <QCheckBox>
 #include <QColor>
-#include <pqxx/pqxx>
 
 #include "../outils/dbmanager.h"
 
@@ -20,11 +21,16 @@ public:
      /**
      * @brief Construct a new Shapefile object
      *
-     * @param path Absolute or relative path of your shapefile
+     * @param path Absolute path of your shapefile
+     * @param db_manager DbManager of the database in which the shapefile wil be copied
      */
-    Shapefile(std::string path);
+    Shapefile(std::string path, DbManager db_manager);
 
 
+    /**
+    * @brief Destruct a new Shapefile object
+    */
+   ~Shapefile();
     /**
      * @brief Get the path of the shapefile
      *
@@ -39,31 +45,45 @@ public:
      */
     std::string getTableName();
 
+    /**
+     * @brief Get the db manager of the shapefile
+     *
+     * @returns DbManager
+     */
+    DbManager getDbManager();
+
+    /**
+     * @brief Get the id of the shapefile
+     *
+     * @returns int
+     */
+    int getId();
+
      /**
      * @brief Copies the shapefile to a database
      *
-     * @param db_name name of the database
-     * @param db_user username of the database
-     * @param db_password password of the database
-     * @param db_host host of the database
-     * @param db_port port of the database
      * @param epsg epsg code of your shapefile
      *
      * @returns integer : 0 if no error 1 if thereis an error
      */
-    /*int import_to_db(const std::string db_name,const std::string db_user,
-            const std::string db_password,const std::string db_host,
-            const std::string db_port, const int epsg);*/
-    int import_to_db(DbManager db_manager,  const int epsg);
+    int import_to_db(const int epsg);
 
     /**
     * @brief Get the bounding box of the Shapefile
     *
     * @returns std::vector<float> [Xmin,Ymin,Xmax,Ymax]
     */
-   std::vector<float> getBoundingBox(DbManager db_manager);
+   std::vector<float> getBoundingBox();
 
-   QGraphicsItemGroup * plotShapefile(pqxx::result rowbis, QGraphicsScene *scene);
+   QGraphicsItemGroup * plotShapefile(pqxx::result rowbis, QGraphicsScene *scene, QColor myColor);
+
+   QColor showColor();
+
+   QString getEPSGtoSet(){return EPSGtoSet;}
+
+   std::string getDataType(){return data_type;}
+
+   int update();
 
 private:
     /**
@@ -72,34 +92,29 @@ private:
     std::string path;
 
     /**
-     * @brief Name of the database in which the shapefile is copied
-     */
-    std::string db_name;
-
-    /**
-     * @brief Username of the database in which the shapefile is copied
-     */
-    std::string db_user;
-
-    /**
-     * @brief Password of the database in which the shapefile is copied
-     */
-    std::string db_password;
-
-    /**
-     * @brief Host of the database in which the shapefile is copied
-     */
-    std::string db_host;
-
-    /**
-     * @brief Port of the database in which the shapefile is copied
-     */
-    std::string db_port;
-
-    /**
      * @brief Name of the table in which the shapefile is copied
      */
     std::string table_name;
+
+    /**
+    * @brief DB manager in which the shapefile is stocked
+    */
+   DbManager db_manager;
+
+   /**
+   * @brief DB manager in which the shapefile is stocked
+   */
+   QString EPSGtoSet;
+
+   /**
+   * @brief id of the shapefile in the table sympologie
+   */
+   int id;
+
+   /**
+   * @brief itype of the geometry
+   */
+   std::string data_type;
 
 };
 

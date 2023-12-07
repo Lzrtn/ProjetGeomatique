@@ -1,8 +1,10 @@
 #include "transformation.h"
+
 #include <string>
 #include <iostream>
 #include <vector>
-#include <nlohmann/json.hpp>
+#include "../data/json.hpp"
+
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPolygonItem>
@@ -17,6 +19,12 @@ Transformation::~Transformation(){
 
 }
 
+std::string Transformation::whichCRS(std::string data)
+{
+    nlohmann::json dataJSON = nlohmann::json::parse(data);
+    return dataJSON["crs"]["properties"]["name"];
+
+}
 
 std::string Transformation::whatType(std::string data)
 {
@@ -31,13 +39,25 @@ QPolygonF Transformation::JSONtoCoordsPOL(std::string polygone)
     nlohmann::json polygoneJSON = nlohmann::json::parse(polygone);
     std::string type = polygoneJSON["type"];
     QVector <QPointF> polygoneCoordinates;
-    for (int i=0; i < polygoneJSON["coordinates"][0].size();i++)
+    QVector <QPointF> polygoneCoordinatesToSubstract;
+    // Get coordinates of the first polygon
+    for (int i=0; i < (int)polygoneJSON["coordinates"][0].size();i++)
     {
         double x = polygoneJSON["coordinates"][0][i][0];
         double y = polygoneJSON["coordinates"][0][i][1];
         polygoneCoordinates.push_back(QPointF(x, -y));
     }
-    QPolygonF polygoneToPlot(polygoneCoordinates);
+    for (int i=0; i < (int)polygoneJSON["coordinates"][1].size();i++)
+    {
+        double xSubstr = polygoneJSON["coordinates"][1][i][0];
+        double ySubstr = polygoneJSON["coordinates"][1][i][1];
+        polygoneCoordinatesToSubstract.push_back(QPointF(xSubstr, -ySubstr));
+    }
+    QPolygonF polygoneFull(polygoneCoordinates);
+
+    QPolygonF polygoneToSubstract(polygoneCoordinatesToSubstract);
+
+    QPolygonF polygoneToPlot = polygoneFull.subtracted(polygoneToSubstract);
 
     return polygoneToPlot;
 
@@ -50,13 +70,13 @@ std::vector<QVector <QLineF>> Transformation::JSONtoCoordsLIN(std::string line)
     nlohmann::json lineJSON = nlohmann::json::parse(line);
     std::string type = lineJSON["type"];
     if (type=="MultiLineString"){
-        for (int i=0; i < lineJSON["coordinates"].size();i++)
+        for (int i=0; i < (int)lineJSON["coordinates"].size();i++)
         {
 
             if(lineJSON["coordinates"][i].size()>3){
                 QVector <QLineF> lineCoordinates;
                 //std::cout<<"premiere boucle, la polyligne est : "<<lineJSON["coordinates"][i]<<std::endl;
-                for (int j =1; j<lineJSON["coordinates"][i].size(); j++)
+                for (int j =1; j<(int)lineJSON["coordinates"][i].size(); j++)
                 {
                     //std::cout<<"deuxième boucle, le node est : "<<lineJSON["coordinates"][i][j]<<std::endl;
                     double x = lineJSON["coordinates"][i][j][0];
@@ -73,7 +93,7 @@ std::vector<QVector <QLineF>> Transformation::JSONtoCoordsLIN(std::string line)
     else if (type == "LineString"){
         QVector <QLineF> lineCoordinates;
         //std::cout<<"premiere boucle, la polyligne est : "<<lineJSON["coordinates"][i]<<std::endl;
-        for (int j =1; j<lineJSON["coordinates"].size(); j++)
+        for (int j =1; j<(int)lineJSON["coordinates"].size(); j++)
         {
             //std::cout<<"deuxième boucle, le node est : "<<lineJSON["coordinates"][i][j]<<std::endl;
             double x = lineJSON["coordinates"][j][0];

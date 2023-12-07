@@ -6,6 +6,8 @@
 
 #include <cmath>
 
+#include <iostream>
+
 CameraControls::CameraControls()
 {
 	this->reset();
@@ -78,18 +80,25 @@ void CameraControls::mousePressEvent(QMouseEvent * event, bool /*pressed*/)
 
 void CameraControls::mouseMoveEvent(QMouseEvent *event)
 {
-	QPoint delta = this->lastPosClick - event->pos();
+	QVector2D delta = QVector2D(this->lastPosClick - event->pos());
 
 	if (this->keysPressed["ctrl"])
 		this->camera->turn(
 				-2*this->speedMouseRot * delta.x() / this->camera->getPxRatio(),
 				-this->speedMouseRot * delta.y() / this->camera->getPxRatio());
 	else
+	{
+		float a = this->camera->getAngleH() * M_PI / 180;
+		delta = {
+			static_cast<float>(delta.x()*cos(a) + delta.y()*sin(a)),
+			static_cast<float>(delta.y()*cos(a) - delta.x()*sin(a))
+		};
 		this->camera->move(
 					{this->speedMouseMove * delta.x() / this->camera->getZoom() / this->camera->getPxRatio(),
 					 -this->speedMouseMove * delta.y() / this->camera->getZoom() / this->camera->getPxRatio(),
 					 0}
 					);
+	}
 
 	this->lastPosClick = event->pos();
 	event->accept();

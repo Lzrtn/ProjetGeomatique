@@ -1,5 +1,8 @@
 TEMPLATE = subdirs
 
-SUBDIRS += src \
-           qttest \
-           googletest
+SUBDIRS += \
+    $$PWD/src \
+    $$PWD/qttest \
+    $$PWD/googletest
+
+

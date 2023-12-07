@@ -1,7 +1,10 @@
 INCLUDEPATH ''= $$system(pwd)/include
-DEPENDSPATH''= $$system(pwd)
+DEPENDSPATH ''= $$system(pwd)
 
-QT       += core gui
+QT += core gui
+QT += network core
+
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,38 +19,51 @@ INCLUDEPATH += /usr/include/gdal
 LIBS += -lgdal
 LIBS += -lpq
 
-#For Curl
-QT += network 
-# Config for Curl
-LIBS += -lcurl
-
-# Config for opencv
-CONFIG += link_pkgconfig
-PKGCONFIG += opencv
+# Indiquez l'emplacement de QuaZip
+INCLUDEPATH += /usr/include/quazip5
+LIBS += -lquazip5
 
 INCLUDEPATH += /usr/include
-LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx 
+LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
+
+INCLUDEPATH += /usr/include/proj
+LIBS += -lproj
+
+# Config for opencv
+INCLUDEPATH += /usr/include/opencv4/
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv4
+
+
+
 
 SOURCES += \
-    2D/layer.cpp \
-    2D/shapefile.cpp \
-    2D/transformation.cpp \
-    2D/wms.cpp \
-    2D/wmts.cpp
+    $$PWD/layer.cpp \
+    $$PWD/shapefile.cpp \
+    $$PWD/transformation.cpp \
+    $$PWD/geotiff.cpp \
+    $$PWD/geojson.cpp \
+    $$PWD/rasteritem.cpp \
+    $$PWD/rasterimport.cpp \
+    $$PWD/geotiff_to_obj.cpp \
+    $$PWD/wfsflow.cpp \
+#    $$PWD/wmsflow.cpp \
+#    $$PWD/wmtsflow.cpp \
+    $$PWD/crs_converter.hpp
+
 
 HEADERS += \
-    2D/layer.h \
-    2D/shapefile.h \
-    2D/transformation.h \
-    2D/wms.h \
-    2D/wmts.h
-
+    $$PWD/layer.h \
+    $$PWD/shapefile.h \
+    $$PWD/transformation.h \
+    $$PWD/geotiff.h \
+    $$PWD/geojson.h \
+    $$PWD/rasteritem.h \
+    $$PWD/rasterimport.h \
+    $$PWD/geotiff_to_obj.h \
+    $$PWD/wfsflow.h \
+#    $$PWD/wmsflow.h \
+#    $$PWD/wmtsflow.h
 
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17
-
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
-
