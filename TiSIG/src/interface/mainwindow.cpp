@@ -1,9 +1,7 @@
 #include <iostream>
 #include <pqxx/pqxx>
 #include <stdlib.h>
-#include <filesystem>
-namespace fs = std::filesystem;
-
+#include <algorithm>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPolygonItem>
@@ -15,9 +13,6 @@ namespace fs = std::filesystem;
 #include <QSlider>
 #include <QAbstractSlider>
 #include <QMouseEvent>
-#include <QFileInfo>
-#include <QCoreApplication>
-#include <QThread>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -39,12 +34,9 @@ namespace fs = std::filesystem;
 #include "../src/outils/docker.h"
 #include "../src/2D/geojson.h"
 #include "../src/3D/batiments.h"
+
 #include "../src/3D/exempleobject3dstorage.h"
 #include "../src/3D/mnt3dstorage.h"
-#include "../src/2D/wfsflow.h"
-#include "../src/2D/crs_converter.hpp"
-#include "../src/2D/shpwfsflow.h"
-
 
 
 //Initialisation du Docker
@@ -189,26 +181,11 @@ MainWindow::~MainWindow()
 {
 	/* ------------------------------   2D deletion   ----------------------- */
 
-  // Empty WFS flow folder
-  for (const auto& entry : fs::directory_iterator("data/wfsFlow/")) {
-      fs::remove_all(entry.path());
-  }
-
-  // Empty WMS flow folder
-  for (const auto& entry : fs::directory_iterator("data/wmsFlow/")) {
-      fs::remove_all(entry.path());
-  }
-
-  // Empty WMTS flow folder
-  for (const auto& entry : fs::directory_iterator("data/wmtsFlow/")) {
-      fs::remove_all(entry.path());
-  }
-
-  // Delete all layers
-  for(auto pair: layerList)
-  {
-      delete pair.second;
-  }
+	// Delete all layers
+	for(auto pair: layerList)
+	{
+		delete pair.second;
+	}
 
 	// Delete all items from 2D window
 	for (QGraphicsItem* item : ui->graphicsView_window2D->scene()->items())
@@ -227,11 +204,9 @@ MainWindow::~MainWindow()
 
 	//Empty the symbologie table
 	DbManager test("database2D", ipAdress);
-  std::string request = "TRUNCATE TABLE symbologie_shp";
+	std::string request = "TRUNCATE TABLE symbologie";
 	test.Request(request);
-  request = "TRUNCATE TABLE symbologie_flow";
-  test.Request(request);
-  
+
 	/* ------------------------------   3D deletion   ----------------------- */
 	delete this->storage3D;
 	delete this->layer3D;
@@ -308,152 +283,25 @@ void MainWindow::OnActionHelpClicked()
 	helpwindow.exec();
 }
 
-
-QRectF MainWindow::get2DViewExtent()
-{
-    if (index == 0)
-    {
-        QRectF defaultExtent = QRectF(QPointF(837354.3000,-6520755.6000),QPointF(842550.9000,-6517267.8723));
-        return defaultExtent;
-    }
-    QRectF viewSceneRect = ui->graphicsView_window2D->mapToScene(ui->graphicsView_window2D->rect()).boundingRect();
-    return viewSceneRect;
-}
-
-std::vector<std::string> MainWindow::getExtentWMS()
-{
-    double Xmin = static_cast<double>(std::abs(get2DViewExtent().topLeft().x()));
-    double Ymax = static_cast<double>(std::abs(get2DViewExtent().topLeft().y()));
-    std::vector<double> coordL = crs_converter(2154, Xmin, Ymax, 4326);
-
-    double Xmax = static_cast<double>(std::abs(get2DViewExtent().bottomRight().x()));
-    double Ymin = static_cast<double>(std::abs(get2DViewExtent().bottomRight().y()));
-    std::vector<double> coordR = crs_converter(2154, Xmax, Ymin, 4326);
-
-    // Emprise de la fenêtre à récupérer
-    std::string latmin = std::to_string(coordR[1]);
-    std::replace(latmin.begin(), latmin.end(), ',', '.');
-    std::string longmin = std::to_string(coordL[0]);
-    std::replace(longmin.begin(), longmin.end(), ',', '.');
-    std::string latmax = std::to_string(coordL[1]);
-    std::replace(latmax.begin(), latmax.end(), ',', '.');
-    std::string longmax = std::to_string(coordR[0]);
-    std::replace(longmax.begin(), longmax.end(), ',', '.');
-
-    std::vector<std::string> extent = {latmin, longmin, latmax, longmax};
-
-    return extent;
-}
-
-
 void MainWindow::OnAction2DWFSDataFlowClicked()
 {
-    WFSDataFlowWindow wfsdataflowwindow;
-    wfsdataflowwindow.setModal(true);
-    int result = wfsdataflowwindow.exec();
-    if(result==QDialog::Accepted){
-        std::vector<std::string> extent = getExtentWMS();
-        std::string latmin = extent[0];
-        std::string longmin = extent[1];
-        std::string latmax = extent[2];
-        std::string longmax = extent[3];
-        std::string url = wfsdataflowwindow.getURL();
-
-        WFSFlow *wfsflow = new WFSFlow(url, latmin, longmin, latmax, longmax);
-        std::string PathWfsFlow = wfsflow->GetfilePath();
-//        PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
-//        std::cout << "Chemin du shp : " << PathWfsFlow<<std::endl;
-
-        if (fs::exists(PathWfsFlow)) {
-            std::cerr << "Ce flux est déjà disponible." << std::endl;
-            return;
-        }
-
-        else {
-            wfsflow->downloadZIP();
-            // Boucle tant que le fichier n'existe pas
-            while (!QFileInfo(QString::fromStdString(PathWfsFlow)).exists()) {
-                QThread::msleep(100); // Pause de 100 millisecondes
-                QCoreApplication::processEvents();
-            }
-            // Le fichier existe maintenant, vous pouvez appeler AddShpFileClicked
-            AddshpWFS(wfsflow);
-        }
-
-    }
+	WFSDataFlowWindow wfsdataflowwindow;
+	wfsdataflowwindow.setModal(true);
+	int result = wfsdataflowwindow.exec();
+	if(result==QDialog::Accepted){
+		std::cout << wfsdataflowwindow.getLien()<<std::endl;
+	}
 }
-
-
-//fonction update avec des listenners :
-//    // Parcourir le répertoire et supprimer tous les fichiers correspondant à la couche
-//    for (const auto& entry : fs::directory_iterator("data/wfsFlow/")) {
-//        if (entry.path().filename().stem().string() == fs::path(PathWfsFlow).filename().stem().string()) {
-//            fs::remove(entry.path());
-//        }
-//    }
-
-
-
-void MainWindow::AddshpWFS(WFSFlow *wfsflow)
-{
-    // PostGreSQL Connection to the first database
-    DbManager test("database2D", ipAdress);
-    pqxx::connection conn(test.getString());
-
-    if (conn.is_open()) {
-        std::cout << "Connexion réussie à PostgreSQL" << std::endl;
-
-    } else {
-        std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
-        exit(1);
-    }
-
-    //import du shapefile dans la base de données
-     shpWFSflow *shpFlow = new shpWFSflow(test, wfsflow);
-
-    shpFlow->import_to_db(2154);
-    QColor myColor = shpFlow->showColor();
-
-    int layerId = shpFlow->getId();
-
-    //affichage des shapefiles importé
-    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+shpFlow->getTableName()+";");
-    pqxx::result rowbis =test.getResult();
-    QGraphicsItemGroup *layerGroup = shpFlow->plotShapefile(rowbis,scene, myColor);
-    ui->lineEdit_epsg2D->setText(shpFlow->getEPSGtoSet());
-    layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(shpFlow->getTableName().c_str()), true, layerGroup);
-    addLayerToListWidget(layerId, *layerList[layerId]);
-    index++;
-
-    ShpList.insert(std::pair<const int, Shapefile *>(layerId, shpFlow));
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void MainWindow::OnAction2DWMSDataFlowClicked()
 {
-    WMSDataFlowWindow wmsdataflowwindow;
-    wmsdataflowwindow.setModal(true);
-    int result = wmsdataflowwindow.exec();
-    if(result==QDialog::Accepted){
-        std::string url = wmsdataflowwindow.getURL();
-        std::cout << url<<std::endl;
-        // code Axel
-    }
+	WMSDataFlowWindow wmsdataflowwindow;
+	wmsdataflowwindow.setModal(true);
+	int result = wmsdataflowwindow.exec();
+	if(result==QDialog::Accepted){
+		std::cout << wmsdataflowwindow.getLien()<<std::endl;
+	}
 }
-
 
 std::string MainWindow::OnActionVector2DLayerClicked()
 {
@@ -476,7 +324,6 @@ std::string MainWindow::OnActionVector2DLayerClicked()
 	}
 	return path;
 }
-
 
 std::string MainWindow::OnActionVector3DLayerClicked()
 {
@@ -626,8 +473,9 @@ void MainWindow::AddShpFileClicked(std::string path)
 	index++;
 
 	ShpList.insert(std::pair<const int, Shapefile *>(layerId, essai1));
-}
 
+
+}
 
 void MainWindow::AddGeotiffFileClicked(std::string path)
 {

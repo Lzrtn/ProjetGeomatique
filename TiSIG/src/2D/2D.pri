@@ -1,10 +1,7 @@
 INCLUDEPATH ''= $$system(pwd)/include
-DEPENDSPATH ''= $$system(pwd)
+DEPENDSPATH''= $$system(pwd)
 
-QT += core gui
-QT += network core
-
-
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -19,48 +16,28 @@ INCLUDEPATH += /usr/include/gdal
 LIBS += -lgdal
 LIBS += -lpq
 
-# Indiquez l'emplacement de QuaZip
-INCLUDEPATH += /usr/include/quazip5
-LIBS += -lquazip5
-
 INCLUDEPATH += /usr/include
 LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
-
-INCLUDEPATH += /usr/include/proj
-LIBS += -lproj
-
-
-
 
 SOURCES += \
     $$PWD/layer.cpp \
     $$PWD/shapefile.cpp \
-    $$PWD/shpwfsflow.cpp \
     $$PWD/transformation.cpp \
     $$PWD/geotiff.cpp \
     $$PWD/geojson.cpp \
     $$PWD/rasteritem.cpp \
     $$PWD/rasterimport.cpp \
-    $$PWD/geotiff_to_obj.cpp \
-    $$PWD/wfsflow.cpp \
-#    $$PWD/wmsflow.cpp \
-#    $$PWD/wmtsflow.cpp \
-    $$PWD/crs_converter.hpp
-
+    $$PWD/geotiff_to_obj.cpp
 
 HEADERS += \
     $$PWD/layer.h \
     $$PWD/shapefile.h \
-    $$PWD/shpwfsflow.h \
     $$PWD/transformation.h \
     $$PWD/geotiff.h \
     $$PWD/geojson.h \
     $$PWD/rasteritem.h \
     $$PWD/rasterimport.h \
-    $$PWD/geotiff_to_obj.h \
-    $$PWD/wfsflow.h \
-#    $$PWD/wmsflow.h \
-#    $$PWD/wmtsflow.h
+     $$PWD/geotiff_to_obj.h
 
 # Ajoutez les flags de compilation nécessaires pour C++
 QMAKE_CXXFLAGS += -std=c++17

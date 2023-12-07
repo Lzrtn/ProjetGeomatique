@@ -113,10 +113,8 @@ public:
    * @returns std::string data type written like in a geojson
    */
    std::string getDataType(){return data_type;}
-  
-   int update();
-  
-protected:
+
+private:
 
     std::string path; ///< Path of your shapefile
 
@@ -129,8 +127,6 @@ protected:
     int id; ///< Id of the shapefile in the table symbologie
 
     std::string data_type; ///< Type of the geometry
-
-   int idType = 1000;
 
 };
 

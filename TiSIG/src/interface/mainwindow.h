@@ -18,8 +18,6 @@
 #include "../src/2D/rasteritem.h"
 #include "../src/3D/camera.h"
 #include "../src/2D/shapefile.h"
-#include "../src/2D/wfsflow.h"
-
 
 #include "../src/3D/i_openglcityview.h"
 #include "../src/3D/layer3d.h"
@@ -110,16 +108,6 @@ public:
 	*
 	*/
 	void Display3DPickingResult(const std::map<std::string, std::string> &data) override;
-
-    /**
-     * @brief Get the current extent of the 2D graphics view in scene coordinates
-     * @return The extent of the view in scene coordinates
-     */
-    QRectF get2DViewExtent();
-
-    std::vector<std::string> getExtentWMS();
-
-    void AddshpWFS(WFSFlow *wfsflow);
 
 
 private:

@@ -1,7 +1,6 @@
 #include "wfsdataflowwindow.h"
 #include "ui_wfsdataflowwindow.h"
 
-
 WFSDataFlowWindow::WFSDataFlowWindow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::WFSDataFlowWindow)
@@ -26,19 +25,21 @@ WFSDataFlowWindow::~WFSDataFlowWindow()
 
 void WFSDataFlowWindow::OnButtonValidateDataFlowUrlClicked()
 {
-    url = ui->lineEdit_dataFlowWindow->text().toStdString();
+    QString url = ui->lineEdit_dataFlowWindow->text();
+    lien = url.toStdString();
     accept();
 }
-
 
 void WFSDataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
 {
     QString flow = ui->comboBox_dataFlowWindow->currentText();
+    std::string url = "0";
     if(flow == "BDTopo - Bâti"){
-        url = "https://data.geopf.fr/wfs/ows?VERSION=2.0.0&SERVICE=wfs&TYPENAME=BDTOPO_V3:batiment";
+        url = "URL vers BDTopo Bati";
     }
     if(flow == "BDTopo - Route"){
-        url = "https://data.geopf.fr/wfs/ows?VERSION=2.0.0&SERVICE=wfs&TYPENAME=BDTOPO_V3:troncon_de_route";
+        url = "URL vers BDTopo Route";
     }
+    lien = url;
     accept();
 }

@@ -1,7 +1,6 @@
 #include "wmsdataflowwindow.h"
 #include "ui_wmsdataflowwindow.h"
 
-
 WMSDataFlowWindow::WMSDataFlowWindow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::WMSDataFlowWindow)
@@ -26,19 +25,21 @@ WMSDataFlowWindow::~WMSDataFlowWindow()
 
 void WMSDataFlowWindow::OnButtonValidateDataFlowUrlClicked()
 {
-    url = ui->lineEdit_dataFlowWindow->text().toStdString();
+    QString url = ui->lineEdit_dataFlowWindow->text();
+    lien = url.toStdString();
     accept();
 }
-
 
 void WMSDataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
 {
     QString flow = ui->comboBox_dataFlowWindow->currentText();
+    std::string url = "0";
     if(flow == "BDOrtho - WMS"){
         url = "URL vers BDOrtho - WMS";
     }
     if(flow == "BDOrtho - WMTS"){
         url = "URL vers BDOrtho - WMTS";
     }
+    lien = url;
     accept();
 }
