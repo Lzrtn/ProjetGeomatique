@@ -12,14 +12,14 @@ current_directory="$PWD"
 # Installation of dependencies
 
 #sudo apt-get update || exit_with_error "Échec de la mise à jour des paquets"
-sudo apt-get install -y gdal-bin libgdal-dev libpq-dev libpqxx-dev libgtest-dev xvfb || exit_with_error "Failed to install dependencies"
+sudo apt-get install -y gdal-bin libgdal-dev libpq-dev libglm-dev libpqxx-dev libgtest-dev xvfb || exit_with_error "Failed to install dependencies"
 sudo apt-get install build-essential qt5-qmake qtbase5-dev qtchooser qtbase5-dev-tools
-
+sudo apt-get install -y libquazip5-dev 
 #Installation of postgres/postgis
 
-sudo apt-get install postgresql-14-postgis-3
-sudo apt-get install postgresql-15-postgis-3
-sudo apt-get install postgresql-16-postgis-3
+sudo apt-get install -y postgresql-14-postgis-3
+sudo apt-get install -y postgresql-15-postgis-3
+sudo apt-get install -y postgresql-16-postgis-3
 
 sudo apt-get install curl
 
@@ -36,6 +36,10 @@ sudo apt-get install zenity
 
 mkdir ./TiSIG/src/data/Docker/LYON_5EME_2015
 mkdir ./TiSIG/src/data/Docker/zip
+
+mkdir ./TiSIG/src/data/wfsFlow
+mkdir ./TiSIG/src/data/wmsFlow
+mkdir ./TiSIG/src/data/wmtsFlow
 
 #Download of necessary files
 
