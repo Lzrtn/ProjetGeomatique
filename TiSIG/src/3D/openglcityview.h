@@ -18,6 +18,10 @@
 #include "i_openglcityview.h"
 #include "layer3d.h"
 
+// cyclic dependency: use forward declaration and include in .cpp
+//#include "../interface/layermanager3d.h"
+class LayerManager3D;	// forward declaration
+
 #include <map>
 
 /**
@@ -37,6 +41,10 @@ public:
 	void setPickingInfoDisplayer(IPicking3DDisplayInfo * pickingInfoDisplayer) {
 		this->pickingInfoDisplayer = pickingInfoDisplayer;
 	};
+
+	void setLayerManager(LayerManager3D * layerManager) {
+		this->layerManager = layerManager;
+	}
 
 	void addLayer(const int id, Layer3D * layer) {
 		this->layers[id] = layer;
@@ -108,6 +116,8 @@ private:
 	const int timerDuration = 15; // in msec
 
 	float symbologyOpacity = 0.5;
+
+	LayerManager3D * layerManager = nullptr;
 
 	//OpenGLCityView_BuildingStorage * buildingStorage = nullptr;
 };
