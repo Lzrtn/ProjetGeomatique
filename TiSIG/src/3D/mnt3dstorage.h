@@ -7,14 +7,38 @@
 /**
  * @brief The MNT3dstorage class
  *
- * Exemple of Object3DStorage
+ * MNT3dstorage is a Object3DStorage
  */
 class MNT3dstorage : public Object3DStorage
 {
 public:
+    /**
+     * @brief
+     * make a MNT3dstorage from the base name of the .obj file
+     * and the path to the texture file
+     *
+     * @param baseName:	path of .obj file
+     * @param pathTexture:		path of texture file
+     */
 	MNT3dstorage(const std::string baseName, const std::string pathTexture);
+
+    /**
+     * @brief
+     * make a MNT3dstorage from the base name of the .obj file,
+     * the path to the texture file and the values of the translation in x and y
+     *
+     * @param baseName:	path of .obj file
+     * @param xtranslate:	x translation value
+     * @param ytranslate:	y translation value
+     * @param pathTexture:		path of texture file
+     */
 	MNT3dstorage(const std::string baseName, const double xtranslate, const double ytranslate, const std::string pathTexture);
-	~MNT3dstorage();
+
+
+    /**
+     * @brief MNT3dstorage destructor
+     */
+    ~MNT3dstorage();
 
 	void GetObjectsInEmprise(
 			const Emprise &/*emprise*/,
@@ -32,7 +56,6 @@ public:
 
 private:
 	std::map<int, Object3DFactory*> mnt_tiles;
-
 	bool first;
 };
 
