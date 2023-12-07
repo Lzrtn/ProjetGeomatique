@@ -189,7 +189,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
 	/* ------------------------------   2D deletion   ----------------------- */
-	
+
 	// Empty WFS flow folder
 	for (const auto& entry : fs::directory_iterator("data/wfsFlow/")) {
 		fs::remove_all(entry.path());
@@ -228,10 +228,10 @@ MainWindow::~MainWindow()
 
 	//Empty the symbologie table
 	DbManager test("database2D", ipAdress);
-	std::string request = "TRUNCATE TABLE symbologie_shp";
-	test.Request(request);
-	request = "TRUNCATE TABLE symbologie_flow";
-	test.Request(request);
+	std::string request = "DROP TABLE IF EXISTS symbologie_shp";
+	test.CreateTable(request);
+	request = "DROP TABLE IF EXISTS symbologie_flow";
+	test.CreateTable(request);
 
 	/* ------------------------------   3D deletion   ----------------------- */
 	delete this->storage3D;
@@ -309,75 +309,75 @@ void MainWindow::OnActionHelpClicked()
 
 QRectF MainWindow::get2DViewExtent()
 {
-    if (index == 0)
-    {
-        QRectF defaultExtent = QRectF(QPointF(837354.3000,-6520755.6000),QPointF(842550.9000,-6517267.8723));
-        return defaultExtent;
-    }
-    QRectF viewSceneRect = ui->graphicsView_window2D->mapToScene(ui->graphicsView_window2D->rect()).boundingRect();
-    return viewSceneRect;
+	if (index == 0)
+	{
+		QRectF defaultExtent = QRectF(QPointF(837354.3000,-6520755.6000),QPointF(842550.9000,-6517267.8723));
+		return defaultExtent;
+	}
+	QRectF viewSceneRect = ui->graphicsView_window2D->mapToScene(ui->graphicsView_window2D->rect()).boundingRect();
+	return viewSceneRect;
 }
 
 
 std::vector<std::string> MainWindow::getExtentWMS()
 {
-    double Xmin = static_cast<double>(std::abs(get2DViewExtent().topLeft().x()));
-    double Ymax = static_cast<double>(std::abs(get2DViewExtent().topLeft().y()));
-    std::vector<double> coordL = crs_converter(2154, Xmin, Ymax, 4326);
+	double Xmin = static_cast<double>(std::abs(get2DViewExtent().topLeft().x()));
+	double Ymax = static_cast<double>(std::abs(get2DViewExtent().topLeft().y()));
+	std::vector<double> coordL = crs_converter(2154, Xmin, Ymax, 4326);
 
-    double Xmax = static_cast<double>(std::abs(get2DViewExtent().bottomRight().x()));
-    double Ymin = static_cast<double>(std::abs(get2DViewExtent().bottomRight().y()));
-    std::vector<double> coordR = crs_converter(2154, Xmax, Ymin, 4326);
+	double Xmax = static_cast<double>(std::abs(get2DViewExtent().bottomRight().x()));
+	double Ymin = static_cast<double>(std::abs(get2DViewExtent().bottomRight().y()));
+	std::vector<double> coordR = crs_converter(2154, Xmax, Ymin, 4326);
 
-    // Emprise de la fenêtre à récupérer
-    std::string latmin = std::to_string(coordR[1]);
-    std::replace(latmin.begin(), latmin.end(), ',', '.');
-    std::string longmin = std::to_string(coordL[0]);
-    std::replace(longmin.begin(), longmin.end(), ',', '.');
-    std::string latmax = std::to_string(coordL[1]);
-    std::replace(latmax.begin(), latmax.end(), ',', '.');
-    std::string longmax = std::to_string(coordR[0]);
-    std::replace(longmax.begin(), longmax.end(), ',', '.');
+	// Emprise de la fenêtre à récupérer
+	std::string latmin = std::to_string(coordR[1]);
+	std::replace(latmin.begin(), latmin.end(), ',', '.');
+	std::string longmin = std::to_string(coordL[0]);
+	std::replace(longmin.begin(), longmin.end(), ',', '.');
+	std::string latmax = std::to_string(coordL[1]);
+	std::replace(latmax.begin(), latmax.end(), ',', '.');
+	std::string longmax = std::to_string(coordR[0]);
+	std::replace(longmax.begin(), longmax.end(), ',', '.');
 
-    std::vector<std::string> extent = {latmin, longmin, latmax, longmax};
+	std::vector<std::string> extent = {latmin, longmin, latmax, longmax};
 
-    return extent;
+	return extent;
 }
 void MainWindow::OnAction2DWFSDataFlowClicked()
 {
-    WFSDataFlowWindow wfsdataflowwindow;
-    wfsdataflowwindow.setModal(true);
-    int result = wfsdataflowwindow.exec();
-    if(result==QDialog::Accepted){
-        std::vector<std::string> extent = getExtentWMS();
-        std::string latmin = extent[0];
-        std::string longmin = extent[1];
-        std::string latmax = extent[2];
-        std::string longmax = extent[3];
-        std::string url = wfsdataflowwindow.getURL();
+	WFSDataFlowWindow wfsdataflowwindow;
+	wfsdataflowwindow.setModal(true);
+	int result = wfsdataflowwindow.exec();
+	if(result==QDialog::Accepted){
+		std::vector<std::string> extent = getExtentWMS();
+		std::string latmin = extent[0];
+		std::string longmin = extent[1];
+		std::string latmax = extent[2];
+		std::string longmax = extent[3];
+		std::string url = wfsdataflowwindow.getURL();
 
-        WFSFlow *wfsflow = new WFSFlow(url, latmin, longmin, latmax, longmax);
-        std::string PathWfsFlow = wfsflow->GetfilePath();
+		WFSFlow *wfsflow = new WFSFlow(url, latmin, longmin, latmax, longmax);
+		std::string PathWfsFlow = wfsflow->GetfilePath();
 //        PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
 //        std::cout << "Chemin du shp : " << PathWfsFlow<<std::endl;
 
-        if (fs::exists(PathWfsFlow)) {
-            std::cerr << "Ce flux est déjà disponible." << std::endl;
-            return;
-        }
+		if (fs::exists(PathWfsFlow)) {
+			std::cerr << "Ce flux est déjà disponible." << std::endl;
+			return;
+		}
 
-        else {
-            wfsflow->downloadZIP();
-            // Boucle tant que le fichier n'existe pas
-            while (!QFileInfo(QString::fromStdString(PathWfsFlow)).exists()) {
-                QThread::msleep(100); // Pause de 100 millisecondes
-                QCoreApplication::processEvents();
-            }
-            // Le fichier existe maintenant, vous pouvez appeler AddShpFileClicked
-            AddshpWFS(wfsflow);
-        }
+		else {
+			wfsflow->downloadZIP();
+			// Boucle tant que le fichier n'existe pas
+			while (!QFileInfo(QString::fromStdString(PathWfsFlow)).exists()) {
+				QThread::msleep(100); // Pause de 100 millisecondes
+				QCoreApplication::processEvents();
+			}
+			// Le fichier existe maintenant, vous pouvez appeler AddShpFileClicked
+			AddshpWFS(wfsflow);
+		}
 
-    }
+	}
 }
 
 
@@ -392,72 +392,72 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
 
 void MainWindow::AddshpWFS(WFSFlow *wfsflow)
 {
-    // PostGreSQL Connection to the first database
-    DbManager test("database2D", ipAdress);
-    pqxx::connection conn(test.getString());
+	// PostGreSQL Connection to the first database
+	DbManager test("database2D", ipAdress);
+	pqxx::connection conn(test.getString());
 
-    if (conn.is_open()) {
-        std::cout << "Connexion réussie à PostgreSQL" << std::endl;
+	if (conn.is_open()) {
+		std::cout << "Connexion réussie à PostgreSQL" << std::endl;
 
-    } else {
-        std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
-        exit(1);
-    }
+	} else {
+		std::cout << "Échec de la connexion à PostgreSQL" << std::endl;
+		exit(1);
+	}
 
-    //import du shapefile dans la base de données
-     shpWFSflow *shpFlow = new shpWFSflow(test, wfsflow);
+	//import du shapefile dans la base de données
+	 shpWFSflow *shpFlow = new shpWFSflow(test, wfsflow);
 
-    shpFlow->import_to_db(2154);
-    QColor myColor = shpFlow->showColor();
+	shpFlow->import_to_db(2154);
+	QColor myColor = shpFlow->showColor();
 
-    int layerId = shpFlow->getId();
+	int layerId = shpFlow->getId();
 
-    //affichage des shapefiles importé
-    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+shpFlow->getTableName()+";");
-    pqxx::result rowbis =test.getResult();
-    test.Request("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '"+shpFlow->getTableName()+"';");
-    pqxx::result columnNamesResult = test.getResult();
-    std::vector<std::string> columnList;
+	//affichage des shapefiles importé
+	test.Request("SELECT ST_AsGeoJSON(geom) FROM "+shpFlow->getTableName()+";");
+	pqxx::result rowbis =test.getResult();
+	test.Request("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '"+shpFlow->getTableName()+"';");
+	pqxx::result columnNamesResult = test.getResult();
+	std::vector<std::string> columnList;
 
-    for (const auto& row : columnNamesResult)
-    {
-        std::string columnName = row[0].as<std::string>();
-        columnList.push_back(columnName);
-    }
+	for (const auto& row : columnNamesResult)
+	{
+		std::string columnName = row[0].as<std::string>();
+		columnList.push_back(columnName);
+	}
 
-    pqxx::result rowbisType;
-    pqxx::result rowTer;
-
-
-    if (std::find(columnList.begin(), columnList.end(), "nature") != columnList.end())
-    {
-      test.Request("SELECT nature From "+shpFlow->getTableName()+";");
-      rowbisType = test.getResult();
-      test.Request("SELECT DISTINCT nature FROM "+shpFlow->getTableName()+";");
-      rowTer = test.getResult();
-    }
+	pqxx::result rowbisType;
+	pqxx::result rowTer;
 
 
-    QGraphicsItemGroup *layerGroup = shpFlow->plotShapefile(rowbis, rowbisType, rowTer,scene, myColor);
-    ui->lineEdit_epsg2D->setText(shpFlow->getEPSGtoSet());
-    layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(shpFlow->getTableName().c_str()), true, layerGroup);
-    addLayerToListWidget(layerId, *layerList[layerId]);
-    index++;
+	if (std::find(columnList.begin(), columnList.end(), "nature") != columnList.end())
+	{
+	  test.Request("SELECT nature From "+shpFlow->getTableName()+";");
+	  rowbisType = test.getResult();
+	  test.Request("SELECT DISTINCT nature FROM "+shpFlow->getTableName()+";");
+	  rowTer = test.getResult();
+	}
 
-    ShpList.insert(std::pair<const int, Shapefile *>(layerId, shpFlow));
+
+	QGraphicsItemGroup *layerGroup = shpFlow->plotShapefile(rowbis, rowbisType, rowTer,scene, myColor);
+	ui->lineEdit_epsg2D->setText(shpFlow->getEPSGtoSet());
+	layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(shpFlow->getTableName().c_str()), true, layerGroup);
+	addLayerToListWidget(layerId, *layerList[layerId]);
+	index++;
+
+	ShpList.insert(std::pair<const int, Shapefile *>(layerId, shpFlow));
 }
 
 
 void MainWindow::OnAction2DWMSDataFlowClicked()
 {
-    WMSDataFlowWindow wmsdataflowwindow;
-    wmsdataflowwindow.setModal(true);
-    int result = wmsdataflowwindow.exec();
-    if(result==QDialog::Accepted){
-        std::string url = wmsdataflowwindow.getURL();
-        std::cout << url<<std::endl;
-        // code Axel
-    }
+	WMSDataFlowWindow wmsdataflowwindow;
+	wmsdataflowwindow.setModal(true);
+	int result = wmsdataflowwindow.exec();
+	if(result==QDialog::Accepted){
+		std::string url = wmsdataflowwindow.getURL();
+		std::cout << url<<std::endl;
+		// code Axel
+	}
 }
 
 std::string MainWindow::OnActionVector2DLayerClicked()
