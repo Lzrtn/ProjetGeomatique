@@ -87,6 +87,11 @@ public:
 	 */
 	void wheelEvent(QWheelEvent *event);
 
+	/**
+	 * @brief ZoomIn change zoom of camera
+	 *
+	 * @param zoomIn:	true->zoomIn; false->zoomOut
+	 */
 	void ZoomIn(bool zoomIn = true);
 
 private:

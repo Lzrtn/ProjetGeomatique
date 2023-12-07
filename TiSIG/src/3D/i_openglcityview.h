@@ -47,12 +47,19 @@ public:
  */
 class Emprise {
 public:
-	// 3D coordinates for volume
+	/**
+	 * @brief 3D coordinates for volume
+	 */
 	QVector3D a, b, c, d, e, f, g, h;
 
-	// 3D coordinates for ground plan (z=0)
+	/**
+	 * @brief 3D coordinates for ground plan (z=0)
+	 */
 	QVector3D g_a, g_b, g_c, g_d;
 
+	/**
+	 * @brief updateGroundCoordinates compute g_a, g_b, g_c, and g_d with other coordinates
+	 */
 	void updateGroundCoordinates() {
 		// intersection between line (a,e) [resp. (b,f); (c,g); (e,h)] and plane (z=0)
 		// if no intersect, first point will be chosen
@@ -62,28 +69,17 @@ public:
 		g_d = h.z() != d.z() ? d - d.z() * (h-d) / (h.z() - d.z()) : d;
 	}
 
+	/**
+	 * @brief operator !=
+	 * test equality between two emprises
+	 *
+	 * @return true if all coordinates are same
+	 */
 	bool operator!= (const Emprise & o) const {
 		return !(a==o.a && b==o.b && c==o.c && d==o.d
 			  && e==o.e && f==o.f && g==o.g && h==o.h);
 	}
 
-};
-
-/**
- * @brief The OpenGLCityView_BuildingStorage class
- * OBSELETE
- *
- * @see Object3DStorage
- */
-class OpenGLCityView_BuildingStorage {
-public:
-	virtual std::map<int, Building3DFactory> getBuildingsInEmprise(const Emprise &emprise) = 0;
-
-	virtual void GetObjectsInEmprise(
-			const Emprise &emprise,
-			std::map<int, Object3DFactory> &new_objects,
-			std::vector<int> &show_objects,
-			std::vector<int> &forget_objects) = 0;
 };
 
 /**
@@ -114,6 +110,17 @@ public:
 			std::vector<int> &show_objects,
 			std::vector<int> &forget_objects) = 0;
 
+	/**
+	 * @brief PickingObjectInfo
+	 *
+	 * Get attributes of the first object that intersects the segment [p1 p2], closest than p1
+	 *
+	 * @param p1:		[in]	first point of the segment
+	 * @param p2:		[in]	second point of the segment
+	 * @param idObject:	[out]	id of object (unused if return false)
+	 * @param data:		[out]	attributar table, link key-value 'unused if return false)
+	 * @return:			bool	true if an object is found
+	 */
 	virtual bool PickingObjectInfo(
 			const QVector3D &p1,
 			const QVector3D &p2,
@@ -161,16 +168,37 @@ private:
 
 
 /**
- * @brief Return true if emprise has changed since last 'consumeChanges' call
+ * @brief The Updatable class make objects can be requested for update
  *
- * @return true if screen refresh is needed
+ * example
+ *
+ * Obj myObj; // class Obj extends Updatable
+ *
+ * // do some action
+ *
+ * if (myObj.ConsumeUpdate()) {
+ *	 // do some action
+ * }
  */
 class Updatable {
 public:
+	/**
+	 * @brief RequestUpdate
+	 * Next ConsumeUpdate will be true
+	 *
+	 * @see ConsumeUpdate
+	 */
 	void RequestUpdate() {
 		this->requestedUpdate = true;
 	}
 
+	/**
+	 * @brief Return true if emprise has changed since last 'ConsumeUpdate' call
+	 *
+	 * @return true if update is requested
+	 *
+	 * @see RequestUpdate
+	 */
 	bool ConsumeUpdate() {
 		if (this->requestedUpdate) {
 			this->requestedUpdate = false;

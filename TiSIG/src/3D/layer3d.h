@@ -67,6 +67,11 @@ public:
 	 */
 	void UpdateEmprise(const Emprise & emprise);
 
+	/**
+	 * @brief PickingObjectInfo
+	 *
+	 * @see Object3DStorage::PickingObjectInfo same function
+	 */
 	bool PickingObjectInfo(
 			const QVector3D &p1,
 			const QVector3D &p2,
@@ -75,7 +80,13 @@ public:
 		return this->objectsStorage->PickingObjectInfo(p1, p2, idObject, data);
 	}
 
-	QVector3D getCameraInitPosition() const { return this->objectsStorage->getCameraInitPosition() + this->objectsStorage->getTranslation(); }
+	/**
+	 * @brief getCameraInitPosition
+	 * @return position initial of camera (in real coordinates) to reset it
+	 */
+	QVector3D getCameraInitPosition() const {
+		return this->objectsStorage->getCameraInitPosition() + this->objectsStorage->getTranslation();
+	}
 
 	/**
 	 * @brief Draw the layer using the specified shader program.
@@ -95,11 +106,25 @@ public:
 	 */
 	QString getLayerName() const { return layerName; }
 
+private:
 	QListWidgetItem *layerItem; 	/**< Pointer to the list widget item representing the layer. */
 	QWidget *layerWidget; 			/**< Pointer to the widget representing the layer. 			 */
 	QHBoxLayout *layout; 			/**< Pointer to the layout of the layer widget. 			 */
 	QCheckBox *visibilityCheckbox; 	/**< Pointer to the checkbox for toggling layer visibility.  */
 	QLabel *layerLabel; 			/**< Pointer to the label displaying the layer name. 		 */
+
+public:
+	QListWidgetItem * getLayerItem() const { return this->layerItem; };
+	void setLayerItem(QListWidgetItem * layerItem) { this->layerItem = layerItem; }
+	QWidget * getLayerWidget() const { return this->layerWidget; };
+	void setLayerWidget(QWidget * layerWidget) { this->layerWidget = layerWidget; }
+	QHBoxLayout * getLayout() const { return this->layout; }
+	void setLayout(QHBoxLayout * layout) { this->layout = layout; }
+	QCheckBox *getVisibilityCheckbox() const { return this->visibilityCheckbox; }
+	void setVisibilityCheckbox(QCheckBox *visibilityCheckbox) { this->visibilityCheckbox = visibilityCheckbox; }
+	QLabel *getLayerLabel() const { return this->layerLabel; }
+	void setLayerLabel(QLabel *layerLabel) { this->layerLabel = layerLabel; }
+
 };
 
 #endif // LAYER3D_H

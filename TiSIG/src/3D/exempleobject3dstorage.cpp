@@ -73,6 +73,18 @@ ExempleObject3DStorage::ExempleObject3DStorage()
 	/*------------------------------    MNT (cube)   ------------------------------*/
 	this->buildings[4] = new MNT3DFactory("../src/data/Tests/cube.obj", ":/cube.png");
 
+	/* old version of MNT for tests
+	MNT3DFactory(int version) {
+		if (version == 0) {
+			this->pathObj = "../src/data/Tests/cube.obj";
+			this->pathTexture = ":/cube.png";
+		} else {
+			//this->pathObj = "../src/data/DONNEES_BDORTHO/MNT.obj";
+			this->pathObj = "../src/data/DONNEES_BDORTHO/decoupe_25m.obj";
+			this->pathTexture = "../src/data/DONNEES_BDORTHO/Lyon5e_2m.png";
+		}
+	}
+	*/
 	/*------------------------------ Set translation ------------------------------*/
 	this->setTranslation({5, 0, 0});
 }
