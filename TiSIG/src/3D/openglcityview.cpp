@@ -1,5 +1,7 @@
 #include "openglcityview.h"
 
+#include "../interface/layermanager3d.h"	// include for cyclic dependency
+
 #include <iostream>
 #include <QKeyEvent>
 
@@ -97,12 +99,7 @@ void OpenGLcityView::UpdateBuildings()
 
 Layer3D *OpenGLcityView::getSelectedLayer() const
 {
-	//#########################################################################
-	// a refaire en utilisant le layerManager
-	for (auto &pair : this->layers) {
-		return pair.second;
-	}
-	return nullptr;
+	return this->layerManager ? this->layerManager->getSelectedLayer3D() : nullptr;
 }
 
 void OpenGLcityView::resizeGL(int w, int h)

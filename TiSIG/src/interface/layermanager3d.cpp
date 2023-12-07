@@ -4,7 +4,7 @@
 LayerManager3D::LayerManager3D(Ui::MainWindow *ui)
 	:ui(ui)
 {
-
+	ui->openGLWidget_window3D->setLayerManager(this);
 }
 
 LayerManager3D::~LayerManager3D()
