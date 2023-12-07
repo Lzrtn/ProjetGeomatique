@@ -72,6 +72,14 @@ public:
 
 
 	int index = 0; // Temporaire
+	/**
+	 * @brief Updates the layer order in the graphics view.
+	 * 
+	 * This function is responsible for updating the order of layers in the graphics view.
+	 * It ensures that the layers are displayed in the correct order based on their z-index.
+	 * 
+	 * @note This function does not modify the actual layer data, it only updates the visual representation.
+	 */
 	void updateLayerOrderInGraphicsView();
 
 	/**
