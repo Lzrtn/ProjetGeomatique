@@ -664,7 +664,7 @@ void MainWindow::moveItemDown() {
 			QLayout *widgetLayout = itemWidget->layout();
 			tempWidget->setLayout(widgetLayout);
 
-			layerList3D->getLayer3D(currentId)->layerWidget = tempWidget;
+			layerList3D->getLayer3D(currentId)->setLayerWidget(tempWidget);
 
 			QListWidgetItem *currentItem = ui->listeWidget_layersList3D->takeItem(currentIndex);
 
@@ -727,7 +727,7 @@ void MainWindow::moveItemUp() {
 			QLayout *widgetLayout = itemWidget->layout();
 			tempWidget->setLayout(widgetLayout);
 
-			layerList3D->getLayer3D(currentId)->layerWidget = tempWidget;
+			layerList3D->getLayer3D(currentId)->setLayerWidget(tempWidget);
 
 			QListWidgetItem *currentItem = ui->listeWidget_layersList3D->takeItem(currentIndex);
 

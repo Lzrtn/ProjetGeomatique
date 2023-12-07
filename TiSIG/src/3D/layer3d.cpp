@@ -30,18 +30,18 @@ void Layer3D::UpdateEmprise(const Emprise &emprise)
 
 
 	for (const int id_obj: forget_objects) {
-        if (this->objects.find(id_obj) != this->objects.end()) {
-            //delete this->objects.at(id_obj);
-            //this->objects.erase(id_obj);
-        }
-    }
+		if (this->objects.find(id_obj) != this->objects.end()) {
+			//delete this->objects.at(id_obj);
+			//this->objects.erase(id_obj);
+		}
+	}
 
 	for (const auto &pair: new_objects) {
-        if (this->objects.find(pair.first) != this->objects.end()) {
-            delete this->objects[pair.first];
-            std::cout << "Warning: overwrite object " << pair.first << std::endl;
-        }
-        this->objects[pair.first] = pair.second->New();
+		if (this->objects.find(pair.first) != this->objects.end()) {
+			delete this->objects[pair.first];
+			std::cout << "Warning: overwrite object " << pair.first << std::endl;
+		}
+		this->objects[pair.first] = pair.second->New();
 	}
 
 }
@@ -53,9 +53,9 @@ void Layer3D::Draw(QOpenGLShaderProgram *shader)
 	shader->setUniformValue("translation", this->objectsStorage->getTranslation());
 
 	for (int id_obj: this->show_objects) {
-        if (this->objects.find(id_obj) != this->objects.end())
-            this->objects.at(id_obj)->Draw(shader);
-        else
-            std::cout << "Warning: unknowed object " << id_obj << std::endl;
+		if (this->objects.find(id_obj) != this->objects.end())
+			this->objects.at(id_obj)->Draw(shader);
+		else
+			std::cout << "Warning: unknowed object " << id_obj << std::endl;
 	}
 }
