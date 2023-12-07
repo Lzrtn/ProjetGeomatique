@@ -3,6 +3,14 @@
 
 #include "object3d.h"
 
+/**
+ * @brief The MNT3D class
+ *
+ * Contain 3D object setted by .obj & .png file (gerenated by .mnt)
+ *
+ * @see Object3D
+ * @see MNT3DFactory
+ */
 class MNT3D : public Object3D
 {
 public:
@@ -12,12 +20,21 @@ public:
 	 *
 	 * @param pathTexture:	path of texture image
 	 * @param pathObj:		path of .obj file
+	 *
+	 * @see Object3D::Object3D
 	 */
 	MNT3D(const std::string pathObj, const std::string & pathTexture) :
 		Object3D(pathObj, pathTexture)
 	{};
 };
 
+/**
+ * @brief The MNT3DFactory class
+ * generator for MNT3D
+ *
+ * @see ObjectFactory
+ * @see MNT3D
+ */
 class MNT3DFactory : public Object3DFactory
 {
 public:
@@ -31,17 +48,6 @@ public:
 	MNT3DFactory(const std::string &pathObj, const std::string &pathTexture) {
 		this->pathObj = pathObj;
 		this->pathTexture = pathTexture;
-	}
-
-	MNT3DFactory(int version) {
-		if (version == 0) {
-			this->pathObj = "../src/data/Tests/cube.obj";
-			this->pathTexture = ":/cube.png";
-		} else {
-			//this->pathObj = "../src/data/DONNEES_BDORTHO/MNT.obj";
-			this->pathObj = "../src/data/DONNEES_BDORTHO/decoupe_25m.obj";
-			this->pathTexture = "../src/data/DONNEES_BDORTHO/Lyon5e_2m.png";
-		}
 	}
 
 	/**

@@ -42,33 +42,33 @@ void LayerManager3D::addLayer3DtoOpenGLWidgetAndListWidget(Object3DStorage *stor
 
 
 		// Adding ListWidgetItem to QListWidget with layer name and visibility checkbox
-		layer3D->layerItem = new QListWidgetItem();
-		layer3D->layerItem->setData(Qt::UserRole, layer3D->getLayerId()); // Donne un ID à l'item
+		layer3D->setLayerItem(new QListWidgetItem());
+		layer3D->getLayerItem()->setData(Qt::UserRole, layer3D->getLayerId()); // Donne un ID à l'item
 
-		layer3D->layerWidget = new QWidget();
-		layer3D->layout = new QHBoxLayout(layer3D->layerWidget);
+		layer3D->setLayerWidget(new QWidget());
+		layer3D->setLayout(new QHBoxLayout(layer3D->getLayerWidget()));
 
-		layer3D->visibilityCheckbox = new QCheckBox("");
-		layer3D->visibilityCheckbox->setChecked(layer3D->isVisible());
+		layer3D->setVisibilityCheckbox(new QCheckBox(""));
+		layer3D->getVisibilityCheckbox()->setChecked(layer3D->isVisible());
 
-		layer3D->layerLabel = new QLabel(layer3D->getLayerName());
+		layer3D->setLayerLabel(new QLabel(layer3D->getLayerName()));
 
-		QObject::connect(layer3D->visibilityCheckbox, &QCheckBox::toggled, [=](bool checked) {
+		QObject::connect(layer3D->getVisibilityCheckbox(), &QCheckBox::toggled, [=](bool checked) {
 			layer3D->setVisible(checked); //Idem index -> ID
 			ui->openGLWidget_window3D->update();
 		});
 
-		layer3D->layout->addWidget(layer3D->visibilityCheckbox);
-		layer3D->layout->addWidget(layer3D->layerLabel);
-		layer3D->layout->setAlignment(Qt::AlignLeft);
+		layer3D->getLayout()->addWidget(layer3D->getVisibilityCheckbox());
+		layer3D->getLayout()->addWidget(layer3D->getLayerLabel());
+		layer3D->getLayout()->setAlignment(Qt::AlignLeft);
 
-		layer3D->layout->setContentsMargins(2, 0, 2, 0);
-		layer3D->layout->setSpacing(10);
+		layer3D->getLayout()->setContentsMargins(2, 0, 2, 0);
+		layer3D->getLayout()->setSpacing(10);
 
-		layer3D->layerWidget->setLayout(layer3D->layout);
-		layer3D->layerItem->setSizeHint(layer3D->layerWidget->sizeHint());
+		layer3D->getLayerWidget()->setLayout(layer3D->getLayout());
+		layer3D->getLayerItem()->setSizeHint(layer3D->getLayerWidget()->sizeHint());
 
-		ui->listeWidget_layersList3D->insertItem(0, layer3D->layerItem);
-		ui->listeWidget_layersList3D->setItemWidget(layer3D->layerItem, layer3D->layerWidget);
+		ui->listeWidget_layersList3D->insertItem(0, layer3D->getLayerItem());
+		ui->listeWidget_layersList3D->setItemWidget(layer3D->getLayerItem(), layer3D->getLayerWidget());
 }
 
