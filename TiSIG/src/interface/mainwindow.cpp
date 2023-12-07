@@ -888,8 +888,8 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
 void MainWindow::testAdd3DModel()
 {
-	this->storage3D = new ExempleObject3DStorage();
-//    this->storage3D = new Batiments(ipAdress);
+	//this->storage3D = new ExempleObject3DStorage();
+	this->storage3D = new Batiments(ipAdress);
 	this->layerList3D->addLayer3DtoOpenGLWidgetAndListWidget(this->storage3D);
 
 }

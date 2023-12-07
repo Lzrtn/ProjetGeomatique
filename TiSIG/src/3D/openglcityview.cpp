@@ -21,9 +21,8 @@ OpenGLcityView::~OpenGLcityView()
 	this->doneCurrent();
 }
 
-void OpenGLcityView::ZoomAtEmprise()
+void OpenGLcityView::ZoomAtEmprise(const Layer3D *layer)
 {
-	Layer3D * layer = this->getSelectedLayer();
 	if (layer) {
 		this->camera.setPosition(layer->getCameraInitPosition(), false);
 		this->camera.setAngleH(0, false);

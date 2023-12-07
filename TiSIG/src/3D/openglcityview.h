@@ -48,6 +48,7 @@ public:
 
 	void addLayer(const int id, Layer3D * layer) {
 		this->layers[id] = layer;
+		ZoomAtEmprise(layer);
 	}
 
 	Layer3D* getLayer(const int id) const { return this->layers.at(id); }
@@ -62,7 +63,8 @@ public:
 		this->RequestUpdate();
 	}
 
-	void ZoomAtEmprise();
+	void ZoomAtEmprise() { ZoomAtEmprise(this->getSelectedLayer()); }
+	void ZoomAtEmprise(const Layer3D * layer);
 
 
 protected:
