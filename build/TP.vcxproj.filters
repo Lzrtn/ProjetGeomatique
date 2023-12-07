@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\controls.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\fpscontrols.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\navigationcontrols.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\uvbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\vertexarray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\vertexbuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\stb_image\stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\pointlight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\imgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\imgui_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\imgui_draw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\imgui_tables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\imgui_widgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\backends\imgui_impl_opengl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\userinterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\batiments.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\batiment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\controls.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\fpscontrols.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\navigationcontrols.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\uvbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\vertexarray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\vertexbuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\stb_image\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\pointlight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\imconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\imgui_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\imstb_rectpack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\imstb_textedit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\backends\imgui_impl_glfw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\backends\imgui_impl_opengl3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\imgui\backends\imgui_impl_opengl3_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\userinterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\batiments.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\batiment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\shaders\SimpleFragmentShader.fragmentshader" />
+    <None Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\shaders\SimpleVertexShader.vertexshader" />
+    <None Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\shaders\soleil.fragmentshader" />
+    <None Include="C:\Users\jager\OneDrive\Bureau\ProjetGeomatique-1\3D\Test\allBatsinEmprise\shaders\soleil.vertexshader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{302F18F1-E3AA-3CBE-BB9E-B14CD613D1D9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{D32C930B-5CD9-3E28-948A-717494A70852}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

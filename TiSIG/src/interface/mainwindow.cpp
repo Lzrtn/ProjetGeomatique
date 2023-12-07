@@ -36,7 +36,7 @@ namespace fs = std::filesystem;
 #include "../src/2D/geojson.h"
 #include "../src/2D/wfsflow.h"
 #include "../src/2D/crs_converter.hpp"
-#include "../src/2D/shpwfsflow.h"
+#include "../src/2D/wmsflow.h"
 
 
 
@@ -201,10 +201,8 @@ MainWindow::~MainWindow()
 	
 	//Empty the symbologie table
 	DbManager test("database2D", ipAdress);
-    std::string request = "TRUNCATE TABLE symbologie_shp";
+	std::string request = "TRUNCATE TABLE symbologie";
 	test.Request(request);
-    request = "TRUNCATE TABLE symbologie_flow";
-    test.Request(request);
 }
 
 
@@ -313,8 +311,8 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
 
         WFSFlow *wfsflow = new WFSFlow(url, latmin, longmin, latmax, longmax);
         std::string PathWfsFlow = wfsflow->GetfilePath();
-//        PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
-//        std::cout << "Chemin du shp : " << PathWfsFlow<<std::endl;
+        PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
+        std::cout << "Chemin du shp : " << PathWfsFlow<<std::endl;
 
         if (fs::exists(PathWfsFlow)) {
             std::cerr << "Ce flux est déjà disponible." << std::endl;
@@ -360,24 +358,27 @@ void MainWindow::AddshpWFS(WFSFlow *wfsflow)
         exit(1);
     }
 
+    std::string PathWfsFlow = wfsflow->GetfilePath();
+    PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
+    std::cout << PathWfsFlow << std::endl;
     //import du shapefile dans la base de données
-     shpWFSflow *shpFlow = new shpWFSflow(test, wfsflow);
+    wfsflow->shpfile = new Shapefile(PathWfsFlow, test);
 
-    shpFlow->import_to_db(2154);
-    QColor myColor = shpFlow->showColor();
+    wfsflow->shpfile->import_to_db(2154);
+    QColor myColor = wfsflow->shpfile->showColor();
 
-    int layerId = shpFlow->getId();
+    int layerId = wfsflow->shpfile->getId();
 
     //affichage des shapefiles importé
-    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+shpFlow->getTableName()+";");
+    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+wfsflow->shpfile->getTableName()+";");
     pqxx::result rowbis =test.getResult();
-    QGraphicsItemGroup *layerGroup = shpFlow->plotShapefile(rowbis,scene, myColor);
-    ui->lineEdit_epsg2D->setText(shpFlow->getEPSGtoSet());
-    layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(shpFlow->getTableName().c_str()), true, layerGroup);
+    QGraphicsItemGroup *layerGroup = wfsflow->shpfile->plotShapefile(rowbis,scene, myColor);
+    ui->lineEdit_epsg2D->setText(wfsflow->shpfile->getEPSGtoSet());
+    layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(wfsflow->shpfile->getTableName().c_str()), true, layerGroup);
     addLayerToListWidget(layerId, *layerList[layerId]);
     index++;
 
-    ShpList.insert(std::pair<const int, Shapefile *>(layerId, shpFlow));
+    ShpList.insert(std::pair<const int, Shapefile *>(layerId, wfsflow->shpfile));
 }
 
 
@@ -401,8 +402,30 @@ void MainWindow::OnAction2DWMSDataFlowClicked()
     int result = wmsdataflowwindow.exec();
     if(result==QDialog::Accepted){
         std::string url = wmsdataflowwindow.getURL();
-        std::cout << url<<std::endl;
-        // code Axel
+
+        double xMin = get2DViewExtent().topLeft().x();
+        double yMin = get2DViewExtent().topLeft().y();
+        double xMax = get2DViewExtent().bottomRight().x();
+        double yMax = get2DViewExtent().bottomRight().y();
+
+        std::string xmin = std::to_string(xMin);
+        std::string xmax = std::to_string(xMax);
+        std::string yMin = std::to_string(yMin);
+        std::string yMax = std::to_string(yMax);
+
+
+        int width = ui->graphicsView_window2D->width();
+        int height = ui->graphicsView_window2D->height();
+
+        WMSFlow wmsInstance(2154,ymin,ymax,xmax,xmin, width, height);
+        
+        str_url = url + wmsInstance.getUrl();
+
+        const char* real_url = str_url.c_str();
+        wmsInstance.setUrl(real_url);
+        wmsInstance.getImage();
+        
+        std::cout << real_url<<std::endl;
     }
 }
 

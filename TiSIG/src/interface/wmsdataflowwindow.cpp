@@ -1,5 +1,6 @@
 #include "wmsdataflowwindow.h"
 #include "ui_wmsdataflowwindow.h"
+#include "src/2D/wmsflow.h"
 
 
 WMSDataFlowWindow::WMSDataFlowWindow(QWidget *parent) :
@@ -35,7 +36,7 @@ void WMSDataFlowWindow::OnButtonValidateDataFlowPreSavedlClicked()
 {
     QString flow = ui->comboBox_dataFlowWindow->currentText();
     if(flow == "BDOrtho - WMS"){
-        url = "URL vers BDOrtho - WMS";
+        url = "https://data.geopf.fr/wms-r?LAYERS=OI.OrthoimageCoverage&EXCEPTIONS=text/xml&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&STYLES=";
     }
     if(flow == "BDOrtho - WMTS"){
         url = "URL vers BDOrtho - WMTS";

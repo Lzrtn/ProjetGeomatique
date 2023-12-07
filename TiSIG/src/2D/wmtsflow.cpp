@@ -75,7 +75,7 @@ WMTSFlow::WMTSFlow(int tilematrix, double west_limit, double north_limit, int wi
     //Calculate TLC
     vector<double> coordinates = crs_converter(epsg,north_limit,west_limit,3857);
     double x_tlc = coordinates[1] - x0;
-    double y_tlc = y0 - coordinates[2];
+    double y_tlc = y0 - coordinates[0];
     double distance_per_tile = tileSize * initialResolution/pow(2,tilematrix);
 
     //Calculate number of tilesWMTS

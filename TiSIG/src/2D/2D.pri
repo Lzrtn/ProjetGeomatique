@@ -29,13 +29,17 @@ LIBS += -L/usr/lib/x86_64-linux-gnu -lpqxx
 INCLUDEPATH += /usr/include/proj
 LIBS += -lproj
 
+# Config for opencv
+INCLUDEPATH += /usr/include/opencv4/
+CONFIG += link_pkgconfig
+PKGCONFIG += opencv4
+
 
 
 
 SOURCES += \
     $$PWD/layer.cpp \
     $$PWD/shapefile.cpp \
-    $$PWD/shpwfsflow.cpp \
     $$PWD/transformation.cpp \
     $$PWD/geotiff.cpp \
     $$PWD/geojson.cpp \
@@ -51,7 +55,6 @@ SOURCES += \
 HEADERS += \
     $$PWD/layer.h \
     $$PWD/shapefile.h \
-    $$PWD/shpwfsflow.h \
     $$PWD/transformation.h \
     $$PWD/geotiff.h \
     $$PWD/geojson.h \
