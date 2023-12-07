@@ -99,11 +99,7 @@ void OpenGLcityView::UpdateBuildings()
 
 Layer3D *OpenGLcityView::getSelectedLayer() const
 {
-//	return this->layerManager ? this->layerManager->getSelectedLayer() : nullptr;
-	for (auto &pair : this->layers) {
-		return pair.second;
-	}
-	return nullptr;
+	return this->layerManager ? this->layerManager->getSelectedLayer3D() : nullptr;
 }
 
 void OpenGLcityView::resizeGL(int w, int h)
