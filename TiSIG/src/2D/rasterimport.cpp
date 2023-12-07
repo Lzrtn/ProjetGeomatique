@@ -4,7 +4,7 @@
 
 RasterItem* RasterImport::CreateRasterItemFromDb(const QString& filePath,DbManager& db)
 {
-    auto resultTuple =RetrieveRasterExtentFromDb(filePath,db);
+    auto resultTuple =RetrieveRasterExtentFromDb(filePath, db);
 
     int rasterId = std::get<0>(resultTuple);
     QRectF extent = std::get<1>(resultTuple);

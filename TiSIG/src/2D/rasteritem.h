@@ -40,10 +40,10 @@ public:
      *
      * @param filePath Path of the image file
      * @param extent Extent that the raster must have
-     * @param id Id of the raster item
+     * @param id Optional ID of the raster item
      * @param parent Optional parent item
      */
-    RasterItem(const QString& filePath, const QRectF & extent,const int id, QGraphicsItem* parent = nullptr);
+    RasterItem(const QString& filePath, const QRectF & extent,const int id = 0, QGraphicsItem* parent = nullptr);
 
 
     /**
