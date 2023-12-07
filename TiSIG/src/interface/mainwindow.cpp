@@ -248,11 +248,6 @@ Ui::MainWindow * MainWindow::getUi() const
 	return ui;
 }
 
-QRectF MainWindow::get2DViewExtent()
-{
-	QRectF viewSceneRect = ui->graphicsView_window2D->mapToScene(ui->graphicsView_window2D->rect()).boundingRect();
-	return viewSceneRect;
-}
 
 float MainWindow::getValueFromSlider()
 {
@@ -419,7 +414,31 @@ void MainWindow::AddshpWFS(WFSFlow *wfsflow)
     //affichage des shapefiles importé
     test.Request("SELECT ST_AsGeoJSON(geom) FROM "+shpFlow->getTableName()+";");
     pqxx::result rowbis =test.getResult();
-    QGraphicsItemGroup *layerGroup = shpFlow->plotShapefile(rowbis,scene, myColor);
+    test.Request("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '"+shpFlow->getTableName()+"';");
+    pqxx::result columnNamesResult = test.getResult();
+    std::vector<std::string> columnList;
+
+    for (const auto& row : columnNamesResult)
+    {
+        std::string columnName = row[0].as<std::string>();
+        std::cout << "Le titre de la colonne : " << columnName << std::endl;
+        columnList.push_back(columnName);
+    }
+
+    pqxx::result rowbisType;
+    pqxx::result rowTer;
+
+
+    if (std::find(columnList.begin(), columnList.end(), "nature") != columnList.end())
+    {
+      test.Request("SELECT nature From "+shpFlow->getTableName()+";");
+      rowbisType = test.getResult();
+      test.Request("SELECT DISTINCT nature FROM "+shpFlow->getTableName()+";");
+      rowTer = test.getResult();
+    }
+
+
+    QGraphicsItemGroup *layerGroup = shpFlow->plotShapefile(rowbis, rowbisType, rowTer,scene, myColor);
     ui->lineEdit_epsg2D->setText(shpFlow->getEPSGtoSet());
     layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(shpFlow->getTableName().c_str()), true, layerGroup);
     addLayerToListWidget(layerId, *layerList[layerId]);

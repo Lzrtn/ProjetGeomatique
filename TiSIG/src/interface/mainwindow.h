@@ -61,11 +61,6 @@ public:
 	 */
 	Ui::MainWindow * getUi() const;
 
-	/**
-	 * @brief Get the current extent of the 2D graphics view in scene coordinates
-	 * @return The extent of the view in scene coordinates
-	 */
-	QRectF get2DViewExtent();
 
 	/**
 	 * @brief Function to add Layer to the ListWidget
