@@ -275,7 +275,6 @@ std::vector<float> Shapefile::getBoundingBox()
 QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,pqxx::result rowbisType, pqxx::result rowTer,QGraphicsScene *scene, QColor myColor)
 {
     Transformation t; // Instanciation of transformation class
-
     QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
     scene->addItem(layerGroup);
 
@@ -290,39 +289,54 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,pqxx::result r
     // Define the string to plot on the app
     EPSGtoSet = QString::fromStdString(EPSG);
 
-    // Getting natures and the number of them
-    int nbColor = 0; // Defining the number of color (= number of nature) that will be needed
-    std::vector <std::string> natureList;
-    for (const auto& rowte : rowTer)
-    {
-        std::string natureValue = rowte[0].as<std::string>();
-        natureList.push_back(natureValue); // Create a list with every nature existing in the shapefile
-        nbColor +=1;
-    }
-
-    // Generating colors, as many as there are different natures
-    srand(time(NULL)); // Using classic random lib
-    std::vector <QColor> colorList;
-    for (int i = 0; i < nbColor; i++) {
-        int red_random = rand() % 255;
-        int green_random = rand() % 255;
-        int blue_random = rand() % 255;
-        QColor colorToAssign(red_random, green_random, blue_random);
-        colorList.push_back(colorToAssign); // Create a list with as many color as there are natures
-    }
-
-    // Association of any nature to a specific color
     std::map<std::string, QColor> natureColorMap;
-    for (int i = 0; i < nbColor; ++i) {
-        QColor color = colorList[i];
-        natureColorMap[natureList[i]] = color;
+    if (rowbisType.empty()) {
+        // rowbisType n'a pas été initiaisé ou est vide
+        std::cout<<"On est dans le cas de l'emprise youhou"<<std::endl;
+    } else {
+        // Getting natures and the number of them
+        int nbColor = 0; // Defining the number of color (= number of nature) that will be needed
+        std::vector <std::string> natureList;
+        for (const auto& rowte : rowTer)
+        {
+            std::string natureValue = rowte[0].as<std::string>();
+            natureList.push_back(natureValue); // Create a list with every nature existing in the shapefile
+            nbColor +=1;
+        }
+
+        // Generating colors, as many as there are different natures
+        srand(time(NULL)); // Using classic random lib
+        std::vector <QColor> colorList;
+        for (int i = 0; i < nbColor; i++) {
+            int red_random = rand() % 255;
+            int green_random = rand() % 255;
+            int blue_random = rand() % 255;
+            QColor colorToAssign(red_random, green_random, blue_random);
+            colorList.push_back(colorToAssign); // Create a list with as many color as there are natures
+        }
+
+        // Association of any nature to a specific color
+
+        for (int i = 0; i < nbColor; ++i) {
+            QColor color = colorList[i];
+            natureColorMap[natureList[i]] = color;
+        }
+
     }
+
 
     int count = 0;
 
     for (const auto& rowbi : rowbis)
     {
-        std::string nature = rowbisType[count][0].c_str(); // Get nature of the feature the iteration is about
+        std::string nature ;
+        if (rowbisType.empty())
+        {
+            std::cout<<"C'est compliqué"<<std::endl;
+        } else {
+            nature = rowbisType[count][0].c_str(); // Get nature of the feature the iteration is about
+        }
+
         count +=1;
         auto geojsongeom = rowbi[0].as<std::string>(); // Get the geometry of the feature
         std::string dataType = t.whatType(geojsongeom); // Get the type of geometry so the plot code is adapted
@@ -341,13 +355,20 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,pqxx::result r
         }
         else if(dataType == "Polygon") // Case of the Polygon
         {
-
+            std::cout<<"on va le dessiner maschala"<<std::endl;
             QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojsongeom);
             QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
             layerGroup->addToGroup(polygoneToPlotItem);
-            QColor natureColor = natureColorMap[nature];
+            if (natureColorMap.empty())
+            {
+                polygoneToPlotItem->setBrush(Qt::red);
+            }else
+            {
+                QColor natureColor = natureColorMap[nature];
 
-            polygoneToPlotItem->setBrush(natureColor);
+                polygoneToPlotItem->setBrush(natureColor);
+            }
+
         }
         else if(dataType == "Point" || dataType == "MultiPoint") // Case of the Point or the MultiPoint
         {

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <pqxx/pqxx>
 #include <stdlib.h>
-
+#include <algorithm>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsPolygonItem>
@@ -384,12 +384,32 @@ void MainWindow::AddShpFileClicked(std::string path)
 	int layerId = essai1->getId();
 
 	//affichage des shapefiles importé
-	test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
+    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+essai1->getTableName()+";");
 	pqxx::result rowbis =test.getResult();
-	test.Request("SELECT nature From "+essai1->getTableName()+";");
-	pqxx::result rowbisType = test.getResult();
-	test.Request("SELECT DISTINCT nature FROM "+essai1->getTableName()+";");
-	pqxx::result rowTer = test.getResult();
+    test.Request("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '"+essai1->getTableName()+"';");
+    pqxx::result columnNamesResult = test.getResult();
+    std::vector<std::string> columnList;
+
+    for (const auto& row : columnNamesResult)
+    {
+        std::string columnName = row[0].as<std::string>();
+        std::cout << "Le titre de la colonne : " << columnName << std::endl;
+        columnList.push_back(columnName);
+    }
+
+    pqxx::result rowbisType;
+    pqxx::result rowTer;
+
+
+    if (std::find(columnList.begin(), columnList.end(), "nature") != columnList.end())
+    {
+      test.Request("SELECT nature From "+essai1->getTableName()+";");
+      rowbisType = test.getResult();
+      test.Request("SELECT DISTINCT nature FROM "+essai1->getTableName()+";");
+      rowTer = test.getResult();
+    }
+
+
 	QGraphicsItemGroup *layerGroup = essai1->plotShapefile(rowbis, rowbisType, rowTer,scene, myColor);
 	ui->lineEdit_epsg2D->setText(essai1->getEPSGtoSet());
 	layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(essai1->getTableName().c_str()), true, layerGroup);
