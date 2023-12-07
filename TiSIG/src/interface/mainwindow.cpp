@@ -172,9 +172,9 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::testAdd3DModel); // à modifier ligne 108
 
 
-    this->storage3D = new Batiments(ipAdress);
-    this->layer3D = new Layer3D(this->storage3D, 1, "caca");
-	this->ui->openGLWidget_window3D->addLayer(0, this->layer3D);
+//    this->storage3D = new Batiments(ipAdress);
+//    this->layer3D = new Layer3D(this->storage3D, 1, "Batiment 5e Lyon");
+//	this->ui->openGLWidget_window3D->addLayer(0, this->layer3D);
 }
 
 MainWindow::~MainWindow()
@@ -353,8 +353,10 @@ void MainWindow::OnActionRastor3DLayerClicked()
 		std::cout << mntwindow.getObj()<< std::endl;
 
 		this->layerList3D->addLayer3DtoOpenGLWidgetAndListWidget(
-					new MNT3dstorage(mntwindow.getObj(), 0.0, 0.0, mntwindow.getTexture())
+//                    new MNT3dstorage(mntwindow.getObj(), mntwindow.getXTranslate(), mntwindow.getYTranslate(), mntwindow.getTexture())
+                    new MNT3dstorage(mntwindow.getObj(), 0.0, 0.0, mntwindow.getTexture())
 					);
+//        std::cout<<mntwindow.getXTranslate()<<" "<<mntwindow.getYTranslate()<<std::endl;
 //        this->storage3D = new MNT3dstorage(mntwindow.getObj(), mntwindow.getTexture());
 //		this->layer3D = new Layer3D(this->storage3D);
 //		this->ui->openGLWidget_window3D->addLayer(1, this->layer3D);
@@ -883,7 +885,8 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
 void MainWindow::testAdd3DModel()
 {
-	this->storage3D = new ExempleObject3DStorage();
+    this->storage3D = new ExempleObject3DStorage();
+//    this->storage3D = new Batiments(ipAdress);
 	this->layerList3D->addLayer3DtoOpenGLWidgetAndListWidget(this->storage3D);
 
 }

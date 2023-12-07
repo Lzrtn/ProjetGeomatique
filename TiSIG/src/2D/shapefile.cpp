@@ -355,7 +355,6 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,pqxx::result r
         }
         else if(dataType == "Polygon") // Case of the Polygon
         {
-            std::cout<<"on va le dessiner maschala"<<std::endl;
             QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojsongeom);
             QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
             layerGroup->addToGroup(polygoneToPlotItem);
