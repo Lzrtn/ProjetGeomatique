@@ -31,7 +31,7 @@ QT_END_NAMESPACE
  *
  * This class represents the main window of TiSIG application.
  */
-class MainWindow : public QMainWindow, public ICameraDisplayInfo
+class MainWindow : public QMainWindow, public ICameraDisplayInfo, public  IPicking3DDisplayInfo
 {
 	Q_OBJECT
 
@@ -74,7 +74,6 @@ public:
 	int index = 0; // Temporaire
 	void updateLayerOrderInGraphicsView();
 
-
 	/**
 	 * @brief Filter all events
 	 * @param obj QObject to be filtered
@@ -85,9 +84,30 @@ public:
 
 	/**
 	 * @brief Function to get mouse pressed event on the scene
-     * @param event QEvent to be filtered
+	 * @param event QEvent to be filtered
 	 */
 	void getAttributesLayer(QMouseEvent * event);
+
+	/**
+	* @brief Function to display camera coordinates in 3D window
+	* @param camera position
+	*
+	*/
+	void Display3DCameraCoordinates(QVector3D camPosition) override;
+
+	/**
+	* @brief Function to display level of zoom in 3D window
+	* @param zoom
+	*
+	*/
+	void Display3DZoomLevel(float zoom) override;
+
+	/**
+	* @brief Function to display picking results
+	* @param data table
+	*
+	*/
+	void Display3DPickingResult(const std::map<std::string, std::string> &data) override;
 
 
 private:
@@ -101,11 +121,9 @@ private:
 
 	Layer3D * layer3D;
 	Object3DStorage * storage3D;
-    LayerManager3D *layerList3D;
+	LayerManager3D *layerList3D;
 
 private slots:
-
-
 	/**
 	* @brief Function to zoom in
 	*
@@ -115,7 +133,7 @@ private slots:
 	/**
 	* @brief Function to zoom out
 	*
-    *
+	*
 	*/
 	void OnButtonZoomOut();
 
@@ -204,34 +222,19 @@ private slots:
 	*/
 	std::string OnAction3DModelClicked();
 
-    /**
-    * @brief Function to get value from slider
-    * @return value
-    *
-    */
-    float getValueFromSlider();
+	/**
+	* @brief Function to get value from slider
+	* @return value
+	*
+	*/
+	float getValueFromSlider();
 
 
 	void moveItemUp( );
 	void moveItemDown( );
 	void onButtonClickedDeleteLayer();
 	void onButtonClickedZoomOnLayer();
-    void testAdd3DModel();
-
-public:
-	/**
-	* @brief Function to display camera coordinates in 3D window
-	* @param camera position
-	*
-	*/
-	void Display3DCameraCoordinates(QVector3D camPosition) override;
-
-	/**
-	* @brief Function to display level of zoom in 3D window
-	* @param zoom
-	*
-	*/
-	void Display3DZoomLevel(float zoom) override;
+	void testAdd3DModel();
 
 
 };
