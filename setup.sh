@@ -15,6 +15,9 @@ current_directory="$PWD"
 sudo apt-get install -y gdal-bin libgdal-dev libpq-dev libglm-dev libpqxx-dev libgtest-dev xvfb || exit_with_error "Failed to install dependencies"
 sudo apt-get install build-essential qt5-qmake qtbase5-dev qtchooser qtbase5-dev-tools
 sudo apt-get install -y libquazip5-dev 
+sudo apt-get install -y libqgis-dev
+sudo apt-get install -y libgeos-dev
+
 #Installation of postgres/postgis
 
 sudo apt-get install -y postgresql-14-postgis-3

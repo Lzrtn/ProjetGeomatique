@@ -23,6 +23,7 @@ public:
     /**
      * @brief DTM Window constructor
      * @param QWidget parent
+     *
      */
     explicit MntWindow(QWidget *parent = nullptr);
 
@@ -31,9 +32,32 @@ public:
      */
     ~MntWindow();
 
+    /**
+     * @brief getter of m_pathObj attribute
+     *
+     * @return  m_pathObj : attribute value of the path of the .obj  file
+     */
     std::string getObj() { return m_pathObj; };
+
+    /**
+     * @brief getter of m_pathTexture attribute
+     *
+     * @return  m_pathTexture : attribute value of the path of the texture file
+     */
     std::string getTexture() { return m_pathTexture; };
+
+    /**
+     * @brief getter of m_xtranslate attribute
+     *
+     * @return  m_xtranslate : attribute value of the translation in x
+     */
     double getXTranslate() { return m_xtranslate; };
+
+    /**
+     * @brief getter of m_ytranslate attribute
+     *
+     * @return  m_ytranslate : attribute value of the translation in y
+     */
     double getYTranslate() { return m_ytranslate; };
 
 
@@ -44,30 +68,25 @@ private:
     double m_xtranslate;
     double m_ytranslate;
 
-//    QLineEdit lineEdit_DTMPath; ///< QLineEdit lineEdit_DTMPath
-//    QLineEdit lineEdit_OrthoPath; ///< QLineEdit lineEdit_Path
-//    QPushButton btn_validateDataFlowUrl; ///< QPushButton btn_validateDataFlowUrl
-//    QPushButton btn_validateDataFlowPreSaved; ///< QPushButton btn_validateDataFlowPreSaved
-
     /**
      * @brief Function to choose a DTM file
      *
      */
-  void OnButtonAddDTMClicked();
+    void OnButtonAddDTMClicked();
 
-  /**
-   * @brief Function to choose an Orthoimage file
-   *
-   */
-void OnButtonAddOrthoClicked();
+    /**
+    * @brief Function to choose an Orthoimage file
+    *
+    */
+    void OnButtonAddOrthoClicked();
 
 
 private slots:
-/**
- * @brief Function Submit
- *
- */
-void OnButtonSubmitClicked();
+    /**
+     * @brief Function Submit
+     *
+     */
+    void OnButtonSubmitClicked();
 
 };
 
