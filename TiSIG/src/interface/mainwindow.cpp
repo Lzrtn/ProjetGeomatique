@@ -957,7 +957,7 @@ void MainWindow::getAttributesLayer(QMouseEvent *event){
 		nameCol << "Nom" << "Valeur";
 		ui->tableWidget_layerAttributeInformation2D->setHorizontalHeaderLabels(nameCol);
 
-		if(currentId>=1000 && currentId < 2000 && layerList[currentId]->isLayerVisible())
+        if((currentId>=1000 && currentId < 2000 && layerList[currentId]->isLayerVisible())||(currentId>=3000 && currentId < 4000 && layerList[currentId]->isLayerVisible()))
 		{
 			//Get selected shapefile
 			Shapefile * shp = ShpList[currentId];
