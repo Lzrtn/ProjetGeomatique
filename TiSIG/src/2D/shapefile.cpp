@@ -92,11 +92,12 @@ int Shapefile::import_to_db(const int epsg)
 
     else{
         // Create the table in the database
+            std::cout << table_name << std::endl;
             std::string request = "DROP TABLE IF EXISTS "+table_name+";";
             db_manager.CreateTable(request);
             std::string request_create = "CREATE TABLE "+table_name+" ();";
             db_manager.CreateTable(request_create);
-            std::cout << "Table created\n";
+            std::cout << "Table created" << std::endl;
 
 
         // Get the layer from the shapefile
@@ -166,7 +167,7 @@ int Shapefile::import_to_db(const int epsg)
             instruction_add += " ADD COLUMN geom geometry;";
             db_manager.CreateTable(instruction_add);
 
-            std::cout << "Columns added\n";
+            std::cout << "Columns added" << std::endl;
 
             // Loop through features and insert them into the database
             OGRFeature *poFeature;
@@ -184,9 +185,58 @@ int Shapefile::import_to_db(const int epsg)
                     std::string value = fieldValue;
                     if (!value.empty() && i !=featureDefn->GetFieldCount()-1){
                         fields += field_name + ",";
-                        if (value.find("'") != std::string::npos){
-                            std::replace(value.begin(), value.end(), '\'', ' ');
+
+                        // Replace special characters
+                        std::unordered_map<char, std::string> replacements = {
+                            {'\'', " "},     // Apostrophe
+                            {'\xe9', "e"},   // e accent aigu (é)
+                            {'\xe8', "e"},   // e accent grave (è)
+                            {'\xea', "e"},   // e accent circonflexe (ê)
+                            {'\xeb', "e"},   // e tréma (ë)
+                            {'\xe7', "c"},   // c cédille (ç)
+                            {'\xe0', "a"},   // a accent grave (à)
+                            {'\xe2', "a"},   // a accent circonflexe (â)
+                            {'\xe4', "a"},   // a tréma (ä)
+                            {'\xfb', "u"},   // u accent circonflexe (û)
+                            {'\xfc', "u"},   // u tréma (ü)
+                            {'\xef', "i"},   // i tréma (ï)
+                            {'\xee', "i"},   // i accent circonflexe (î)
+                            {'\xf4', "o"},   // o accent circonflexe (ô)
+                            {'\xf6', "o"},   // o tréma (ö)
+                            {'\xe4', "a"},   // a tréma (ä)
+                            {'\xfb', "u"},   // u accent circonflexe (û)
+                            {'\xfc', "u"},   // u tréma (ü)
+                            {'\xef', "i"},   // i tréma (ï)
+                            {'\xee', "i"},   // i accent circonflexe (î)
+                            {'\xe4', "a"},   // a tréma (ä)
+                            {'\xfb', "u"},   // u accent circonflexe (û)
+                            {'\xfc', "u"},   // u tréma (ü)
+                            {'\xef', "i"},   // i tréma (ï)
+                            {'\xee', "i"},   // i accent circonflexe (î)
+                            {'\xc9', "E"},   // E accent aigu (É)
+                            {'\xc8', "E"},   // E accent grave (È)
+                            {'\xca', "E"},   // E accent circonflexe (Ê)
+                            {'\xcb', "E"},   // E tréma (Ë)
+                            {'\xc7', "C"},   // C cédille (Ç)
+                            {'\xc0', "A"},   // A accent grave (À)
+                            {'\xc2', "A"},   // A accent circonflexe (Â)
+                            {'\xc4', "A"},   // A tréma (Ä)
+                            {'\xdb', "U"},   // U accent circonflexe (Û)
+                            {'\xdc', "U"},   // U tréma (Ü)
+                            {'\xcf', "I"},   // I tréma (Ï)
+                            {'\xce', "I"},   // I accent circonflexe (Î)
+                            {'\xd4', "O"},   // O accent circonflexe (Ô)
+                            {'\xd6', "O"},   // O tréma (Ö)
+                            // Ajoutez d'autres caractères spéciaux et leurs remplacements ici
+                        };
+                        for (const auto& [searchChar, replaceStr] : replacements) {
+                            size_t pos = 0;
+                            while ((pos = value.find(searchChar, pos)) != std::string::npos) {
+                                value.replace(pos, 1, replaceStr);
+                                pos += replaceStr.length(); // Passer au caractère suivant après le remplacement
+                            }
                         }
+
                         values += "'"+ value + "',";
                     }
                 }
@@ -206,27 +256,32 @@ int Shapefile::import_to_db(const int epsg)
                 // Cleanup
                 OGRFeature::DestroyFeature(poFeature);
             }
+
             db_manager.Request(instruction_fill);
 
             // Close the shapefile
             GDALClose(poDS);
 
             // Add color
-            std::string tableSymbo = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'symbologie');";
+            std::string name_symbo;
+            std::cout<<std::to_string(idType)<<std::endl;
+            if (idType==1000){name_symbo="symbologie_shp";}
+            else if (idType==3000){name_symbo="symbologie_flow";}
+            std::string tableSymbo = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '"+name_symbo+"');";
             db_manager.Request(tableSymbo);
             pqxx::result r = db_manager.getResult();
             if(r[0][0].as<std::string>()=="f"){
-                std::string request_create_symbo = "CREATE TABLE symbologie ();";
+                std::string request_create_symbo = "CREATE TABLE "+name_symbo+" ();";
                 db_manager.CreateTable(request_create_symbo);
-                std::string request_columns = "ALTER TABLE public.symbologie ADD COLUMN id int, ADD COLUMN name character varying, ADD COLUMN red int, ADD COLUMN green int, ADD COLUMN blue int, ADD COLUMN alpha int;";
+                std::string request_columns = "ALTER TABLE public."+name_symbo+" ADD COLUMN id int, ADD COLUMN name character varying, ADD COLUMN red int, ADD COLUMN green int, ADD COLUMN blue int, ADD COLUMN alpha int;";
                 db_manager.CreateTable(request_columns);
             }
-            std::string request_max_id = "SELECT MAX (id) FROM symbologie";
+            std::string request_max_id = "SELECT MAX (id) FROM "+name_symbo+"";
             db_manager.Request(request_max_id);
             pqxx::result i = db_manager.getResult();
             int index;
             if (i[0][0].is_null()){
-                index = 1000;
+                index = idType;
             }
             else {
                 index = i[0][0].as<int>() +1;
@@ -236,13 +291,15 @@ int Shapefile::import_to_db(const int epsg)
             int red_random = rand()%255;
             int green_random = rand()%255;
             int blue_random = rand()%255;
-            std::string add_line_symbo = "INSERT INTO symbologie (id, name, red, green, blue, alpha) VALUES ("+std::to_string(index)+",'"+table_name+"',"+std::to_string(red_random)+","+std::to_string(green_random)+","+std::to_string(blue_random)+",255);";
+            std::string add_line_symbo = "INSERT INTO "+name_symbo+" (id, name, red, green, blue, alpha) VALUES ("+std::to_string(index)+",'"+table_name+"',"+std::to_string(red_random)+","+std::to_string(green_random)+","+std::to_string(blue_random)+",255);";
             db_manager.Request(add_line_symbo);
+            std::cout<<table_name << " " << std::to_string(id)<<std::endl;
             std::cout<<"IT WORKS!"<<std::endl;
             return 0;
         }
     }
 }
+
 
 std::vector<float> Shapefile::getBoundingBox()
 {
@@ -385,7 +442,10 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,pqxx::result r
 
 
 QColor Shapefile::showColor(){
-    std::string requete_couleur = "SELECT red, green, blue, alpha from symbologie where name = '"+table_name+"';";
+    std::string name_symbo;
+    if (idType==1000){name_symbo="symbologie_shp";}
+    else if (idType==3000){name_symbo="symbologie_flow";}
+    std::string requete_couleur = "SELECT red, green, blue, alpha from "+name_symbo+" where name = '"+table_name+"';";
     db_manager.Request(requete_couleur);
     pqxx::result res = db_manager.getResult();
     int red = res[0][0].as<int>();
@@ -395,3 +455,5 @@ QColor Shapefile::showColor(){
     return (QColor(red,blue,green,alpha));
 
 }
+
+
