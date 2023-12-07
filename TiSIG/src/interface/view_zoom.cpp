@@ -36,20 +36,18 @@ bool View_zoom::eventFilter(QObject *object, QEvent *event) {
   } else if (event->type() == QEvent::Wheel) {
     QWheelEvent* wheel_event = static_cast<QWheelEvent*>(event);
     if (QApplication::keyboardModifiers() == modifiers) {
-      if (wheel_event->orientation() == Qt::Vertical) {
+      if (wheel_event->angleDelta().y()) {
         double angle = wheel_event->angleDelta().y();
-
-        if (angle>0 && zoom_level<16){
+        zoom_level = view->transform().m11();
+        if (angle>0 && zoom_level<250){
             //zoom forward
             double factor = qPow(start_factor, angle);
             gentle_zoom(factor);
-            zoom_level+=1;
         }
-        else if (angle<0 && zoom_level>-16){
+        else if (angle<0){
             //zoom backwards
             double factor = qPow(start_factor, angle);
             gentle_zoom(factor);
-            zoom_level-=1;
         }
         return true;
       }
@@ -66,5 +64,7 @@ void View_zoom::gentle_zoom(double factor) {
                                                              view->viewport()->height() / 2.0);
   QPointF viewport_center = view->mapFromScene(target_scene) - deltaviewport_pos;
   view->centerOn(view->mapToScene(viewport_center.toPoint()));
+//  qreal currentScale = view->transform().m11();
+//  std::cout<<currentScale<<std::endl;
   emit zoomed();
 }

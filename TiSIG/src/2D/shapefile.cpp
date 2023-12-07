@@ -1,18 +1,18 @@
 #include <iostream>
 #include <string>
-
 #include <gdal/ogrsf_frmts.h>
 #include <postgresql/libpq-fe.h>
-
 #include <gdal/gdal.h>
 #include <gdal/ogr_api.h>
 
 #include "shapefile.h"
 #include "transformation.h"
 
+// Constructor
 Shapefile::Shapefile(const std::string path, DbManager db_manager):path(path), db_manager(db_manager)
 {}
 
+// Destructor
 Shapefile::~Shapefile(){
     if (table_name!=""){
         std::string drop_table = "DROP TABLE IF EXISTS "+table_name;
@@ -302,10 +302,12 @@ int Shapefile::import_to_db(const int epsg)
 
 std::vector<float> Shapefile::getBoundingBox()
 {
+    // Get the bounding box using sql request
     std::string requete_SQL= "SELECT ST_Extent(geom) FROM "+table_name+";";
     db_manager.Request(requete_SQL);
     std::string resultat_SQL =db_manager.ParseResult();
 
+    // Format the result to get X and Y values
     std::string bbx = resultat_SQL.substr(16, resultat_SQL.length() - 20);
     std::string f_pt = bbx.substr(0, bbx.find(","));
     std::string s_pt = bbx.substr(bbx.find(",")+1, bbx.length());
@@ -319,37 +321,83 @@ std::vector<float> Shapefile::getBoundingBox()
     float Xmax = std::stof(X_max);
     float Ymax = std::stof(Y_max);
 
-    //std::cout<<Xmin<<","<<Ymin<<","<<Xmax<<","<<Ymax<<std::endl;
-
+    // Create a vector that contains the bounding box
     std::vector<float> res = {Xmin,Ymin,Xmax,Ymax};
-    return res;
+    return res; // Return the vector
 }
 
 
 
-QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene *scene, QColor myColor)
+QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,pqxx::result rowbisType, pqxx::result rowTer,QGraphicsScene *scene, QColor myColor)
 {
-
-    Transformation t;
-
+    Transformation t; // Instanciation of transformation class
     QGraphicsItemGroup *layerGroup = new QGraphicsItemGroup();
     scene->addItem(layerGroup);
+
+    // Getting the EPSG of the shapefile
     std::string EPSG;
-        for (const auto& rowbi : rowbis)
-        {
-            auto geojsongeom = rowbi[0].as<std::string>();
-            EPSG = t.whichCRS(geojsongeom).substr(5,7);
-            break;
-        }
+    for (const auto& rowbi : rowbis)
+    {
+        auto geojsongeom = rowbi[0].as<std::string>();
+        EPSG = t.whichCRS(geojsongeom).substr(5,7);
+        break;
+    }
+    // Define the string to plot on the app
     EPSGtoSet = QString::fromStdString(EPSG);
+
+    std::map<std::string, QColor> natureColorMap;
+    if (rowbisType.empty()) {
+        // rowbisType n'a pas été initiaisé ou est vide
+        std::cout<<"On est dans le cas de l'emprise youhou"<<std::endl;
+    } else {
+        // Getting natures and the number of them
+        int nbColor = 0; // Defining the number of color (= number of nature) that will be needed
+        std::vector <std::string> natureList;
+        for (const auto& rowte : rowTer)
+        {
+            std::string natureValue = rowte[0].as<std::string>();
+            natureList.push_back(natureValue); // Create a list with every nature existing in the shapefile
+            nbColor +=1;
+        }
+
+        // Generating colors, as many as there are different natures
+        srand(time(NULL)); // Using classic random lib
+        std::vector <QColor> colorList;
+        for (int i = 0; i < nbColor; i++) {
+            int red_random = rand() % 255;
+            int green_random = rand() % 255;
+            int blue_random = rand() % 255;
+            QColor colorToAssign(red_random, green_random, blue_random);
+            colorList.push_back(colorToAssign); // Create a list with as many color as there are natures
+        }
+
+        // Association of any nature to a specific color
+
+        for (int i = 0; i < nbColor; ++i) {
+            QColor color = colorList[i];
+            natureColorMap[natureList[i]] = color;
+        }
+
+    }
+
+
+    int count = 0;
 
     for (const auto& rowbi : rowbis)
     {
+        std::string nature ;
+        if (rowbisType.empty())
+        {
+            std::cout<<"C'est compliqué"<<std::endl;
+        } else {
+            nature = rowbisType[count][0].c_str(); // Get nature of the feature the iteration is about
+        }
 
-        auto geojsongeom = rowbi[0].as<std::string>();
-        std::string dataType = t.whatType(geojsongeom);
+        count +=1;
+        auto geojsongeom = rowbi[0].as<std::string>(); // Get the geometry of the feature
+        std::string dataType = t.whatType(geojsongeom); // Get the type of geometry so the plot code is adapted
         data_type=dataType;
-        if (dataType == "LineString" || dataType == "MultiLineString")
+        if (dataType == "LineString" || dataType == "MultiLineString") // Case of the LineString or MultiLineString
         {
             std::vector<QVector <QLineF>> segmentsToPlot = t.JSONtoCoordsLIN(geojsongeom);
             for(int i = 0; i< (int)segmentsToPlot.size(); i++)
@@ -360,16 +408,25 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
                     layerGroup->addToGroup(lineToPlotItem);
                 }
             }
-
         }
-        else if(dataType == "Polygon")
+        else if(dataType == "Polygon") // Case of the Polygon
         {
+            std::cout<<"on va le dessiner maschala"<<std::endl;
             QPolygonF polygoneToPlot = t.JSONtoCoordsPOL(geojsongeom);
             QGraphicsPolygonItem *polygoneToPlotItem = new QGraphicsPolygonItem(polygoneToPlot);
             layerGroup->addToGroup(polygoneToPlotItem);
-            polygoneToPlotItem->setBrush(myColor);
+            if (natureColorMap.empty())
+            {
+                polygoneToPlotItem->setBrush(Qt::red);
+            }else
+            {
+                QColor natureColor = natureColorMap[nature];
+
+                polygoneToPlotItem->setBrush(natureColor);
+            }
+
         }
-        else if(dataType == "Point" || dataType == "MultiPoint")
+        else if(dataType == "Point" || dataType == "MultiPoint") // Case of the Point or the MultiPoint
         {
             std::vector<QPointF> pointsToPlot = t.JSONtoCoordsPTS(geojsongeom);
             for(int i = 0; i< (int)pointsToPlot.size(); i++)
@@ -382,6 +439,7 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
     }
     return(layerGroup);
 }
+
 
 QColor Shapefile::showColor(){
     std::string name_symbo;

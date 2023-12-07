@@ -15,6 +15,11 @@
 
 #include "../outils/dbmanager.h"
 
+/**
+ * @brief Class representing a shapefile
+ *
+ * This class represents a shapefile, with its path, name, EPSG code, database manager, id and data type.
+ **/
 class Shapefile
 {
 public:
@@ -26,11 +31,11 @@ public:
      */
     Shapefile(std::string path, DbManager db_manager);
 
-
     /**
     * @brief Destruct a new Shapefile object
     */
    ~Shapefile();
+
     /**
      * @brief Get the path of the shapefile
      *
@@ -59,62 +64,71 @@ public:
      */
     int getId();
 
-     /**
-     * @brief Copies the shapefile to a database
-     *
-     * @param epsg epsg code of your shapefile
-     *
-     * @returns integer : 0 if no error 1 if thereis an error
-     */
+    /**
+    * @brief Copies the shapefile to a database
+    *
+    * @param epsg epsg code of your shapefile
+    *
+    * @returns integer : 0 if no error 1 if thereis an error
+    */
     int import_to_db(const int epsg);
 
-    /**
-    * @brief Get the bounding box of the Shapefile
-    *
-    * @returns std::vector<float> [Xmin,Ymin,Xmax,Ymax]
-    */
+   /**
+   * @brief Get the bounding box of the Shapefile
+   *
+   * @returns std::vector<float> [Xmin,Ymin,Xmax,Ymax]
+   */
    std::vector<float> getBoundingBox();
 
-   QGraphicsItemGroup * plotShapefile(pqxx::result rowbis, QGraphicsScene *scene, QColor myColor);
+   /**
+   * @brief Plots the shapefile in the scene
+   *
+   * @param rowbis result of the postgresql request
+   * @param rowbisType result of postgresql request giving different natures of features
+   * @param rowTer giving natures
+   * @param scene scene in which the shapefile is plot
+   * @param myColor color of the layer
+   *
+   * @returns QgraphicsItemGroup
+   */
+   QGraphicsItemGroup * plotShapefile(pqxx::result rowbis, pqxx::result rowbistype,pqxx::result rowTer, QGraphicsScene *scene, QColor myColor);
 
+   /**
+   * @brief Gets the color stocked in the database
+   *
+   * @returns Qcolor
+   */
    QColor showColor();
 
+   /**
+   * @brief Get the EPSG  code in a QString fomat
+   *
+   * @returns QString
+   */
    QString getEPSGtoSet(){return EPSGtoSet;}
 
+   /**
+   * @brief Get the type of geometry in the shapefile
+   *
+   * @returns std::string data type written like in a geojson
+   */
    std::string getDataType(){return data_type;}
-
+  
    int update();
+  
+protected:
 
-public:
-    /**
-     * @brief Absolute or relative path of your shapefile
-     */
-    std::string path;
+    std::string path; ///< Path of your shapefile
 
-    /**
-     * @brief Name of the table in which the shapefile is copied
-     */
-    std::string table_name;
+    std::string table_name; ///< Name of the table in which the shapefile is copied
 
-    /**
-    * @brief DB manager in which the shapefile is stocked
-    */
-   DbManager db_manager;
+    DbManager db_manager;  ///< DB manager in which the shapefile is stocked
 
-   /**
-   * @brief DB manager in which the shapefile is stocked
-   */
-   QString EPSGtoSet;
+    QString EPSGtoSet; ///< DB manager in which the shapefile is stocked
 
-   /**
-   * @brief id of the shapefile in the table sympologie
-   */
-   int id;
+    int id; ///< Id of the shapefile in the table symbologie
 
-   /**
-   * @brief itype of the geometry
-   */
-   std::string data_type;
+    std::string data_type; ///< Type of the geometry
 
    int idType = 1000;
 

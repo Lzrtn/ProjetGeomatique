@@ -15,42 +15,58 @@
 #include "camera.h"
 #include "cameracontrols.h"
 #include "compass.h"
+#include "i_openglcityview.h"
+#include "layer3d.h"
+
+// cyclic dependency: use forward declaration and include in .cpp
+//#include "../interface/layermanager3d.h"
+class LayerManager3D;	// forward declaration
 
 #include <map>
 
 /**
  * @brief The OpenGLcityView class is a widget that can display buildings in 3D
  */
-class OpenGLcityView : public QOpenGLWidget, protected QOpenGLFunctions
+class OpenGLcityView : public QOpenGLWidget, protected QOpenGLFunctions, public Updatable
 {
 	Q_OBJECT
 public:
 	using QOpenGLWidget::QOpenGLWidget;
 	~OpenGLcityView();
 
-	/**
-	 * @brief Add a building to display it
-	 * Buildings are stored with their id
-	 *
-	 * @param id
-	 * @param buildingFactory
-	 */
-	void AddBuilding(const int id, const Building3DFactory &buildingFactory);
-
-	/**
-	 * @brief Remove a building and free memory
-	 *
-	 * @param id
-	 */
-	void DeleteBuilding(const int id);
-
 	void setCamInfoDisplayer(ICameraDisplayInfo * camInfoDisplayer) {
 		this->camInfoDisplayer = camInfoDisplayer;
 	};
 
+	void setPickingInfoDisplayer(IPicking3DDisplayInfo * pickingInfoDisplayer) {
+		this->pickingInfoDisplayer = pickingInfoDisplayer;
+	};
+
+	void setLayerManager(LayerManager3D * layerManager) {
+		this->layerManager = layerManager;
+	}
+
+	void addLayer(const int id, Layer3D * layer) {
+		this->layers[id] = layer;
+	}
+
+	Layer3D* getLayer(const int id) const { return this->layers.at(id); }
+	void removeLayer(const int id) { this->layers.erase(id); }
+
+	void ZoomIn() { this->controls.ZoomIn(true); }
+	void ZoomOut() { this->controls.ZoomIn(false); }
+
+	float getSymbologyOpacity() const { return this->symbologyOpacity; }
+	void setSymbologyOpacity(const float & value) {
+		this->symbologyOpacity = value;
+		this->RequestUpdate();
+	}
+
+
 protected:
 
-	ICameraDisplayInfo * camInfoDisplayer;
+	ICameraDisplayInfo * camInfoDisplayer = nullptr;
+	IPicking3DDisplayInfo * pickingInfoDisplayer = nullptr;
 
 	/**
 	 * @brief these overrided methodes are used by QT to init and display the widget
@@ -75,8 +91,18 @@ protected:
 	void timerEvent(QTimerEvent* /*e*/) override; // remove parameter name because unused (disable warning)
 
 private:
+
+	/**
+	 * @brief UpdateBuildings
+	 * Load buildings from buildingsStorage
+	 */
+	void UpdateBuildings();
+
+	Layer3D* getSelectedLayer() const;
+
 	QOpenGLShaderProgram shader;
-	std::map<int, Object3D*> buildings;
+	std::map<int, Layer3D*> layers;
+	//std::map<int, Object3D*> buildings;
 	Object3D * compass = nullptr;
 
 	// TODO: turn this function in a Camera class and add controls
@@ -88,6 +114,12 @@ private:
 	float lastTimeUpdate;
 	std::chrono::steady_clock::time_point timeStart;
 	const int timerDuration = 15; // in msec
+
+	float symbologyOpacity = 0.5;
+
+	LayerManager3D * layerManager = nullptr;
+
+	//OpenGLCityView_BuildingStorage * buildingStorage = nullptr;
 };
 
 #endif // OPENGLCITYVIEW_H
