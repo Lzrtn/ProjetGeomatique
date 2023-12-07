@@ -36,6 +36,7 @@ namespace fs = std::filesystem;
 #include "../src/2D/geojson.h"
 #include "../src/2D/wfsflow.h"
 #include "../src/2D/crs_converter.hpp"
+#include "../src/2D/shpwfsflow.h"
 
 
 
@@ -200,8 +201,10 @@ MainWindow::~MainWindow()
 	
 	//Empty the symbologie table
 	DbManager test("database2D", ipAdress);
-	std::string request = "TRUNCATE TABLE symbologie";
+    std::string request = "TRUNCATE TABLE symbologie_shp";
 	test.Request(request);
+    request = "TRUNCATE TABLE symbologie_flow";
+    test.Request(request);
 }
 
 
@@ -310,8 +313,8 @@ void MainWindow::OnAction2DWFSDataFlowClicked()
 
         WFSFlow *wfsflow = new WFSFlow(url, latmin, longmin, latmax, longmax);
         std::string PathWfsFlow = wfsflow->GetfilePath();
-        PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
-        std::cout << "Chemin du shp : " << PathWfsFlow<<std::endl;
+//        PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
+//        std::cout << "Chemin du shp : " << PathWfsFlow<<std::endl;
 
         if (fs::exists(PathWfsFlow)) {
             std::cerr << "Ce flux est déjà disponible." << std::endl;
@@ -357,27 +360,24 @@ void MainWindow::AddshpWFS(WFSFlow *wfsflow)
         exit(1);
     }
 
-    std::string PathWfsFlow = wfsflow->GetfilePath();
-    PathWfsFlow.replace(PathWfsFlow.size() - 4, 4, ".shp");
-    std::cout << PathWfsFlow << std::endl;
     //import du shapefile dans la base de données
-    wfsflow->shpfile = new Shapefile(PathWfsFlow, test);
+     shpWFSflow *shpFlow = new shpWFSflow(test, wfsflow);
 
-    wfsflow->shpfile->import_to_db(2154);
-    QColor myColor = wfsflow->shpfile->showColor();
+    shpFlow->import_to_db(2154);
+    QColor myColor = shpFlow->showColor();
 
-    int layerId = wfsflow->shpfile->getId();
+    int layerId = shpFlow->getId();
 
     //affichage des shapefiles importé
-    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+wfsflow->shpfile->getTableName()+";");
+    test.Request("SELECT ST_AsGeoJSON(geom) FROM "+shpFlow->getTableName()+";");
     pqxx::result rowbis =test.getResult();
-    QGraphicsItemGroup *layerGroup = wfsflow->shpfile->plotShapefile(rowbis,scene, myColor);
-    ui->lineEdit_epsg2D->setText(wfsflow->shpfile->getEPSGtoSet());
-    layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(wfsflow->shpfile->getTableName().c_str()), true, layerGroup);
+    QGraphicsItemGroup *layerGroup = shpFlow->plotShapefile(rowbis,scene, myColor);
+    ui->lineEdit_epsg2D->setText(shpFlow->getEPSGtoSet());
+    layerList[layerId] = new Layer("Layer "+QString::number(index)+ " : "+ QString(shpFlow->getTableName().c_str()), true, layerGroup);
     addLayerToListWidget(layerId, *layerList[layerId]);
     index++;
 
-    ShpList.insert(std::pair<const int, Shapefile *>(layerId, wfsflow->shpfile));
+    ShpList.insert(std::pair<const int, Shapefile *>(layerId, shpFlow));
 }
 
 

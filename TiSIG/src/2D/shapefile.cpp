@@ -263,21 +263,25 @@ int Shapefile::import_to_db(const int epsg)
             GDALClose(poDS);
 
             // Add color
-            std::string tableSymbo = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'symbologie');";
+            std::string name_symbo;
+            std::cout<<std::to_string(idType)<<std::endl;
+            if (idType==1000){name_symbo="symbologie_shp";}
+            else if (idType==3000){name_symbo="symbologie_flow";}
+            std::string tableSymbo = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '"+name_symbo+"');";
             db_manager.Request(tableSymbo);
             pqxx::result r = db_manager.getResult();
             if(r[0][0].as<std::string>()=="f"){
-                std::string request_create_symbo = "CREATE TABLE symbologie ();";
+                std::string request_create_symbo = "CREATE TABLE "+name_symbo+" ();";
                 db_manager.CreateTable(request_create_symbo);
-                std::string request_columns = "ALTER TABLE public.symbologie ADD COLUMN id int, ADD COLUMN name character varying, ADD COLUMN red int, ADD COLUMN green int, ADD COLUMN blue int, ADD COLUMN alpha int;";
+                std::string request_columns = "ALTER TABLE public."+name_symbo+" ADD COLUMN id int, ADD COLUMN name character varying, ADD COLUMN red int, ADD COLUMN green int, ADD COLUMN blue int, ADD COLUMN alpha int;";
                 db_manager.CreateTable(request_columns);
             }
-            std::string request_max_id = "SELECT MAX (id) FROM symbologie";
+            std::string request_max_id = "SELECT MAX (id) FROM "+name_symbo+"";
             db_manager.Request(request_max_id);
             pqxx::result i = db_manager.getResult();
             int index;
             if (i[0][0].is_null()){
-                index = 1000;
+                index = idType;
             }
             else {
                 index = i[0][0].as<int>() +1;
@@ -287,8 +291,9 @@ int Shapefile::import_to_db(const int epsg)
             int red_random = rand()%255;
             int green_random = rand()%255;
             int blue_random = rand()%255;
-            std::string add_line_symbo = "INSERT INTO symbologie (id, name, red, green, blue, alpha) VALUES ("+std::to_string(index)+",'"+table_name+"',"+std::to_string(red_random)+","+std::to_string(green_random)+","+std::to_string(blue_random)+",255);";
+            std::string add_line_symbo = "INSERT INTO "+name_symbo+" (id, name, red, green, blue, alpha) VALUES ("+std::to_string(index)+",'"+table_name+"',"+std::to_string(red_random)+","+std::to_string(green_random)+","+std::to_string(blue_random)+",255);";
             db_manager.Request(add_line_symbo);
+            std::cout<<table_name << " " << std::to_string(id)<<std::endl;
             std::cout<<"IT WORKS!"<<std::endl;
             return 0;
         }
@@ -379,7 +384,10 @@ QGraphicsItemGroup * Shapefile::plotShapefile(pqxx::result rowbis,QGraphicsScene
 }
 
 QColor Shapefile::showColor(){
-    std::string requete_couleur = "SELECT red, green, blue, alpha from symbologie where name = '"+table_name+"';";
+    std::string name_symbo;
+    if (idType==1000){name_symbo="symbologie_shp";}
+    else if (idType==3000){name_symbo="symbologie_flow";}
+    std::string requete_couleur = "SELECT red, green, blue, alpha from "+name_symbo+" where name = '"+table_name+"';";
     db_manager.Request(requete_couleur);
     pqxx::result res = db_manager.getResult();
     int red = res[0][0].as<int>();
@@ -467,16 +475,19 @@ int Shapefile::update()
             GDALClose(poDS);
 
             // Add color
-            std::string tableSymbo = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'symbologie');";
+            std::string name_symbo;
+            if (idType==1000){name_symbo="symbologie_shp";}
+            else if (idType==3000){name_symbo="symbologie_flow";}
+            std::string tableSymbo = "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '"+name_symbo+"');";
             db_manager.Request(tableSymbo);
             pqxx::result r = db_manager.getResult();
             if(r[0][0].as<std::string>()=="f"){
-                std::string request_create_symbo = "CREATE TABLE symbologie ();";
+                std::string request_create_symbo = "CREATE TABLE "+name_symbo+" ();";
                 db_manager.CreateTable(request_create_symbo);
-                std::string request_columns = "ALTER TABLE public.symbologie ADD COLUMN id int, ADD COLUMN name character varying, ADD COLUMN red int, ADD COLUMN green int, ADD COLUMN blue int, ADD COLUMN alpha int;";
+                std::string request_columns = "ALTER TABLE public."+name_symbo+" ADD COLUMN id int, ADD COLUMN name character varying, ADD COLUMN red int, ADD COLUMN green int, ADD COLUMN blue int, ADD COLUMN alpha int;";
                 db_manager.CreateTable(request_columns);
             }
-            std::string request_max_id = "SELECT MAX (id) FROM symbologie";
+            std::string request_max_id = "SELECT MAX (id) FROM "+name_symbo+"";
             db_manager.Request(request_max_id);
             pqxx::result i = db_manager.getResult();
             int index;
@@ -491,7 +502,7 @@ int Shapefile::update()
             int red_random = rand()%255;
             int green_random = rand()%255;
             int blue_random = rand()%255;
-            std::string add_line_symbo = "INSERT INTO symbologie (id, name, red, green, blue, alpha) VALUES ("+std::to_string(index)+",'"+table_name+"',"+std::to_string(red_random)+","+std::to_string(green_random)+","+std::to_string(blue_random)+",255);";
+            std::string add_line_symbo = "INSERT INTO "+name_symbo+" (id, name, red, green, blue, alpha) VALUES ("+std::to_string(index)+",'"+table_name+"',"+std::to_string(red_random)+","+std::to_string(green_random)+","+std::to_string(blue_random)+",255);";
             db_manager.Request(add_line_symbo);
             std::cout<<"IT WORKS!"<<std::endl;
             return 0;

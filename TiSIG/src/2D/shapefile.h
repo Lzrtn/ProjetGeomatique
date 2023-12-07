@@ -85,7 +85,7 @@ public:
 
    int update();
 
-private:
+public:
     /**
      * @brief Absolute or relative path of your shapefile
      */
@@ -115,6 +115,8 @@ private:
    * @brief itype of the geometry
    */
    std::string data_type;
+
+   int idType = 1000;
 
 };
 

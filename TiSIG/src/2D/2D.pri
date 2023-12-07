@@ -35,6 +35,7 @@ LIBS += -lproj
 SOURCES += \
     $$PWD/layer.cpp \
     $$PWD/shapefile.cpp \
+    $$PWD/shpwfsflow.cpp \
     $$PWD/transformation.cpp \
     $$PWD/geotiff.cpp \
     $$PWD/geojson.cpp \
@@ -50,6 +51,7 @@ SOURCES += \
 HEADERS += \
     $$PWD/layer.h \
     $$PWD/shapefile.h \
+    $$PWD/shpwfsflow.h \
     $$PWD/transformation.h \
     $$PWD/geotiff.h \
     $$PWD/geojson.h \

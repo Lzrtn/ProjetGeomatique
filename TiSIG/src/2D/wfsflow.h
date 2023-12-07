@@ -16,13 +16,13 @@ class WFSFlow
 {
 public:
     WFSFlow(const std::string &url, const std::string &longmin, const std::string &latmin, const std::string &longmax, const std::string &latmax);
-    ~WFSFlow();
+//    ~WFSFlow();
     int downloadZIP(); // fonction de téléchargement
     int unzipFile(); // fonction de décompression
     int resultDownload = 0;
     std::string GetfilePath(){ return filePath; };
 
-    Shapefile *shpfile;
+//    Shapefile *shpfile;
 
 
 private:
