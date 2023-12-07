@@ -121,7 +121,7 @@ private:
 
 	Layer3D * layer3D; ///< Layer3D layer3D
 	Object3DStorage * storage3D; ///< Object3DStorage storage3D
-    LayerManager3D *layerList3D; ///< LayerManager3D layerList3D
+	LayerManager3D *layerList3D; ///< LayerManager3D layerList3D
 
 private slots:
 	/**
@@ -154,9 +154,9 @@ private slots:
 
 	/**
 	 * @brief Adds a Shapefile file to the application.
-	 * 
+	 *
 	 * This function takes a path to a Shapefile file and adds it to the application.
-	 * 
+	 *
 	 * @param path The path to the Shapefile file.
 	 */
 	void AddShpFileClicked(std::string path);
@@ -164,10 +164,10 @@ private slots:
 
 	/**
 	 * @brief Adds a Geotiff file to the application.
-	 * 
+	 *
 	 * This function is called when the user clicks on a button to add a Geotiff file.
 	 * It takes the path of the file as a parameter and performs the necessary operations to add the file to the application.
-	 * 
+	 *
 	 * @param path The path of the Geotiff file to be added.
 	 */
 	void AddGeotiffFileClicked(std::string path);
@@ -239,7 +239,7 @@ private slots:
 
 	/**
 	 * @brief Moves the item up.
-	 * 
+	 *
 	 * This function is responsible for moving the item up.
 	 * It performs the necessary operations to move the item to a higher position.
 	 */
@@ -247,17 +247,17 @@ private slots:
 
 	/**
 	 * @brief Moves the item down.
-	 * 
+	 *
 	 * This function is responsible for moving the item down.
 	 * It performs the necessary operations to move the item to a lower position.
-	 * 
+	 *
 	 * @return void
 	 */
 	void moveItemDown( );
 
 	/**
 	 * @brief Handles the button click event for deleting a layer.
-	 * 
+	 *
 	 * This function is called when the user clicks the delete layer button in the user interface.
 	 * It performs the necessary actions to delete the selected layer.
 	 */
@@ -265,7 +265,7 @@ private slots:
 
 	/**
 	 * @brief Handles the button click event for zooming on a layer.
-	 * 
+	 *
 	 * This function is called when the user clicks on the zoom button associated with a layer.
 	 * It performs the necessary actions to zoom in on the selected layer.
 	 */
@@ -273,12 +273,12 @@ private slots:
 
 	/**
 	 * @brief This function is used to test the addition of a 3D model.
-	 * 
+	 *
 	 * It performs the necessary operations to add a 3D model and verifies the result.
-	 * 
+	 *
 	 * @return void
 	 */
-    void testAdd3DModel();
+	void testAdd3DModel();
 
 
 };
