@@ -421,7 +421,6 @@ void MainWindow::AddshpWFS(WFSFlow *wfsflow)
     for (const auto& row : columnNamesResult)
     {
         std::string columnName = row[0].as<std::string>();
-        std::cout << "Le titre de la colonne : " << columnName << std::endl;
         columnList.push_back(columnName);
     }
 
@@ -621,7 +620,6 @@ void MainWindow::AddShpFileClicked(std::string path)
     for (const auto& row : columnNamesResult)
     {
         std::string columnName = row[0].as<std::string>();
-        std::cout << "Le titre de la colonne : " << columnName << std::endl;
         columnList.push_back(columnName);
     }
 
