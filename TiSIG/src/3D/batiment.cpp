@@ -1,5 +1,5 @@
 #include "batiment.h"
-#include "outils/dbmanager.h"
+#include "../outils/dbmanager.h"
 #include "map"
 
 void translateToBasePoint(std::vector<QVector3D>& vectorToTranslate, const QVector3D& basePoint) {
@@ -28,7 +28,7 @@ std::vector<QVector3D> Batiment::createBuilding(std::string id, std::string ipAd
 
     using json = nlohmann::json;
 
-    QVector3D base = QVector3D(1839252.78, 5174127.85, 284.483);
+    //QVector3D base = QVector3D(1839252.78, 5174127.85, 284.483);
 
     std::vector<std::vector<std::vector<double>>> listPolygons;
 
@@ -80,6 +80,33 @@ std::vector<QVector3D> Batiment::createBuilding(std::string id, std::string ipAd
 
     }
 
+    double hauteurSol = 1000;
+
+
+        for(auto& polygon: listPolygons)
+
+        {
+
+            for(auto& point: polygon)
+
+            {
+
+                if(point[2] < hauteurSol)
+
+                {
+
+                    hauteurSol = point[2];
+
+                }
+
+
+            }
+
+
+        }
+
+
+
 
     for(auto& polygon: listPolygons)
 
@@ -87,52 +114,68 @@ std::vector<QVector3D> Batiment::createBuilding(std::string id, std::string ipAd
 
         std::vector<QVector3D> listCoords = {};
 
-
-
         //REMPLIR LISTE COORDS
+        for(int i = 0; i<polygon.size(); i++)
+        {
+//            std::cout << polygon[i][2] << "\n";
+            listCoords.push_back(QVector3D(polygon[i][0], polygon[i][1], polygon[i][2]));
+        }
 
-        for(auto& point: polygon){listCoords.push_back(QVector3D(point[0], point[1], point[2]));}
-
-        translateToBasePoint(listCoords, base);
+        //translateToBasePoint(listCoords, base);
 
         while(listCoords.size() > 2 )
 
         {
 
-            coordinates.push_back(QVector3D(listCoords[0][0], -listCoords[0][2], listCoords[0][1]));
 
-            coordinates.push_back(QVector3D(listCoords[0+1][0], -listCoords[0+1][2], listCoords[0+1][1]));
+            if(listCoords[0][2] == listCoords[1][2] && listCoords[0][2] == listCoords[listCoords.size() - 1][2])
+            {
 
-            coordinates.push_back(QVector3D(listCoords[listCoords.size()-1][0], -listCoords[listCoords.size()-1][2], listCoords[listCoords.size()-1][1]));
+                if(listCoords[0][2] > hauteurSol+1){
 
-
-            listCoords.erase(listCoords.begin() + 0);
-
+                    coordinates.push_back(QVector3D(listCoords[0][0],  listCoords[0][1], -listCoords[0][2]));
+                    coordinates.push_back(QVector3D(listCoords[1][0], listCoords[1][1], -listCoords[1][2]));
+                    coordinates.push_back(QVector3D(listCoords[listCoords.size()-1][0], listCoords[listCoords.size()-1][1], -listCoords[listCoords.size()-1][2]));
+                }
+            } else {
+                coordinates.push_back(QVector3D(listCoords[0][0],  listCoords[0][1], -listCoords[0][2]));
+                coordinates.push_back(QVector3D(listCoords[1][0], listCoords[1][1], -listCoords[1][2]));
+                coordinates.push_back(QVector3D(listCoords[listCoords.size()-1][0], listCoords[listCoords.size()-1][1], -listCoords[listCoords.size()-1][2]));
+            }
+            listCoords.erase(listCoords.begin());
         }
 
 
     }
-    //Initializing the request
-    std::string request = "INSERT INTO triangle (geom, parent_id) VALUES ";
-    //Extracting the triplets of coordinates
-    for (int i =0;i < coordinates.size(); i+= 3){
-        const glm::vec3& v1 = coordinates[i];
-        const glm::vec3& v2 = coordinates[i + 1];
-        const glm::vec3& v3 = coordinates[i + 2];
+//    //Initializing the request
+//    std::string request = "INSERT INTO triangle (geom, parent_id) VALUES ";
+//    //Extracting the triplets of coordinates
+//    for (int i =0;i < coordinates.size(); i+= 3){
+//        const glm::vec3& v1 = coordinates[i];
+//        const glm::vec3& v2 = coordinates[i + 1];
+//        const glm::vec3& v3 = coordinates[i + 2];
 
-        std::string polygon = "POLYGON Z((";
-        polygon += std::to_string(v1.x) + " " + std::to_string(v1.y) + " " + std::to_string(v1.z) + "," +
-                " " + std::to_string(v2.x) + " " + std::to_string(v2.y) + " " + std::to_string(v2.z) + "," +
-                " " + std::to_string(v3.x) + " " + std::to_string(v3.y) + " " + std::to_string(v3.z) + "," +
-                " " + std::to_string(v1.x) + " " + std::to_string(v1.y) + " " + std::to_string(v1.z) + "))";
-        //std::cout<<polygon;
-        request += "(ST_GeomFromText('"+polygon+"', 4171),"+id+"),";
-        //std::string request = "INSERT INTO triangle (geom, parent_id) VALUES (ST_GeomFromText('"+polygon+"',4171),+"+id+");";
-    }
-    request.erase(request.size() - 1);
-    request += ";";
-    //std::cout<<request<<std::endl;
-    manager.Request(request);
+//        std::string polygon = "POLYGON Z((";
+//        polygon += std::to_string(v1.x) + " " + std::to_string(v1.y) + " " + std::to_string(v1.z) + "," +
+//                " " + std::to_string(v2.x) + " " + std::to_string(v2.y) + " " + std::to_string(v2.z) + "," +
+//                " " + std::to_string(v3.x) + " " + std::to_string(v3.y) + " " + std::to_string(v3.z) + "," +
+//                " " + std::to_string(v1.x) + " " + std::to_string(v1.y) + " " + std::to_string(v1.z) + "))";
+//        //std::cout<<polygon;
+//        request += "(ST_GeomFromText('"+polygon+"', 4171),"+id+"),";
+//        //std::string request = "INSERT INTO triangle (geom, parent_id) VALUES (ST_GeomFromText('"+polygon+"',4171),+"+id+");";
+//    }
+//    request.erase(request.size() - 1);
+//    request += ";";
+//    //std::cout<<request<<std::endl;
+//    manager.Request(request);
+
+//    if (!coordinates.empty()) {
+//        QVector3D firstCoordinate = coordinates[0];
+//        std::cout << "Premier élément de coordinates : " << firstCoordinate.x() << ", " << firstCoordinate.y() << ", " << firstCoordinate.z() << std::endl;
+//    } else {
+//        std::cout << "Le vecteur coordinates est vide." << std::endl;
+//    }
+// std::cout << coordinates.size() << std::endl;
 
     return coordinates;
 

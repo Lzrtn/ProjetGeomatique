@@ -43,7 +43,7 @@ void OpenGLcityView::initializeGL()
 	this->camera.setAngleV(0);
 
 	this->controls.setCamera(&this->camera);
-	//this->camera.setPosition({0, 0, 400});
+    this->camera.setPosition({1839312.84, 5173874.29, 278.99});
 }
 
 void OpenGLcityView::InitShaders()

@@ -33,6 +33,7 @@
 #include "../src/outils/dbmanager.h"
 #include "../src/outils/docker.h"
 #include "../src/2D/geojson.h"
+#include "../src/3D/batiments.h"
 
 #include "../src/3D/exempleobject3dstorage.h"
 #include "../src/3D/mnt3dstorage.h"
@@ -170,9 +171,9 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->action_add3DModel, &QAction::triggered, this, &MainWindow::testAdd3DModel); // à modifier ligne 108
 
 
-//	this->storage3D = new ExempleObject3DStorage();
-//	this->layer3D = new Layer3D(this->storage3D);
-//	this->ui->openGLWidget_window3D->addLayer(0, this->layer3D);
+    this->storage3D = new Batiments(ipAdress);
+    this->layer3D = new Layer3D(this->storage3D, 1, "caca");
+	this->ui->openGLWidget_window3D->addLayer(0, this->layer3D);
 }
 
 MainWindow::~MainWindow()
