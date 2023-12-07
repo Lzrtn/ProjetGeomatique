@@ -114,7 +114,7 @@ public:
    */
    std::string getDataType(){return data_type;}
 
-private:
+protected:
 
     std::string path; ///< Path of your shapefile
 
@@ -128,6 +128,12 @@ private:
 
     std::string data_type; ///< Type of the geometry
 
+    int idType = 1000;
+
 };
 
 #endif // SHAPEFILE_H
+
+
+
+
