@@ -17,8 +17,8 @@ QMatrix4x4 Camera::ComputeMPV()
 	QMatrix4x4 matView;
 	matView.setToIdentity();
 	matView.scale(this->zoom, this->zoom, 1);
-	matView.rotate(this->angleV, {-1,0,0});
-	matView.rotate(this->angleH, {0,0,-1});
+    matView.rotate(this->angleV, {-1,0,0});
+    matView.rotate(this->angleH, {0,0,-1});
 	matView.translate(-this->position);
 
 	this->matMVPCompass.setToIdentity();
@@ -53,7 +53,7 @@ void Camera::ResizeView(int width, int height)
 	this->wHeight = height;
 	qreal aspect_ratio = qreal(width) / qreal(height ? height : 1);
 
-	const qreal zNear = 3.0, zFar = 1000, fov = 20.0;
+    const qreal zNear = 3.0, zFar = 100000, fov = 20.0;
 	this->matProjection.setToIdentity();
 	this->matProjection.perspective(fov, aspect_ratio, zNear, zFar);
 }

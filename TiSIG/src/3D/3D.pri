@@ -19,8 +19,8 @@ SOURCES += \
     $$PWD/openglcityview.cpp \
     $$PWD/camera.cpp \
     $$PWD/cameracontrols.cpp \
-    #$$PWD/batiment.cpp \
-    #$$PWD/batiments.cpp \
+    $$PWD/batiment.cpp \
+    $$PWD/batiments.cpp \
 
 HEADERS += \
     $$PWD/compass.h \
@@ -34,8 +34,9 @@ HEADERS += \
     $$PWD/openglcityview.h \
     $$PWD/camera.h \
     $$PWD/cameracontrols.h \
-    #$$PWD/batiment.h \
-    #$$PWD/batiments.h \
+    $$PWD/batiment.h \
+    $$PWD/batiments.h \
+    $$PWD/json.hpp \
 
 RESOURCES += \
     $$PWD/shaders.qrc \
