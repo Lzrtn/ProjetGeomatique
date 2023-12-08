@@ -87,6 +87,13 @@ public:
 	 */
 	void wheelEvent(QWheelEvent *event);
 
+	/**
+	 * @brief ZoomIn change zoom of camera
+	 *
+	 * @param zoomIn:	true->zoomIn; false->zoomOut
+	 */
+	void ZoomIn(bool zoomIn = true);
+
 private:
 
 	Camera * camera;
@@ -94,12 +101,12 @@ private:
 	std::map<std::string, bool> keysPressed;
 
 	float speedNav2D	= 0.008;
-	float speedNavZ		= 0.010;
+	float speedNavZ		= 0.100;
 	float speedRot		= 0.001;
 	float speedZoom		= 0.25;
-	float speedMouseMove= 15;
+	float speedMouseMove= 150;
 	float speedMouseRot	= 50;
-	float speedMouseZ	= 5; // metres par cran de mollete
+	float speedMouseZ	= 50; // metres par cran de mollete
 	QPoint lastPosClick;
 };
 

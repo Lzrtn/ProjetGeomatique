@@ -32,6 +32,8 @@ bool CameraControls::update(const float dt)
 	} else {
 		float c = this->speedNav2D / this->camera->getZoom() * cos(this->camera->getAngleH() * M_PI/180);
 		float s = this->speedNav2D / this->camera->getZoom() * sin(this->camera->getAngleH() * M_PI/180);
+		c *= this->camera->getPosition().z() / 3.;
+		s *= this->camera->getPosition().z() / 3.;
 		if (this->keysPressed["left"])	this->camera->move({-dt*c,-dt*s, 0});
 		if (this->keysPressed["right"])	this->camera->move({ dt*c, dt*s, 0});
 		if (this->keysPressed["up"])	this->camera->move({-dt*s, dt*c, 0});
@@ -88,11 +90,12 @@ void CameraControls::mouseMoveEvent(QMouseEvent *event)
 				-this->speedMouseRot * delta.y() / this->camera->getPxRatio());
 	else
 	{
-		float a = this->camera->getAngleH() * M_PI / 180;
+		float a = this->camera->getAngleH() * M_PI / 180.;
 		delta = {
 			static_cast<float>(delta.x()*cos(a) + delta.y()*sin(a)),
 			static_cast<float>(delta.y()*cos(a) - delta.x()*sin(a))
 		};
+		delta *= this->camera->getPosition().z() / 300.;
 		this->camera->move(
 					{this->speedMouseMove * delta.x() / this->camera->getZoom() / this->camera->getPxRatio(),
 					 -this->speedMouseMove * delta.y() / this->camera->getZoom() / this->camera->getPxRatio(),
@@ -111,4 +114,9 @@ void CameraControls::wheelEvent(QWheelEvent *event)
 	else
 		this->camera->move({0, 0, -this->speedMouseZ * event->angleDelta().y() / 120});
 	event->accept();
+}
+
+void CameraControls::ZoomIn(bool zoomIn)
+{
+	this->camera->move({0, 0, static_cast<float>((zoomIn ? -1 : 1) * 6.0)});
 }

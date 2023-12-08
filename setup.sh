@@ -12,30 +12,37 @@ current_directory="$PWD"
 # Installation of dependencies
 
 #sudo apt-get update || exit_with_error "Échec de la mise à jour des paquets"
-sudo apt-get install -y gdal-bin libgdal-dev libpq-dev libpqxx-dev libgtest-dev xvfb || exit_with_error "Failed to install dependencies"
-sudo apt-get install build-essential qt5-qmake qtbase5-dev qtchooser qtbase5-dev-tools
+sudo apt-get install -y gdal-bin libgdal-dev libpq-dev libglm-dev libpqxx-dev libgtest-dev xvfb #|| exit_with_error "Failed to install dependencies"
+sudo apt-get install -y build-essential qt5-qmake qtbase5-dev qtchooser qtbase5-dev-tools
+sudo apt-get install -y libquazip5-dev 
+sudo apt-get install -y libqgis-dev
+sudo apt-get install -y libgeos-dev
 
 #Installation of postgres/postgis
 
-sudo apt-get install postgresql-14-postgis-3
-sudo apt-get install postgresql-15-postgis-3
-sudo apt-get install postgresql-16-postgis-3
+sudo apt-get install -y postgresql-14-postgis-3
+sudo apt-get install -y postgresql-15-postgis-3
+sudo apt-get install -y postgresql-16-postgis-3
 
-sudo apt-get install curl
+sudo apt-get install -y curl
 
 sudo apt-get install -y docker.io
 
-sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg -y --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 sudo echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Granting usermod access to docker
 sudo usermod -a -G docker $USER || exit_with_error "Failed to add user to the docker group"
-sudo apt-get install docker-ce docker-ce-cli containerd.io
-sudo apt-get install zenity
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+sudo apt-get install -y zenity
 
 mkdir ./TiSIG/src/data/Docker/LYON_5EME_2015
 mkdir ./TiSIG/src/data/Docker/zip
+
+mkdir ./TiSIG/src/data/wfsFlow
+mkdir ./TiSIG/src/data/wmsFlow
+mkdir ./TiSIG/src/data/wmtsFlow
 
 #Download of necessary files
 
@@ -92,5 +99,5 @@ Categories=Application;
 EOL'
 
 # Display a message when the installation is completed
-zenity --info --text="Configuration & compilation completed ! Please close and reopen your session to apply some changes."
+zenity --info --text="Configuration and compilation completed ! Please close and reopen your session to apply some changes."
 

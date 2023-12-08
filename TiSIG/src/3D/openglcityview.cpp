@@ -1,5 +1,7 @@
 #include "openglcityview.h"
 
+#include "../interface/layermanager3d.h"	// include for cyclic dependency
+
 #include <iostream>
 #include <QKeyEvent>
 
@@ -9,10 +11,24 @@ OpenGLcityView::~OpenGLcityView()
 	// building and buffers.
 
 	this->makeCurrent();
+	/*
 	for (auto &pair : this->buildings) {
 		this->DeleteBuilding(pair.first);
 	}
+	*/
+	delete this->compass;
+
 	this->doneCurrent();
+}
+
+void OpenGLcityView::ZoomAtEmprise(const Layer3D *layer)
+{
+	if (layer) {
+		this->camera.setPosition(layer->getCameraInitPosition(), false);
+		this->camera.setAngleH(0, false);
+		this->camera.setAngleV(0, false);
+		this->RequestUpdate();
+	}
 }
 
 void OpenGLcityView::initializeGL()
@@ -25,6 +41,7 @@ void OpenGLcityView::initializeGL()
 	this->glClearColor(0.87, 0.87, 0.92, 1); // blue-gray-light
 	this->InitShaders();
 
+	/*
 	// ajout d'un batiment de test
 	this->AddBuilding(5, Building3DFactory(0));
 	this->AddBuilding(156, Building3DFactory(1));
@@ -32,12 +49,13 @@ void OpenGLcityView::initializeGL()
 	this->AddBuilding(0, Building3DFactory(3));
 	this->AddBuilding(1, Building3DFactory(5));
 
-	this->buildings[86] = MNT3DFactory(5).NewBuilding();
-
-	this->compass = CompassFactory().getCompass();
+	this->buildings[86] = MNT3DFactory(5).New();
+	*/
+	this->compass = CompassFactory().New();
 	this->camera.setAngleV(0);
 
 	this->controls.setCamera(&this->camera);
+    //this->camera.setPosition({1839312.84, 5173874.29, 278.99});
 }
 
 void OpenGLcityView::InitShaders()
@@ -66,22 +84,32 @@ void OpenGLcityView::timerEvent(QTimerEvent* /*e*/)
 	lastTimeUpdate = currentTime;
 	// if dt is too hire than timerDuration (stop and restart)
 	if (dt > this->timerDuration * 2)
-		dt = 0 * this->timerDuration * 2;
+		dt = this->timerDuration * 2;
 	if (this->controls.update(dt) && this->isValid())
+		this->camera.ComputeMPV();
+	if (this->camera.ConsumeUpdate())
+		this->RequestUpdate();
+	for (auto &pair : this->layers) {
+		if (pair.second->ConsumeUpdate())
+			this->RequestUpdate();
+	}
+	if (this->ConsumeUpdate()) {
+		this->UpdateBuildings();
 		this->update();
+	}
 }
 
-void OpenGLcityView::AddBuilding(const int id, const Building3DFactory &buildingFactory)
+void OpenGLcityView::UpdateBuildings()
 {
-	if (this->buildings.find(id) != this->buildings.end())
-		this->DeleteBuilding(id);
-
-	this->buildings[id] = buildingFactory.NewBuilding();
+	Emprise emprise = this->camera.getEmprise();
+	for (auto pair: this->layers) {
+		pair.second->UpdateEmprise(emprise);
+	}
 }
-void OpenGLcityView::DeleteBuilding(const int id)
+
+Layer3D *OpenGLcityView::getSelectedLayer() const
 {
-	delete this->buildings[id];
-	this->buildings.erase(id);
+	return this->layerManager ? this->layerManager->getSelectedLayer3D() : nullptr;
 }
 
 void OpenGLcityView::resizeGL(int w, int h)
@@ -105,19 +133,24 @@ void OpenGLcityView::paintGL()
 		this->camInfoDisplayer->Display3DZoomLevel(this->camera.getZoom());
 	}
 
-	this->camera.ComputeMPV();
-
+	this->shader.setUniformValue("symbology_opacity", 0.0f);
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVPCompass());
 	this->shader.setUniformValue("power_light", GLfloat(0.5));
+	this->shader.setUniformValue("translation", QVector3D(0,0,0));
 	this->compass->Draw(&this->shader);
 
 	// Set modelview-projection matrix
 	this->shader.setUniformValue("mvp_matrix", this->camera.getMVP());
 	this->shader.setUniformValue("power_light", GLfloat(1.0));
 
-
-	// Draw geometry
+	// Draw layers
+	/*
 	for (auto &pair : this->buildings) {
+		pair.second->Draw(&this->shader);
+	}*/
+
+	this->shader.setUniformValue("symbology_opacity", this->symbologyOpacity);
+	for (auto &pair : this->layers) {
 		pair.second->Draw(&this->shader);
 	}
 }
@@ -151,11 +184,34 @@ void OpenGLcityView::keyReleaseEvent(QKeyEvent *event)
 }
 void OpenGLcityView::mousePressEvent(QMouseEvent *event)
 {
+	//if (event->button() & Qt::LeftButton)
 	this->controls.mousePressEvent(event, true);
+	if (event->button() & Qt::RightButton) {
+		Layer3D* selLayer = this->getSelectedLayer();
+		if (selLayer) {
+			QVector3D p1, p2;
+			this->camera.Picking3D(event->pos(), p1, p2);
+			int idObj;
+			std::map<std::string, std::string> data;
+			if (selLayer->PickingObjectInfo(p1, p2, idObj, data)) {
+				if (this->pickingInfoDisplayer)
+					this->pickingInfoDisplayer->Display3DPickingResult(data);
+				for (auto &pair: data) {
+					std::cout << pair.first << " : " << pair.second << "\n";
+				}
+				std::cout << "(id object : " << idObj << " )" << std::endl;
+			} else {
+				if (this->pickingInfoDisplayer)
+					this->pickingInfoDisplayer->Display3DPickingResult({});
+			}
+		}
+	}
 }
 void OpenGLcityView::mouseReleaseEvent(QMouseEvent *event)
 {
+	//if (event->button() & Qt::LeftButton)
 	this->controls.mousePressEvent(event, false);
+	//if (event->button() & Qt::RightButton);
 }
 void OpenGLcityView::mouseMoveEvent(QMouseEvent *event)
 {
